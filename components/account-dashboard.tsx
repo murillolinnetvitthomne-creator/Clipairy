@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, useTransition } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
-import { purchasePlan, type AccountState } from '@/app/actions/account'
+import { type AccountState } from '@/app/actions/account'
+import { createCheckoutSession, createPortalSession } from '@/app/actions/checkout'
 import { PLANS, type PlanId } from '@/lib/plans'
 import { useI18n } from '@/components/i18n-provider'
 import { Button } from '@/components/ui/button'
@@ -17,6 +18,9 @@ import {
   Sparkles,
   ArrowRight,
   Loader2,
+  CreditCard,
+  CheckCircle2,
+  XCircle,
 } from 'lucide-react'
 
 export function AccountDashboard({
@@ -27,17 +31,46 @@ export function AccountDashboard({
   initialAccount: AccountState
 }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { t } = useI18n()
-  const [account, setAccount] = useState<AccountState>(initialAccount)
+  const [account] = useState<AccountState>(initialAccount)
   const [pending, startTransition] = useTransition()
   const [buyingId, setBuyingId] = useState<PlanId | null>(null)
+  const [portalPending, setPortalPending] = useState(false)
+
+  // Payment result banner driven by the Stripe redirect query param.
+  const checkoutResult = searchParams.get('checkout')
+
+  // Clean the query param from the URL once shown, so a refresh won't repeat it.
+  useEffect(() => {
+    if (checkoutResult) {
+      const timer = setTimeout(() => router.replace('/account'), 6000)
+      return () => clearTimeout(timer)
+    }
+  }, [checkoutResult, router])
 
   function handlePurchase(planId: PlanId) {
     setBuyingId(planId)
     startTransition(async () => {
-      const updated = await purchasePlan(planId)
-      setAccount(updated)
-      setBuyingId(null)
+      try {
+        const { url } = await createCheckoutSession(planId)
+        // Redirect the browser to Stripe's hosted checkout page.
+        window.location.href = url
+      } catch {
+        setBuyingId(null)
+      }
+    })
+  }
+
+  function handleManageBilling() {
+    setPortalPending(true)
+    startTransition(async () => {
+      try {
+        const { url } = await createPortalSession()
+        window.location.href = url
+      } catch {
+        setPortalPending(false)
+      }
     })
   }
 
@@ -73,6 +106,26 @@ export function AccountDashboard({
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
       </div>
+
+      {/* Payment result banner */}
+      {checkoutResult === 'success' && (
+        <div
+          role="status"
+          className="mb-8 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground"
+        >
+          <CheckCircle2 className="size-5 shrink-0 text-primary" aria-hidden="true" />
+          {t.account.checkoutSuccess}
+        </div>
+      )}
+      {checkoutResult === 'cancelled' && (
+        <div
+          role="status"
+          className="mb-8 flex items-center gap-3 rounded-xl border border-border bg-muted px-4 py-3 text-sm text-muted-foreground"
+        >
+          <XCircle className="size-5 shrink-0" aria-hidden="true" />
+          {t.account.checkoutCancelled}
+        </div>
+      )}
 
       {/* Current status card */}
       <section aria-label={t.account.currentPlan} className="mb-10 grid gap-4 sm:grid-cols-2">
@@ -175,13 +228,32 @@ export function AccountDashboard({
                   onClick={() => handlePurchase(plan.id)}
                 >
                   {isBuying && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-                  {isCurrent ? t.account.current : copy.cta}
+                  {isCurrent ? t.account.current : isBuying ? t.account.redirecting : copy.cta}
                   {!isCurrent && !isBuying && <ArrowRight className="size-4" aria-hidden="true" />}
                 </Button>
               </div>
             )
           })}
         </div>
+
+        {account.hasSubscription && (
+          <div className="mt-6 flex justify-center">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManageBilling}
+              disabled={pending}
+            >
+              {portalPending ? (
+                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+              ) : (
+                <CreditCard className="size-4" aria-hidden="true" />
+              )}
+              {portalPending ? t.account.openingPortal : t.account.manageBilling}
+            </Button>
+          </div>
+        )}
+
         <p className="mt-4 text-center text-xs text-muted-foreground">{t.account.demoNote}</p>
       </section>
     </div>

@@ -63,8 +63,21 @@ export const accountPlan = pgTable('account_plan', {
   planId: text('planId'), // 'payg' | 'growth' | 'team' | null (no plan)
   credits: integer('credits').notNull().default(0),
   unlimited: boolean('unlimited').notNull().default(false),
+  // Stripe linkage. Entitlements are only granted by verified webhooks.
+  stripeCustomerId: text('stripeCustomerId'),
+  stripeSubscriptionId: text('stripeSubscriptionId'),
+  // 'active' | 'past_due' | 'canceled' | 'unpaid' | ... (Stripe subscription status)
+  subscriptionStatus: text('subscriptionStatus'),
+  currentPeriodEnd: timestamp('currentPeriodEnd'),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
+})
+
+// Stripe webhook idempotency ledger — each event id is processed at most once.
+export const stripeEvent = pgTable('stripe_event', {
+  id: text('id').primaryKey(),
+  type: text('type').notNull(),
+  processedAt: timestamp('processedAt').notNull().defaultNow(),
 })
 
 // One row per AI generation job. Polled by the client while the async

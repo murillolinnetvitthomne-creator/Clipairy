@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
@@ -12,10 +13,12 @@ export default async function AccountPage() {
 
   return (
     <main className="min-h-screen">
-      <AccountDashboard
-        user={{ name: session.user.name, email: session.user.email }}
-        initialAccount={account}
-      />
+      <Suspense fallback={null}>
+        <AccountDashboard
+          user={{ name: session.user.name, email: session.user.email }}
+          initialAccount={account}
+        />
+      </Suspense>
     </main>
   )
 }

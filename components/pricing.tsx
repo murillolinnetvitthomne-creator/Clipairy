@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useI18n } from '@/components/i18n-provider'
@@ -60,7 +61,7 @@ export function Pricing() {
                   className="mt-8 w-full font-medium"
                   variant={highlight ? 'default' : 'outline'}
                   nativeButton={false}
-                  render={<a href="#studio" />}
+                  render={<Link href="/account" />}
                 >
                   {plan.cta}
                 </Button>

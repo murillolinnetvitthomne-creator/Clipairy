@@ -11,6 +11,12 @@ export type Plan = {
   features: string[]
   highlight?: boolean
   cta: string
+  // --- Stripe billing metadata (server source of truth) ---
+  // Amount charged, in USD cents. Never trust a price sent from the client.
+  amountInCents: number
+  currency: 'usd'
+  // One-time payment (payg) vs. recurring monthly subscription (growth/team).
+  mode: 'payment' | 'subscription'
 }
 
 // Credit values represent how many video generations a plan grants.
@@ -18,27 +24,28 @@ export const PLANS: Plan[] = [
   {
     id: 'payg',
     name: '按次付费',
-    price: '¥9',
+    price: '$5',
     period: '/ 次',
     description: '偶尔使用，按需购买生成次数。',
-    credits: 10,
+    credits: 1,
     unlimited: false,
-    cta: '购买 10 次',
-    features: [
-      '一次性 10 次视频生成',
-      '全部 12 步智能工作流',
-      '1080P 高清导出',
-      '次数永久有效',
-    ],
+    amountInCents: 500,
+    currency: 'usd',
+    mode: 'payment',
+    cta: '购买 1 次',
+    features: ['一次性 1 次视频生成', '全部 12 步智能工作流', '1080P 高清导出', '次数永久有效'],
   },
   {
     id: 'growth',
     name: '增长版',
-    price: '¥199',
+    price: '$29',
     period: '/ 月',
     description: '中小卖家的高性价比之选。',
     credits: 120,
     unlimited: false,
+    amountInCents: 2900,
+    currency: 'usd',
+    mode: 'subscription',
     highlight: true,
     cta: '订阅增长版',
     features: [
@@ -52,11 +59,14 @@ export const PLANS: Plan[] = [
   {
     id: 'team',
     name: '团队版',
-    price: '¥899',
+    price: '$199',
     period: '/ 月',
     description: '团队协作，海量产出。',
     credits: 0,
     unlimited: true,
+    amountInCents: 19900,
+    currency: 'usd',
+    mode: 'subscription',
     cta: '订阅团队版',
     features: [
       '不限次数视频生成',
