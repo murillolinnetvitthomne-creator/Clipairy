@@ -1,7 +1,7 @@
 import 'server-only'
 import { db } from '@/lib/db'
-import { generation } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { accountPlan, generation } from '@/lib/db/schema'
+import { and, eq, sql } from 'drizzle-orm'
 import { generateScript } from './script'
 import { generateStoryboardImages, generateAdVideo } from './media'
 import { generateVoiceover } from './voiceover'
@@ -43,14 +43,23 @@ export async function runPipeline(genId: number, userId: string, sellingPoints: 
     // Step 12: done.
     await setStep(genId, 12, { status: 'done', audioUrl })
   } catch (err) {
-    console.log('[v0] generation pipeline failed:', err instanceof Error ? err.message : err)
-    await db
-      .update(generation)
-      .set({
-        status: 'error',
-        error: err instanceof Error ? err.message : 'Generation failed',
-        updatedAt: new Date(),
-      })
-      .where(eq(generation.id, genId))
+    const message = err instanceof Error ? err.message : 'Generation failed'
+
+    // Mark the job failed first. A failed provider request must not consume a
+    // paid generation credit, so non-unlimited plans receive the credit back.
+    await db.transaction(async (tx) => {
+      await tx
+        .update(generation)
+        .set({ status: 'error', error: message, updatedAt: new Date() })
+        .where(eq(generation.id, genId))
+
+      await tx
+        .update(accountPlan)
+        .set({
+          credits: sql`${accountPlan.credits} + 1`,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(accountPlan.userId, userId), eq(accountPlan.unlimited, false)))
+    })
   }
 }
