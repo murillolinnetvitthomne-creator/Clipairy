@@ -4,7 +4,8 @@ import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
-import { purchasePlan, type AccountState } from '@/app/actions/account'
+import { type AccountState } from '@/app/actions/account'
+import { createBillingPortalSession, createCheckoutSession } from '@/app/actions/billing'
 import { PLANS, type PlanId } from '@/lib/plans'
 import { useI18n } from '@/components/i18n-provider'
 import { Button } from '@/components/ui/button'
@@ -22,22 +23,34 @@ import {
 export function AccountDashboard({
   user,
   initialAccount,
+  paymentStatus,
 }: {
   user: { name: string; email: string }
   initialAccount: AccountState
+  paymentStatus?: string
 }) {
   const router = useRouter()
   const { t } = useI18n()
-  const [account, setAccount] = useState<AccountState>(initialAccount)
+  const [account] = useState<AccountState>(initialAccount)
   const [pending, startTransition] = useTransition()
   const [buyingId, setBuyingId] = useState<PlanId | null>(null)
 
   function handlePurchase(planId: PlanId) {
     setBuyingId(planId)
     startTransition(async () => {
-      const updated = await purchasePlan(planId)
-      setAccount(updated)
-      setBuyingId(null)
+      try {
+        const { url } = await createCheckoutSession(planId)
+        window.location.assign(url)
+      } finally {
+        setBuyingId(null)
+      }
+    })
+  }
+
+  function handleManageBilling() {
+    startTransition(async () => {
+      const { url } = await createBillingPortalSession()
+      window.location.assign(url)
     })
   }
 
@@ -74,6 +87,17 @@ export function AccountDashboard({
         <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
       </div>
 
+      {paymentStatus === 'success' && (
+        <div className="mb-6 rounded-xl border border-primary/30 bg-primary/10 p-4 text-sm text-foreground">
+          {t.account.paymentSuccess}
+        </div>
+      )}
+      {paymentStatus === 'cancelled' && (
+        <div className="mb-6 rounded-xl border border-border bg-card p-4 text-sm text-muted-foreground">
+          {t.account.paymentCancelled}
+        </div>
+      )}
+
       {/* Current status card */}
       <section aria-label={t.account.currentPlan} className="mb-10 grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl border bg-card p-6">
@@ -105,7 +129,7 @@ export function AccountDashboard({
               </span>
             )}
           </div>
-          <div className="mt-4">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             {account.canTrial ? (
               <Button
                 size="sm"
@@ -118,6 +142,11 @@ export function AccountDashboard({
               </Button>
             ) : (
               <p className="text-sm text-muted-foreground">{t.account.buyToTrial}</p>
+            )}
+            {account.stripeCustomerId && (
+              <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={pending}>
+                {t.account.manageBilling}
+              </Button>
             )}
           </div>
         </div>
@@ -171,18 +200,20 @@ export function AccountDashboard({
                 <Button
                   className="mt-6 w-full font-medium"
                   variant={plan.highlight ? 'default' : 'outline'}
-                  disabled={isCurrent || pending}
+                  disabled={(isCurrent && plan.billing === 'subscription') || pending}
                   onClick={() => handlePurchase(plan.id)}
                 >
                   {isBuying && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-                  {isCurrent ? t.account.current : copy.cta}
-                  {!isCurrent && !isBuying && <ArrowRight className="size-4" aria-hidden="true" />}
+                  {isCurrent && plan.billing === 'subscription' ? t.account.current : copy.cta}
+                  {(!isCurrent || plan.billing === 'payment') && !isBuying && (
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  )}
                 </Button>
               </div>
             )
           })}
         </div>
-        <p className="mt-4 text-center text-xs text-muted-foreground">{t.account.demoNote}</p>
+        <p className="mt-4 text-center text-xs text-muted-foreground">{t.account.secureCheckout}</p>
       </section>
     </div>
   )

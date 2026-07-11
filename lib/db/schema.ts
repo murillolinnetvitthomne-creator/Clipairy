@@ -63,8 +63,19 @@ export const accountPlan = pgTable('account_plan', {
   planId: text('planId'), // 'payg' | 'growth' | 'team' | null (no plan)
   credits: integer('credits').notNull().default(0),
   unlimited: boolean('unlimited').notNull().default(false),
+  stripeCustomerId: text('stripeCustomerId').unique(),
+  stripeSubscriptionId: text('stripeSubscriptionId').unique(),
+  subscriptionStatus: text('subscriptionStatus'),
+  currentPeriodEnd: timestamp('currentPeriodEnd'),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
+})
+
+// Stripe event IDs are stored before fulfillment to make webhook handling idempotent.
+export const stripeEvent = pgTable('stripe_event', {
+  id: text('id').primaryKey(),
+  type: text('type').notNull(),
+  processedAt: timestamp('processedAt').notNull().defaultNow(),
 })
 
 // One row per AI generation job. Polled by the client while the async
