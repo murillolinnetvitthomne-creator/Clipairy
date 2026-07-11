@@ -167,6 +167,9 @@ export async function POST(req: Request) {
         break
     }
   } catch (err) {
+    // Processing did not complete. Remove the idempotency marker so Stripe's
+    // next delivery can retry instead of being mistaken for a completed event.
+    await db.delete(stripeEvent).where(eq(stripeEvent.id, event.id))
     console.log('[v0] Webhook handler error:', err instanceof Error ? err.message : err)
     return NextResponse.json({ error: 'Handler failed' }, { status: 500 })
   }
