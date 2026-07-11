@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { accountPlan } from '@/lib/db/schema'
-import { getPlan, type PlanId } from '@/lib/plans'
+import { PLANS, getPlan, type PlanId } from '@/lib/plans'
 import { eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
@@ -20,8 +20,6 @@ export type AccountState = {
   credits: number
   unlimited: boolean
   canTrial: boolean
-  stripeCustomerId: string | null
-  subscriptionStatus: string | null
 }
 
 /**
@@ -38,15 +36,7 @@ export async function getAccount(): Promise<AccountState> {
 
   const row = rows[0]
   if (!row || !row.planId) {
-    return {
-      planId: null,
-      planName: null,
-      credits: 0,
-      unlimited: false,
-      canTrial: false,
-      stripeCustomerId: row?.stripeCustomerId ?? null,
-      subscriptionStatus: row?.subscriptionStatus ?? null,
-    }
+    return { planId: null, planName: null, credits: 0, unlimited: false, canTrial: false }
   }
 
   const plan = getPlan(row.planId)
@@ -57,9 +47,49 @@ export async function getAccount(): Promise<AccountState> {
     credits: row.credits,
     unlimited: row.unlimited,
     canTrial,
-    stripeCustomerId: row.stripeCustomerId,
-    subscriptionStatus: row.subscriptionStatus,
   }
+}
+
+/**
+ * Simulates purchasing/subscribing to a plan. In a real app this would run
+ * after a successful Stripe checkout. It grants the plan's credits.
+ */
+export async function purchasePlan(planId: PlanId): Promise<AccountState> {
+  const userId = await getUserId()
+  const plan = PLANS.find((p) => p.id === planId)
+  if (!plan) throw new Error('Invalid plan')
+
+  const existing = await db
+    .select()
+    .from(accountPlan)
+    .where(eq(accountPlan.userId, userId))
+    .limit(1)
+
+  if (existing[0]) {
+    // Pay-as-you-go adds credits; subscriptions reset to the plan allotment.
+    const newCredits =
+      plan.id === 'payg' ? existing[0].credits + plan.credits : plan.credits
+    await db
+      .update(accountPlan)
+      .set({
+        planId: plan.id,
+        credits: plan.unlimited ? 0 : newCredits,
+        unlimited: plan.unlimited,
+        updatedAt: new Date(),
+      })
+      .where(eq(accountPlan.userId, userId))
+  } else {
+    await db.insert(accountPlan).values({
+      userId,
+      planId: plan.id,
+      credits: plan.unlimited ? 0 : plan.credits,
+      unlimited: plan.unlimited,
+    })
+  }
+
+  revalidatePath('/account')
+  revalidatePath('/')
+  return getAccount()
 }
 
 /**
