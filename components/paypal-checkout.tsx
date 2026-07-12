@@ -95,6 +95,7 @@ export function PaypalCheckout({
             <PaypalButtonsInner
               plan={plan}
               userId={userId}
+              clientId={config.clientId}
               paypalPlanId={paypalPlanId ?? undefined}
               onSuccess={onSuccess}
             />
@@ -108,11 +109,13 @@ export function PaypalCheckout({
 function PaypalButtonsInner({
   plan,
   userId,
+  clientId,
   paypalPlanId,
   onSuccess,
 }: {
   plan: Plan
   userId: string
+  clientId: string
   paypalPlanId?: string
   onSuccess: () => void
 }) {
@@ -124,7 +127,7 @@ function PaypalButtonsInner({
     dispatch({
       type: DISPATCH_ACTION.RESET_OPTIONS,
       value: {
-        clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID as string,
+        clientId,
         currency: 'USD',
         intent: isSubscription ? 'subscription' : 'capture',
         ...(isSubscription ? { vault: true } : {}),
