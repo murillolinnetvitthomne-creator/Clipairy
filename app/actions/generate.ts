@@ -1,13 +1,16 @@
 'use server'
 
-import { after } from 'next/server'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
-import { generation, type StoryboardScene } from '@/lib/db/schema'
-import { and, desc, eq } from 'drizzle-orm'
+import { accountPlan, generation, type StoryboardScene } from '@/lib/db/schema'
+import { and, desc, eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { consumeCredit } from './account'
-import { runPipeline } from '@/lib/ai/pipeline'
+import { start } from 'workflow/api'
+import {
+  generateVideoWorkflow,
+  type GenerateVideoInput,
+} from '@/workflows/generate-video'
 
 async function getUserId() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -20,6 +23,8 @@ export type GenerationState = {
   status: 'pending' | 'running' | 'done' | 'error'
   step: number
   sellingPoints: string | null
+  duration: GenerateVideoInput['duration']
+  aspectRatio: GenerateVideoInput['aspectRatio']
   script: string | null
   storyboard: StoryboardScene[] | null
   imageUrls: string[] | null
@@ -35,6 +40,8 @@ function toState(row: typeof generation.$inferSelect): GenerationState {
     status: row.status as GenerationState['status'],
     step: row.step,
     sellingPoints: row.sellingPoints,
+    duration: row.duration as GenerateVideoInput['duration'],
+    aspectRatio: row.aspectRatio as GenerateVideoInput['aspectRatio'],
     script: row.script,
     storyboard: row.storyboard ?? null,
     imageUrls: row.imageUrls ?? null,
@@ -50,24 +57,54 @@ function toState(row: typeof generation.$inferSelect): GenerationState {
  * credit first, creates the job row, then runs the pipeline in the background
  * so the client can poll for progress.
  */
-export async function startGeneration(sellingPoints: string): Promise<GenerationState> {
+export async function startGeneration(
+  sellingPoints: string,
+  duration: GenerateVideoInput['duration'] = 8,
+  aspectRatio: GenerateVideoInput['aspectRatio'] = '9:16',
+): Promise<GenerationState> {
   const userId = await getUserId()
+  if (![8, 16, 24, 30].includes(duration)) throw new Error('INVALID_DURATION')
+  if (!['9:16', '16:9'].includes(aspectRatio)) throw new Error('INVALID_ASPECT_RATIO')
 
-  // Gate: throws NO_PLAN / NO_CREDITS if the user cannot trial. This also
-  // decrements one credit atomically.
+  // Every finished video consumes exactly one credit, regardless of duration.
   await consumeCredit()
 
+  const cleanSellingPoints = sellingPoints.trim()
   const inserted = await db
     .insert(generation)
-    .values({ userId, sellingPoints: sellingPoints.trim() || null, status: 'pending', step: 0 })
+    .values({
+      userId,
+      sellingPoints: cleanSellingPoints || null,
+      duration,
+      aspectRatio,
+      status: 'pending',
+      step: 0,
+    })
     .returning()
 
   const row = inserted[0]
-
-  // Run the heavy pipeline after the response is sent.
-  after(async () => {
-    await runPipeline(row.id, userId, sellingPoints.trim())
-  })
+  try {
+    const run = await start(generateVideoWorkflow, [{
+      genId: row.id,
+      userId,
+      sellingPoints: cleanSellingPoints,
+      duration,
+      aspectRatio,
+    }])
+    await db
+      .update(generation)
+      .set({ workflowRunId: run.runId, updatedAt: new Date() })
+      .where(eq(generation.id, row.id))
+  } catch (error) {
+    await db.transaction(async (tx) => {
+      await tx.delete(generation).where(eq(generation.id, row.id))
+      await tx
+        .update(accountPlan)
+        .set({ credits: sql`${accountPlan.credits} + 1`, updatedAt: new Date() })
+        .where(and(eq(accountPlan.userId, userId), eq(accountPlan.unlimited, false)))
+    })
+    throw error
+  }
 
   return toState(row)
 }

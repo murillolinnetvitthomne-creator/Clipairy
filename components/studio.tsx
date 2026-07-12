@@ -5,13 +5,16 @@ import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import {
   Check,
+  Clock3,
   FileVideo,
   Infinity as InfinityIcon,
   Loader2,
   Lock,
+  Monitor,
   Package,
   Play,
   RotateCcw,
+  Smartphone,
   Sparkles,
   Type,
   Wand2,
@@ -39,6 +42,8 @@ export function Studio({
   const [status, setStatus] = useState<Status>('idle')
   const [gen, setGen] = useState<GenerationState | null>(null)
   const [sellingPoints, setSellingPoints] = useState('')
+  const [duration, setDuration] = useState<GenerationState['duration']>(8)
+  const [aspectRatio, setAspectRatio] = useState<GenerationState['aspectRatio']>('9:16')
   const [credits, setCredits] = useState<number>(account?.credits ?? 0)
   const [unlimited] = useState<boolean>(account?.unlimited ?? false)
   const poller = useRef<ReturnType<typeof setInterval> | null>(null)
@@ -75,7 +80,7 @@ export function Studio({
 
     let job: GenerationState
     try {
-      job = await startGeneration(sellingPoints)
+      job = await startGeneration(sellingPoints, duration, aspectRatio)
     } catch {
       // Gate errors (NO_PLAN / NO_CREDITS) — the banner already covers these.
       setStatus('idle')
@@ -156,6 +161,58 @@ export function Studio({
             className="mt-4 h-[104px] w-full resize-none rounded-xl border border-input bg-background/50 p-3 text-sm leading-relaxed text-foreground outline-none transition-colors placeholder:text-muted-foreground/70 focus:border-primary/60"
           />
         </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 rounded-2xl border border-border bg-card p-5 md:grid-cols-2">
+        <fieldset disabled={status === 'running'}>
+          <legend className="flex items-center gap-2 text-sm font-semibold text-foreground">
+            <Clock3 className="size-4 text-primary" aria-hidden="true" />
+            {t.studio.durationLabel}
+          </legend>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {([8, 16, 24, 30] as const).map((seconds) => (
+              <button
+                key={seconds}
+                type="button"
+                onClick={() => setDuration(seconds)}
+                aria-pressed={duration === seconds}
+                className={`min-w-16 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                  duration === seconds
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-background text-foreground hover:border-primary/60'
+                }`}
+              >
+                {seconds}{t.studio.secondsUnit}
+              </button>
+            ))}
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t.studio.durationHint}</p>
+        </fieldset>
+
+        <fieldset disabled={status === 'running'}>
+          <legend className="text-sm font-semibold text-foreground">{t.studio.aspectRatioLabel}</legend>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {([
+              { value: '9:16' as const, label: t.studio.portrait, icon: Smartphone },
+              { value: '16:9' as const, label: t.studio.landscape, icon: Monitor },
+            ]).map(({ value, label, icon: Icon }) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setAspectRatio(value)}
+                aria-pressed={aspectRatio === value}
+                className={`flex items-center justify-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                  aspectRatio === value
+                    ? 'border-primary bg-primary text-primary-foreground'
+                    : 'border-border bg-background text-foreground hover:border-primary/60'
+                }`}
+              >
+                <Icon className="size-4" aria-hidden="true" />
+                {label} {value}
+              </button>
+            ))}
+          </div>
+        </fieldset>
       </div>
 
       {/* Gate banner — shown when the user cannot trial */}
@@ -453,7 +510,7 @@ function ResultPreview({ gen }: { gen: GenerationState }) {
         </h3>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+      <div className={`grid gap-6 ${gen.aspectRatio === '16:9' ? 'lg:grid-cols-2' : 'lg:grid-cols-[1fr_340px]'}`}>
         <div className="space-y-6">
           {/* Script */}
           <div className="rounded-2xl border border-border bg-card p-6">
@@ -482,7 +539,7 @@ function ResultPreview({ gen }: { gen: GenerationState }) {
                       <img
                         src={frames[i] || '/placeholder.svg'}
                         alt={`${t.studio.sceneLabel}${i + 1}`}
-                        className="aspect-[9/16] w-full object-cover"
+                        className={`${gen.aspectRatio === '16:9' ? 'aspect-video' : 'aspect-[9/16]'} w-full object-cover`}
                       />
                     )}
                     <div className="p-3">
@@ -525,7 +582,7 @@ function ResultPreview({ gen }: { gen: GenerationState }) {
                 playsInline
                 poster={frames[0]}
                 src={gen.videoUrl}
-                className="aspect-[9/16] h-auto w-full bg-black object-cover"
+                className={`${gen.aspectRatio === '16:9' ? 'aspect-video' : 'aspect-[9/16]'} h-auto w-full bg-black object-cover`}
               >
                 <track kind="captions" />
               </video>
