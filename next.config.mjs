@@ -8,6 +8,9 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  outputFileTracingIncludes: {
+    '/*': ['./node_modules/ffmpeg-static/ffmpeg'],
+  },
 }
 
 export default withWorkflow(nextConfig)
