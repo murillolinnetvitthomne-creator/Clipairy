@@ -9,6 +9,8 @@ import { createCheckoutSession, createPortalSession } from '@/app/actions/checko
 import { PLANS, type PlanId } from '@/lib/plans'
 import { useI18n } from '@/components/i18n-provider'
 import { Button } from '@/components/ui/button'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { TransitionOverlay } from '@/components/transition-overlay'
 import {
   Clapperboard,
   Check,
@@ -19,6 +21,7 @@ import {
   ArrowRight,
   Loader2,
   CreditCard,
+  CircleAlert,
   CheckCircle2,
   XCircle,
 } from 'lucide-react'
@@ -37,6 +40,7 @@ export function AccountDashboard({
   const [pending, startTransition] = useTransition()
   const [buyingId, setBuyingId] = useState<PlanId | null>(null)
   const [portalPending, setPortalPending] = useState(false)
+  const [paymentError, setPaymentError] = useState<string | null>(null)
 
   // Payment result banner driven by the Stripe redirect query param.
   const checkoutResult = searchParams.get('checkout')
@@ -50,26 +54,35 @@ export function AccountDashboard({
   }, [checkoutResult, router])
 
   function handlePurchase(planId: PlanId) {
+    setPaymentError(null)
     setBuyingId(planId)
     startTransition(async () => {
       try {
-        const { url } = await createCheckoutSession(planId)
-        // Redirect the browser to Stripe's hosted checkout page.
-        window.location.href = url
+        const [{ url }] = await Promise.all([
+          createCheckoutSession(planId),
+          new Promise((resolve) => setTimeout(resolve, 650)),
+        ])
+        window.location.assign(url)
       } catch {
         setBuyingId(null)
+        setPaymentError(t.transition.checkoutError)
       }
     })
   }
 
   function handleManageBilling() {
+    setPaymentError(null)
     setPortalPending(true)
     startTransition(async () => {
       try {
-        const { url } = await createPortalSession()
-        window.location.href = url
+        const [{ url }] = await Promise.all([
+          createPortalSession(),
+          new Promise((resolve) => setTimeout(resolve, 650)),
+        ])
+        window.location.assign(url)
       } catch {
         setPortalPending(false)
+        setPaymentError(t.transition.checkoutError)
       }
     })
   }
@@ -84,7 +97,9 @@ export function AccountDashboard({
   const currentPlanName = account.planId ? t.plans[account.planId].name : null
 
   return (
-    <div className="mx-auto w-full max-w-5xl px-4 py-8">
+    <>
+      <TransitionOverlay kind={portalPending ? 'portal' : 'checkout'} visible={buyingId !== null || portalPending} />
+      <div className="mx-auto w-full max-w-5xl px-4 py-8">
       {/* Top bar */}
       <header className="mb-8 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
@@ -125,6 +140,16 @@ export function AccountDashboard({
           <XCircle className="size-5 shrink-0" aria-hidden="true" />
           {t.account.checkoutCancelled}
         </div>
+      )}
+
+      {paymentError && (
+        <Alert className="mb-8">
+          <CircleAlert className="mt-0.5 shrink-0 text-destructive" aria-hidden="true" />
+          <div className="flex flex-col gap-1">
+            <AlertTitle>{t.transition.errorTitle}</AlertTitle>
+            <AlertDescription>{paymentError}</AlertDescription>
+          </div>
+        </Alert>
       )}
 
       {/* Current status card */}
@@ -256,6 +281,7 @@ export function AccountDashboard({
 
         <p className="mt-4 text-center text-xs text-muted-foreground">{t.account.demoNote}</p>
       </section>
-    </div>
+      </div>
+    </>
   )
 }

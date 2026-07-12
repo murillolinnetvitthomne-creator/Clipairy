@@ -10,7 +10,9 @@ import { useI18n } from '@/components/i18n-provider'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Clapperboard, Loader2 } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { TransitionOverlay } from '@/components/transition-overlay'
+import { CircleAlert, Clapperboard, Loader2 } from 'lucide-react'
 
 export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
   const router = useRouter()
@@ -29,24 +31,32 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
     setLoading(true)
 
     try {
+      const minimumTransition = new Promise((resolve) => setTimeout(resolve, 650))
       if (isSignUp) {
-        const { error } = await authClient.signUp.email({ email, password, name })
-        if (error) throw new Error(error.message ?? t.auth.signUpFailed)
+        const [{ error }] = await Promise.all([
+          authClient.signUp.email({ email, password, name }),
+          minimumTransition,
+        ])
+        if (error) throw new Error('AUTH_FAILED')
       } else {
-        const { error } = await authClient.signIn.email({ email, password })
-        if (error) throw new Error(error.message ?? t.auth.signInFailed)
+        const [{ error }] = await Promise.all([
+          authClient.signIn.email({ email, password }),
+          minimumTransition,
+        ])
+        if (error) throw new Error('AUTH_FAILED')
       }
-      router.push('/account')
+      router.replace('/account')
       router.refresh()
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t.auth.genericError)
-    } finally {
+    } catch {
+      setError(t.transition.authError)
       setLoading(false)
     }
   }
 
   return (
-    <div className="w-full max-w-md">
+    <>
+      <TransitionOverlay kind="auth" visible={loading} />
+      <div className="w-full max-w-md">
       <div className="mb-8 flex flex-col items-center text-center">
         <Link href="/" className="mb-6 flex items-center gap-2">
           <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -103,9 +113,13 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
         </div>
 
         {error && (
-          <p className="text-sm text-destructive" role="alert">
-            {error}
-          </p>
+          <Alert>
+            <CircleAlert className="mt-0.5 shrink-0 text-destructive" aria-hidden="true" />
+            <div className="flex flex-col gap-1">
+              <AlertTitle>{t.transition.errorTitle}</AlertTitle>
+              <AlertDescription>{error}</AlertDescription>
+            </div>
+          </Alert>
         )}
 
         <Button type="submit" className="mt-2 font-medium" disabled={loading}>
@@ -123,6 +137,7 @@ export function AuthForm({ mode }: { mode: 'sign-in' | 'sign-up' }) {
           </Link>
         </p>
       </form>
-    </div>
+      </div>
+    </>
   )
 }

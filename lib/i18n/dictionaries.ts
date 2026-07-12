@@ -33,6 +33,17 @@ type AccountPlan = {
 const en = {
   lang: { label: 'Language' },
   nav: { workflow: 'Workflow', preview: 'Preview', models: 'AI Models', pricing: 'Pricing' },
+  transition: {
+    auth: { title: 'Signing you in', description: 'Verifying your details and preparing your workspace…', trust: 'Your account is protected' },
+    checkout: { title: 'Preparing secure checkout', description: 'Creating your private Stripe checkout session…', trust: 'Securely processed by Stripe' },
+    portal: { title: 'Opening billing center', description: 'Connecting securely to your subscription settings…', trust: 'Securely processed by Stripe' },
+    loading: { title: 'Getting things ready', description: 'Loading your Clipairy workspace…', trust: 'Secure connection' },
+    errorTitle: 'We could not complete that step',
+    authError: 'Please check your details and try again.',
+    checkoutError: 'The secure payment page could not be opened. Please try again.',
+    retry: 'Try again',
+    home: 'Return home',
+  },
   header: {
     signIn: 'Sign in',
     signUp: 'Sign up free',
@@ -237,6 +248,17 @@ export type Dict = typeof en
 const zh: Dict = {
   lang: { label: '语言' },
   nav: { workflow: '工作流', preview: '生成预览', models: 'AI 能力', pricing: '定价' },
+  transition: {
+    auth: { title: '正在安全登录', description: '正在验证账户并为你准备工作空间…', trust: '你的账户信息已加密保护' },
+    checkout: { title: '正在准备安全支付', description: '正在创建你的 Stripe 专属结账页面…', trust: '支付由 Stripe 安全处理' },
+    portal: { title: '正在打开账单中心', description: '正在安全连接你的订阅管理设置…', trust: '账单由 Stripe 安全管理' },
+    loading: { title: '正在为你准备', description: '正在加载 Clipairy 工作空间…', trust: '安全连接中' },
+    errorTitle: '暂时无法完成此操作',
+    authError: '请检查登录信息后重试。',
+    checkoutError: '暂时无法打开安全支付页面，请重试。',
+    retry: '重新尝试',
+    home: '返回首页',
+  },
   header: {
     signIn: '登录',
     signUp: '免费注册',
@@ -301,7 +323,7 @@ const zh: Dict = {
     scriptHeading: '改写后的广告脚本',
     storyboardHeading: '分镜列表',
     captionLabel: '字幕：',
-    videoAlt: 'AI 生成的竖版产品广告视频预览',
+    videoAlt: 'AI 生成的竖版产品广��视频预览',
     exportButton: '导出成片',
     steps: [
       { title: '上传参考视频', desc: '导入你想对标的 TikTok / Reels / Shorts 爆款视频', tools: ['上传组件', 'S3 / R2 / Supabase Storage'] },
@@ -433,6 +455,17 @@ AI 自动拆框架、改文案、生成新片段并配音。
 const id: Dict = {
   lang: { label: 'Bahasa' },
   nav: { workflow: 'Alur Kerja', preview: 'Pratinjau', models: 'Model AI', pricing: 'Harga' },
+  transition: {
+    auth: { title: 'Sedang masuk dengan aman', description: 'Memverifikasi akun dan menyiapkan ruang kerja Anda…', trust: 'Akun Anda terlindungi' },
+    checkout: { title: 'Menyiapkan pembayaran aman', description: 'Membuat sesi pembayaran Stripe pribadi Anda…', trust: 'Diproses dengan aman oleh Stripe' },
+    portal: { title: 'Membuka pusat tagihan', description: 'Menghubungkan ke pengaturan langganan Anda dengan aman…', trust: 'Dikelola dengan aman oleh Stripe' },
+    loading: { title: 'Sedang menyiapkan', description: 'Memuat ruang kerja Clipairy Anda…', trust: 'Koneksi aman' },
+    errorTitle: 'Langkah ini belum dapat diselesaikan',
+    authError: 'Periksa detail Anda lalu coba lagi.',
+    checkoutError: 'Halaman pembayaran aman tidak dapat dibuka. Silakan coba lagi.',
+    retry: 'Coba lagi',
+    home: 'Kembali ke beranda',
+  },
   header: {
     signIn: 'Masuk',
     signUp: 'Daftar gratis',
@@ -632,6 +665,17 @@ Ketuk di bawah untuk membuat iklan produk pertamamu gratis.`,
 const th: Dict = {
   lang: { label: 'ภาษา' },
   nav: { workflow: 'ขั้นตอน', preview: 'ตัวอย่าง', models: 'โมเดล AI', pricing: 'ราคา' },
+  transition: {
+    auth: { title: 'กำลังเข้าสู่ระบบอย่างปลอดภัย', description: 'กำลังตรวจสอบบัญชีและเตรียมพื้นที่ทำงานของคุณ…', trust: 'บัญชีของคุณได้รับการปกป้อง' },
+    checkout: { title: 'กำลังเตรียมการชำระเงิน', description: 'กำลังสร้างหน้าชำระเงิน Stripe ส่วนตัวของคุณ…', trust: 'ประมวลผลอย่างปลอดภัยโดย Stripe' },
+    portal: { title: 'กำลังเปิดศูนย์การเรียกเก็บเงิน', description: 'กำลังเชื่อมต่อการตั้งค่าการสมัครสมาชิกอย่างปลอดภัย…', trust: 'จัดการอย่างปลอดภัยโดย Stripe' },
+    loading: { title: 'กำลังเตรียมให้คุณ', description: 'กำลังโหลดพื้นที่ทำงาน Clipairy…', trust: 'การเชื่อมต่อปลอดภัย' },
+    errorTitle: 'ยังไม่สามารถดำเนินการนี้ได้',
+    authError: 'โปรดตรวจสอบข้อมูลแล้วลองอีกครั้ง',
+    checkoutError: 'ไม่สามารถเปิดหน้าชำระเงินที่ปลอดภัยได้ โปรดลองอีกครั้ง',
+    retry: 'ลองอีกครั้ง',
+    home: 'กลับหน้าหลัก',
+  },
   header: {
     signIn: 'เข้าสู่ระบบ',
     signUp: 'สมัครฟรี',
@@ -752,10 +796,10 @@ AI ถอดโครงสร้าง เขียนสคริปต์ใ�
   pricing: {
     eyebrow: 'ราคา',
     title: 'เริ่มต้นราคาถูก เติบโตไปกับธุรกิจ',
-    subtitle: 'จ่ายตามครั้งไม่มีข้อจำกัด สมัครสมาชิกคุ้มกว่า ทุกแพ็กเกจรวมขั้นตอน 12 ขั้นเต็มรูปแบบ',
+    subtitle: 'จ่ายตามครั้งไม่มีข้อจำกัด สมัครสมาชิกคุ้มกว่า ทุกแพ็กเกจรวมขั้นต���น 12 ขั้นเต็มรูปแบบ',
     mostPopular: 'ยอดนิยม',
     plans: [
-      { name: 'จ่ายตามครั้ง', price: '$9.90', unit: '/ วิดีโอ', desc: 'ผู้ขายที่โพสต์เป็นครั้งคราวหรืออยากลองก่อน', features: ['โฆษณาเต็มหนึ่งชิ้นต่อการสร้าง', 'ขั้นตอน 12 ขั้นครบ', 'ส่งออกความละเอียดมาตรฐาน', 'รองรับหลายแพลตฟอร์ม'], cta: 'สร้างตามครั้ง' },
+      { name: 'จ่ายตามครั้ง', price: '$9.90', unit: '/ วิดีโอ', desc: 'ผู��ขายที่โพสต์เป็นครั้งคราวหรืออยากลองก่อน', features: ['โฆษณาเต็มหนึ่งชิ้นต่อการสร้าง', 'ขั้นตอน 12 ขั้นครบ', 'ส่งออกความละเอียดมาตรฐาน', 'รองรับหลายแพลตฟอร์ม'], cta: 'สร้างตามครั้ง' },
       { name: 'Growth', price: '$199', unit: '/ เดือน', desc: 'ร้านค้าที่ยิงโฆษณาต่อเนื่องและต้องการปริมาณ', features: ['120 วิดีโอต่อเดือน', 'ส่งออก HD + ไม่มีลายน้ำ', 'คิวสร้างลำดับต้น', 'คลังเทมเพลตไวรัล', 'ที่นั่งทำงานเป็นทีม'], cta: 'เริ่มสมัครสมาชิก' },
       { name: 'ทีม', price: '$399', unit: '/ เดือน', desc: 'ทีมการตลาดวิดีโอสั้นและเอเจนซี', features: ['500 วิดีโอต่อเดือน', 'เข้าถึง API และสร้างจำนวนมาก', 'ปรับสไตล์แบรนด์เอง', 'ผู้จัดการบัญชีเฉพาะ', 'รับประกัน SLA'], cta: 'เริ่มสมัครสมาชิก' },
     ],
@@ -829,6 +873,17 @@ AI ถอดโครงสร้าง เขียนสคริปต์ใ�
 const vi: Dict = {
   lang: { label: 'Ngôn ngữ' },
   nav: { workflow: 'Quy trình', preview: 'Xem trước', models: 'Mô hình AI', pricing: 'Bảng giá' },
+  transition: {
+    auth: { title: 'Đang đăng nhập an toàn', description: 'Đang xác minh tài khoản và chuẩn bị không gian làm việc…', trust: 'Tài khoản của bạn được bảo vệ' },
+    checkout: { title: 'Đang chuẩn bị thanh toán', description: 'Đang tạo phiên thanh toán Stripe riêng tư của bạn…', trust: 'Được Stripe xử lý an toàn' },
+    portal: { title: 'Đang mở trung tâm thanh toán', description: 'Đang kết nối an toàn tới cài đặt đăng ký…', trust: 'Được Stripe quản lý an toàn' },
+    loading: { title: 'Đang chuẩn bị', description: 'Đang tải không gian làm việc Clipairy…', trust: 'Kết nối an toàn' },
+    errorTitle: 'Chưa thể hoàn tất bước này',
+    authError: 'Vui lòng kiểm tra thông tin và thử lại.',
+    checkoutError: 'Không thể mở trang thanh toán an toàn. Vui lòng thử lại.',
+    retry: 'Thử lại',
+    home: 'Về trang chủ',
+  },
   header: {
     signIn: 'Đăng nhập',
     signUp: 'Đăng ký miễn phí',
@@ -952,7 +1007,7 @@ Chạm bên dưới để tạo quảng cáo sản phẩm đầu tiên miễn ph
     subtitle: 'Trả theo lượt không rào cản, đăng ký gói tiết kiệm hơn. Mọi gói đều có đủ quy trình 12 bước.',
     mostPopular: 'Phổ biến nhất',
     plans: [
-  { name: 'Trả theo lượt', price: '$9.90', unit: '/ video', desc: 'Người bán đăng thỉnh thoảng hoặc muốn thử trước', features: ['Một quảng cáo hoàn chỉnh mỗi lần tạo', 'Đủ quy trình 12 bước', 'Xuất độ phân giải tiêu chuẩn', 'Định dạng đa nền tảng'], cta: 'Tạo theo lượt' },
+  { name: 'Trả theo lượt', price: '$9.90', unit: '/ video', desc: 'Người bán đăng thỉnh thoảng hoặc muốn thử trước', features: ['Một quảng cáo hoàn chỉnh mỗi l��n tạo', 'Đủ quy trình 12 bước', 'Xuất độ phân giải tiêu chuẩn', 'Định dạng đa nền tảng'], cta: 'Tạo theo lượt' },
   { name: 'Growth', price: '$199', unit: '/ tháng', desc: 'Nhà bán chạy chiến dịch liên tục, cần số lượng', features: ['120 video mỗi tháng', 'Xuất HD + không watermark', 'Hàng đợi ưu tiên', 'Thư viện mẫu viral', 'Ghế cộng tác nhóm'], cta: 'Bắt đầu đăng ký' },
   { name: 'Nhóm', price: '$399', unit: '/ tháng', desc: 'Đội marketing video ngắn và agency', features: ['500 video mỗi tháng', 'Truy cập API & tạo hàng loạt', 'Tùy chỉnh phong cách thương hiệu', 'Quản lý tài khoản riêng', 'Cam kết SLA'], cta: 'Bắt đầu đăng ký' },
     ],
