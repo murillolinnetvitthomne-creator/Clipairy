@@ -22,6 +22,9 @@ export type AccountState = {
   canTrial: boolean
   subscriptionStatus: string | null
   hasSubscription: boolean
+  // Which provider backs the active subscription, so the UI shows the right
+  // management action. 'paypal' for new subs, 'stripe' for legacy ones.
+  provider: 'paypal' | 'stripe' | null
 }
 
 /**
@@ -37,6 +40,18 @@ export async function getAccount(): Promise<AccountState> {
     .limit(1)
 
   const row = rows[0]
+
+  // Resolve subscription provider/status across both PayPal (new) and Stripe (legacy).
+  const paypalActive = !!row?.paypalSubscriptionId && row?.paypalStatus === 'ACTIVE'
+  const stripeSub = !!row?.stripeSubscriptionId
+  const provider: 'paypal' | 'stripe' | null = row?.paypalSubscriptionId
+    ? 'paypal'
+    : stripeSub
+      ? 'stripe'
+      : null
+  const hasSubscription = paypalActive || stripeSub
+  const subscriptionStatus = row?.paypalStatus ?? row?.subscriptionStatus ?? null
+
   if (!row || !row.planId) {
     return {
       planId: null,
@@ -44,8 +59,9 @@ export async function getAccount(): Promise<AccountState> {
       credits: 0,
       unlimited: false,
       canTrial: false,
-      subscriptionStatus: row?.subscriptionStatus ?? null,
-      hasSubscription: !!row?.stripeSubscriptionId,
+      subscriptionStatus,
+      hasSubscription,
+      provider,
     }
   }
 
@@ -57,8 +73,9 @@ export async function getAccount(): Promise<AccountState> {
     credits: row.credits,
     unlimited: row.unlimited,
     canTrial,
-    subscriptionStatus: row.subscriptionStatus ?? null,
-    hasSubscription: !!row.stripeSubscriptionId,
+    subscriptionStatus,
+    hasSubscription,
+    provider,
   }
 }
 

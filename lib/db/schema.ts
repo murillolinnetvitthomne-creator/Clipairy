@@ -63,18 +63,44 @@ export const accountPlan = pgTable('account_plan', {
   planId: text('planId'), // 'payg' | 'growth' | 'team' | null (no plan)
   credits: integer('credits').notNull().default(0),
   unlimited: boolean('unlimited').notNull().default(false),
-  // Stripe linkage. Entitlements are only granted by verified webhooks.
+  // Which provider currently powers this plan: 'paypal' (new) or 'stripe' (legacy).
+  paymentProvider: text('paymentProvider'),
+  // Stripe linkage (legacy). Existing subscriptions keep billing until cancelled.
+  // Entitlements are only granted by verified webhooks.
   stripeCustomerId: text('stripeCustomerId'),
   stripeSubscriptionId: text('stripeSubscriptionId'),
   // 'active' | 'past_due' | 'canceled' | 'unpaid' | ... (Stripe subscription status)
   subscriptionStatus: text('subscriptionStatus'),
   currentPeriodEnd: timestamp('currentPeriodEnd'),
+  // PayPal linkage (new). Subscription id + latest PayPal subscription status.
+  paypalSubscriptionId: text('paypalSubscriptionId'),
+  // 'ACTIVE' | 'SUSPENDED' | 'CANCELLED' | 'EXPIRED' (PayPal subscription status)
+  paypalStatus: text('paypalStatus'),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
 
 // Stripe webhook idempotency ledger — each event id is processed at most once.
 export const stripeEvent = pgTable('stripe_event', {
+  id: text('id').primaryKey(),
+  type: text('type').notNull(),
+  processedAt: timestamp('processedAt').notNull().defaultNow(),
+})
+
+// One row per PayPal one-time order (pay-as-you-go). Guarantees a captured
+// order grants its credits at most once even if capture is retried.
+export const paypalOrder = pgTable('paypal_order', {
+  id: text('id').primaryKey(),
+  userId: text('userId').notNull(),
+  planId: text('planId').notNull(),
+  // 'created' | 'captured'
+  status: text('status').notNull().default('created'),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  capturedAt: timestamp('capturedAt'),
+})
+
+// PayPal webhook idempotency ledger — each event id is processed at most once.
+export const paypalEvent = pgTable('paypal_event', {
   id: text('id').primaryKey(),
   type: text('type').notNull(),
   processedAt: timestamp('processedAt').notNull().defaultNow(),
