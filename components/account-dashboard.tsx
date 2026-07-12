@@ -1,15 +1,13 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, useTransition } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 import { type AccountState } from '@/app/actions/account'
-import { createPortalSession } from '@/app/actions/checkout'
-import { cancelPaypalSubscription } from '@/app/actions/paypal'
-import { PLANS, type Plan, type PlanId } from '@/lib/plans'
+import { createCheckoutSession, createPortalSession } from '@/app/actions/checkout'
+import { PLANS, type PlanId } from '@/lib/plans'
 import { useI18n } from '@/components/i18n-provider'
-import { PaypalCheckout, type PaypalConfig } from '@/components/paypal-checkout'
 import { Button } from '@/components/ui/button'
 import {
   Clapperboard,
@@ -22,44 +20,49 @@ import {
   Loader2,
   CreditCard,
   CheckCircle2,
+  XCircle,
 } from 'lucide-react'
 
 export function AccountDashboard({
   user,
   initialAccount,
-  userId,
-  paypalConfig,
 }: {
   user: { name: string; email: string }
   initialAccount: AccountState
-  userId: string
-  paypalConfig: PaypalConfig
 }) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { t } = useI18n()
   const [account] = useState<AccountState>(initialAccount)
   const [pending, startTransition] = useTransition()
+  const [buyingId, setBuyingId] = useState<PlanId | null>(null)
   const [portalPending, setPortalPending] = useState(false)
-  const [cancelPending, setCancelPending] = useState(false)
-  // The plan currently being purchased in the PayPal modal, if any.
-  const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
-  // Client-side success banner shown after a PayPal payment completes.
-  const [paymentDone, setPaymentDone] = useState(false)
 
-  function handlePurchase(plan: Plan) {
-    setPaymentDone(false)
-    setSelectedPlan(plan)
-  }
+  // Payment result banner driven by the Stripe redirect query param.
+  const checkoutResult = searchParams.get('checkout')
 
-  function handlePaypalSuccess() {
-    setSelectedPlan(null)
-    setPaymentDone(true)
-    // Reload server data so the new plan/credits reflect immediately.
-    router.refresh()
+  // Clean the query param from the URL once shown, so a refresh won't repeat it.
+  useEffect(() => {
+    if (checkoutResult) {
+      const timer = setTimeout(() => router.replace('/account'), 6000)
+      return () => clearTimeout(timer)
+    }
+  }, [checkoutResult, router])
+
+  function handlePurchase(planId: PlanId) {
+    setBuyingId(planId)
+    startTransition(async () => {
+      try {
+        const { url } = await createCheckoutSession(planId)
+        // Redirect the browser to Stripe's hosted checkout page.
+        window.location.href = url
+      } catch {
+        setBuyingId(null)
+      }
+    })
   }
 
   function handleManageBilling() {
-    // Legacy Stripe subscribers manage/cancel via the Stripe Customer Portal.
     setPortalPending(true)
     startTransition(async () => {
       try {
@@ -67,18 +70,6 @@ export function AccountDashboard({
         window.location.href = url
       } catch {
         setPortalPending(false)
-      }
-    })
-  }
-
-  function handleCancelPaypal() {
-    setCancelPending(true)
-    startTransition(async () => {
-      try {
-        await cancelPaypalSubscription()
-        router.refresh()
-      } finally {
-        setCancelPending(false)
       }
     })
   }
@@ -116,14 +107,23 @@ export function AccountDashboard({
         <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
       </div>
 
-      {/* Payment result banner (shown after a PayPal payment completes) */}
-      {paymentDone && (
+      {/* Payment result banner */}
+      {checkoutResult === 'success' && (
         <div
           role="status"
           className="mb-8 flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-foreground"
         >
           <CheckCircle2 className="size-5 shrink-0 text-primary" aria-hidden="true" />
           {t.account.checkoutSuccess}
+        </div>
+      )}
+      {checkoutResult === 'cancelled' && (
+        <div
+          role="status"
+          className="mb-8 flex items-center gap-3 rounded-xl border border-border bg-muted px-4 py-3 text-sm text-muted-foreground"
+        >
+          <XCircle className="size-5 shrink-0" aria-hidden="true" />
+          {t.account.checkoutCancelled}
         </div>
       )}
 
@@ -189,6 +189,7 @@ export function AccountDashboard({
           {PLANS.map((plan) => {
             const copy = t.plans[plan.id]
             const isCurrent = account.planId === plan.id
+            const isBuying = buyingId === plan.id && pending
             const period = plan.id === 'payg' ? t.account.perUse : t.account.perMonth
             return (
               <div
@@ -223,20 +224,26 @@ export function AccountDashboard({
                 <Button
                   className="mt-6 w-full font-medium"
                   variant={plan.highlight ? 'default' : 'outline'}
-                  disabled={isCurrent}
-                  onClick={() => handlePurchase(plan)}
+                  disabled={isCurrent || pending}
+                  onClick={() => handlePurchase(plan.id)}
                 >
-                  {isCurrent ? t.account.current : copy.cta}
-                  {!isCurrent && <ArrowRight className="size-4" aria-hidden="true" />}
+                  {isBuying && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
+                  {isCurrent ? t.account.current : isBuying ? t.account.redirecting : copy.cta}
+                  {!isCurrent && !isBuying && <ArrowRight className="size-4" aria-hidden="true" />}
                 </Button>
               </div>
             )
           })}
         </div>
 
-        {account.hasSubscription && account.provider === 'stripe' && (
+        {account.hasSubscription && (
           <div className="mt-6 flex justify-center">
-            <Button variant="outline" size="sm" onClick={handleManageBilling} disabled={pending}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleManageBilling}
+              disabled={pending}
+            >
               {portalPending ? (
                 <Loader2 className="size-4 animate-spin" aria-hidden="true" />
               ) : (
@@ -247,32 +254,8 @@ export function AccountDashboard({
           </div>
         )}
 
-        {account.hasSubscription && account.provider === 'paypal' && (
-          <div className="mt-6 flex justify-center">
-            <Button variant="outline" size="sm" onClick={handleCancelPaypal} disabled={pending}>
-              {cancelPending ? (
-                <Loader2 className="size-4 animate-spin" aria-hidden="true" />
-              ) : (
-                <CreditCard className="size-4" aria-hidden="true" />
-              )}
-              {cancelPending ? t.account.cancelling : t.account.cancelSubscription}
-            </Button>
-          </div>
-        )}
-
         <p className="mt-4 text-center text-xs text-muted-foreground">{t.account.demoNote}</p>
       </section>
-
-      {/* PayPal payment modal for the selected plan */}
-      {selectedPlan && (
-        <PaypalCheckout
-          plan={selectedPlan}
-          userId={userId}
-          config={paypalConfig}
-          onClose={() => setSelectedPlan(null)}
-          onSuccess={handlePaypalSuccess}
-        />
-      )}
     </div>
   )
 }
