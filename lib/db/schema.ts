@@ -101,6 +101,10 @@ export const generation = pgTable('generation', {
   error: text('error'),
   // 0..12 — which workflow step the pipeline has reached, drives the UI.
   step: integer('step').notNull().default(0),
+  // One credit represents one 8-second generation segment.
+  creditsCharged: integer('creditsCharged').notNull().default(1),
+  // Guards against crediting the same failed job more than once.
+  creditsRefunded: boolean('creditsRefunded').notNull().default(false),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 })

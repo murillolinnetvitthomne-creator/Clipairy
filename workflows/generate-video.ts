@@ -85,13 +85,25 @@ async function createPrivateVoiceoverV2(script: string, input: GenerateVideoInpu
 async function failGeneration(input: GenerateVideoInput, message: string) {
   'use step'
   await db.transaction(async (tx) => {
-    await tx
+    const [refunded] = await tx
       .update(generation)
-      .set({ status: 'error', error: message, updatedAt: new Date() })
-      .where(eq(generation.id, input.genId))
+      .set({
+        status: 'error',
+        error: message,
+        creditsRefunded: true,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(generation.id, input.genId), eq(generation.creditsRefunded, false)))
+      .returning({ creditsCharged: generation.creditsCharged })
+
+    if (!refunded) return
+
     await tx
       .update(accountPlan)
-      .set({ credits: sql`${accountPlan.credits} + 1`, updatedAt: new Date() })
+      .set({
+        credits: sql`${accountPlan.credits} + ${refunded.creditsCharged}`,
+        updatedAt: new Date(),
+      })
       .where(and(eq(accountPlan.userId, input.userId), eq(accountPlan.unlimited, false)))
   })
 }

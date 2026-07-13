@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { authClient } from '@/lib/auth-client'
 import { type AccountState } from '@/app/actions/account'
 import { createCheckoutSession, createPortalSession } from '@/app/actions/checkout'
-import { PLANS, type PlanId } from '@/lib/plans'
+import { getPlan, PLANS, type PlanId } from '@/lib/plans'
 import { useI18n } from '@/components/i18n-provider'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -94,7 +94,7 @@ export function AccountDashboard({
   }
 
   const hasPlan = account.planId !== null
-  const currentPlanName = account.planId ? t.plans[account.planId].name : null
+  const currentPlanName = getPlan(account.planId)?.name ?? account.planId
 
   return (
     <>
@@ -210,12 +210,11 @@ export function AccountDashboard({
           </h2>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {PLANS.map((plan) => {
-            const copy = t.plans[plan.id]
             const isCurrent = account.planId === plan.id
             const isBuying = buyingId === plan.id && pending
-            const period = plan.id === 'payg' ? t.account.perUse : t.account.perMonth
+            const period = plan.mode === 'payment' ? plan.period : t.account.perMonth
             return (
               <div
                 key={plan.id}
@@ -228,17 +227,17 @@ export function AccountDashboard({
                     {t.account.mostPopular}
                   </span>
                 )}
-                <h3 className="font-display text-lg font-bold">{copy.name}</h3>
+                <h3 className="font-display text-lg font-bold">{plan.name}</h3>
                 <div className="mt-2 flex items-end gap-1">
                   <span className="font-display text-3xl font-bold">{plan.price}</span>
                   <span className="mb-1 text-sm text-muted-foreground">{period}</span>
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground text-pretty">
-                  {copy.description}
+                  {plan.description}
                 </p>
 
                 <ul className="mt-5 flex flex-1 flex-col gap-2.5">
-                  {copy.features.map((f) => (
+                  {plan.features.map((f) => (
                     <li key={f} className="flex items-start gap-2 text-sm">
                       <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
                       <span className="text-pretty">{f}</span>
@@ -253,7 +252,7 @@ export function AccountDashboard({
                   onClick={() => handlePurchase(plan.id)}
                 >
                   {isBuying && <Loader2 className="size-4 animate-spin" aria-hidden="true" />}
-                  {isCurrent ? t.account.current : isBuying ? t.account.redirecting : copy.cta}
+                  {isCurrent ? t.account.current : isBuying ? t.account.redirecting : plan.cta}
                   {!isCurrent && !isBuying && <ArrowRight className="size-4" aria-hidden="true" />}
                 </Button>
               </div>

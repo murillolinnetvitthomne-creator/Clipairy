@@ -3,7 +3,7 @@
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { accountPlan } from '@/lib/db/schema'
-import { getPlan, type PlanId } from '@/lib/plans'
+import { getPlan, type LegacyPlanId, type PlanId } from '@/lib/plans'
 import { eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
@@ -15,7 +15,7 @@ async function getUserId() {
 }
 
 export type AccountState = {
-  planId: PlanId | null
+  planId: PlanId | LegacyPlanId | null
   planName: string | null
   credits: number
   unlimited: boolean
@@ -52,7 +52,7 @@ export async function getAccount(): Promise<AccountState> {
   const plan = getPlan(row.planId)
   const canTrial = row.unlimited || row.credits > 0
   return {
-    planId: row.planId as PlanId,
+    planId: row.planId as PlanId | LegacyPlanId,
     planName: plan?.name ?? null,
     credits: row.credits,
     unlimited: row.unlimited,

@@ -4,12 +4,12 @@ import Link from 'next/link'
 import { Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useI18n } from '@/components/i18n-provider'
-
-// Which marketing plan (by index) is highlighted as most popular.
-const HIGHLIGHT_INDEX = 1
+import { PLANS } from '@/lib/plans'
 
 export function Pricing() {
   const { t } = useI18n()
+  const oneTimePlans = PLANS.filter((plan) => plan.mode === 'payment')
+  const subscription = PLANS.find((plan) => plan.id === 'professional')
 
   return (
     <section id="pricing" className="scroll-mt-20">
@@ -19,56 +19,56 @@ export function Pricing() {
             {t.pricing.eyebrow}
           </span>
           <h2 className="mt-3 text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            {t.pricing.title}
+            按时长购买，价格清晰透明
           </h2>
-          <p className="mt-4 text-pretty text-muted-foreground">{t.pricing.subtitle}</p>
+          <p className="mt-4 text-pretty text-muted-foreground">
+            1 个额度代表 8 秒。长视频按实际使用的 8 秒分段扣除额度。
+          </p>
         </div>
 
-        <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {t.pricing.plans.map((plan, i) => {
-            const highlight = i === HIGHLIGHT_INDEX
-            return (
-              <div
-                key={plan.name}
-                className={`relative flex flex-col rounded-2xl border p-6 ${
-                  highlight
-                    ? 'border-primary bg-card shadow-lg shadow-primary/10'
-                    : 'border-border bg-card'
-                }`}
-              >
-                {highlight && (
-                  <span className="absolute -top-3 left-6 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
-                    {t.pricing.mostPopular}
-                  </span>
-                )}
-                <h3 className="font-display text-lg font-semibold">{plan.name}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{plan.desc}</p>
-                <div className="mt-5 flex items-end gap-1">
-                  <span className="font-display text-4xl font-bold tracking-tight">
-                    {plan.price}
-                  </span>
-                  <span className="mb-1 text-sm text-muted-foreground">{plan.unit}</span>
-                </div>
-                <ul className="mt-6 flex-1 space-y-3">
-                  {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <Check className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden="true" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Button
-                  className="mt-8 w-full font-medium"
-                  variant={highlight ? 'default' : 'outline'}
-                  nativeButton={false}
-                  render={<Link href="/account" />}
-                >
-                  {plan.cta}
-                </Button>
+        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {oneTimePlans.map((plan) => (
+            <div key={plan.id} className="flex flex-col rounded-2xl border border-border bg-card p-6">
+              <h3 className="font-display text-lg font-semibold">{plan.name}</h3>
+              <p className="mt-2 min-h-10 text-sm text-muted-foreground">{plan.description}</p>
+              <div className="mt-5 flex items-end gap-1">
+                <span className="font-display text-4xl font-bold tracking-tight">{plan.price}</span>
+                <span className="mb-1 text-sm text-muted-foreground">{plan.period}</span>
               </div>
-            )
-          })}
+              <p className="mt-2 text-sm font-medium text-primary">获得 {plan.credits} 个 8 秒额度</p>
+              <Button className="mt-6 w-full" variant="outline" nativeButton={false} render={<Link href="/account" />}>
+                {plan.cta}
+              </Button>
+            </div>
+          ))}
         </div>
+
+        {subscription && (
+          <div className="mt-6 flex flex-col gap-6 rounded-2xl border border-primary bg-card p-6 shadow-lg shadow-primary/10 md:flex-row md:items-center md:justify-between">
+            <div>
+              <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">最划算</span>
+              <h3 className="mt-4 font-display text-2xl font-bold">{subscription.name}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{subscription.description}</p>
+              <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                {subscription.features.slice(0, 4).map((feature) => (
+                  <li key={feature} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Check className="size-4 text-primary" aria-hidden="true" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="shrink-0 md:text-right">
+              <div className="flex items-end gap-1 md:justify-end">
+                <span className="font-display text-4xl font-bold">{subscription.price}</span>
+                <span className="mb-1 text-sm text-muted-foreground">{subscription.period}</span>
+              </div>
+              <Button className="mt-4 w-full md:w-auto" nativeButton={false} render={<Link href="/account" />}>
+                {subscription.cta}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

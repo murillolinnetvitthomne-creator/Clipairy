@@ -5,7 +5,9 @@ import { eq } from 'drizzle-orm'
 import { stripe } from '@/lib/stripe'
 import { db } from '@/lib/db'
 import { accountPlan, stripeEvent } from '@/lib/db/schema'
-import { getPlan, type PlanId } from '@/lib/plans'
+import { getPlan, type LegacyPlanId, type PlanId } from '@/lib/plans'
+
+type BillablePlanId = PlanId | LegacyPlanId
 
 // Stripe must reach the raw body, so this route runs on the Node.js runtime
 // and reads the request text directly (no body parsing/caching).
@@ -15,10 +17,13 @@ export const dynamic = 'force-dynamic'
 /** Grants entitlements for a plan to the user that owns the Stripe customer. */
 async function applyPlan(
   customerId: string,
-  planId: PlanId,
+  planId: BillablePlanId,
   opts: { subscriptionId?: string; status?: string; currentPeriodEnd?: number } = {},
 ) {
-  const plan = getPlan(planId)
+  // All recurring renewals now use the single professional entitlement,
+  // including legacy Growth/Team subscriptions as they emit lifecycle events.
+  const requestedPlan = getPlan(planId)
+  const plan = requestedPlan?.mode === 'subscription' ? getPlan('professional') : requestedPlan
   if (!plan) return
 
   const rows = await db
@@ -103,7 +108,7 @@ export async function POST(req: Request) {
         // Only grant when payment actually succeeded.
         if (session.payment_status === 'paid' || session.mode === 'subscription') {
           const customerId = session.customer as string
-          const planId = session.metadata?.planId as PlanId | undefined
+          const planId = session.metadata?.planId as BillablePlanId | undefined
           if (customerId && planId) {
             await applyPlan(customerId, planId, {
               subscriptionId: (session.subscription as string) ?? undefined,
@@ -135,7 +140,7 @@ export async function POST(req: Request) {
       case 'customer.subscription.updated': {
         const sub = event.data.object as Stripe.Subscription
         const customerId = sub.customer as string
-        const planId = sub.metadata?.planId as PlanId | undefined
+        const planId = sub.metadata?.planId as BillablePlanId | undefined
         const periodEnd = sub.items.data[0]?.current_period_end
         if (sub.status === 'active' || sub.status === 'trialing') {
           if (planId) {

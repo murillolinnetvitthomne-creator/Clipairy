@@ -51,9 +51,9 @@ export function Studio({
   const [unlimited] = useState<boolean>(account?.unlimited ?? false)
   const poller = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // A user can trial only if logged in AND has a plan with remaining credits.
+  const creditsRequired = Math.ceil(duration / 8)
   const hasPlan = !!account?.planId
-  const canTrial = isAuthed && hasPlan && (unlimited || credits > 0)
+  const canTrial = isAuthed && hasPlan && (unlimited || credits >= creditsRequired)
 
   const stopPolling = () => {
     if (poller.current) {
@@ -96,8 +96,8 @@ export function Studio({
       return
     }
 
-    // Reflect the consumed credit locally.
-    if (!unlimited) setCredits((c) => Math.max(0, c - 1))
+    // Reflect the server-side duration charge locally.
+    if (!unlimited) setCredits((current) => Math.max(0, current - creditsRequired))
     setGen(job)
 
     // Poll the job until it finishes or errors.
@@ -111,6 +111,7 @@ export function Studio({
           setStatus('done')
         } else if (latest.status === 'error') {
           stopPolling()
+          if (!unlimited) setCredits((current) => current + creditsRequired)
           setStatus('error')
         }
       } catch {
@@ -198,7 +199,9 @@ export function Studio({
               </button>
             ))}
           </div>
-          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{t.studio.durationHint}</p>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            {duration} 秒视频消耗 {creditsRequired} 个 8 秒额度。
+          </p>
         </fieldset>
 
         <fieldset disabled={status === 'running'}>

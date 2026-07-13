@@ -3,9 +3,8 @@
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import { accountPlan, generation, type StoryboardScene } from '@/lib/db/schema'
-import { and, desc, eq, sql } from 'drizzle-orm'
+import { and, desc, eq, gte, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
-import { consumeCredit } from './account'
 import { start } from 'workflow/api'
 import { head } from '@vercel/blob'
 import {
@@ -89,25 +88,47 @@ export async function startGeneration(
     throw new Error('INVALID_IMAGE')
   }
 
-  // Every finished video consumes exactly one credit, regardless of duration.
-  await consumeCredit()
-
+  const creditsRequired = Math.ceil(duration / 8)
   const cleanSellingPoints = sellingPoints.trim()
-  const inserted = await db
-    .insert(generation)
-    .values({
-      userId,
-      sellingPoints: cleanSellingPoints || null,
-      referenceVideoPath: referenceVideoPath ?? null,
-      productImagePaths,
-      duration,
-      aspectRatio,
-      status: 'pending',
-      step: 0,
-    })
-    .returning()
 
-  const row = inserted[0]
+  const row = await db.transaction(async (tx) => {
+    const debited = await tx
+      .update(accountPlan)
+      .set({
+        credits: sql`${accountPlan.credits} - ${creditsRequired}`,
+        updatedAt: new Date(),
+      })
+      .where(
+        and(
+          eq(accountPlan.userId, userId),
+          eq(accountPlan.unlimited, false),
+          gte(accountPlan.credits, creditsRequired),
+        ),
+      )
+      .returning({ id: accountPlan.id })
+
+    if (debited.length === 0) return null
+
+    const [created] = await tx
+      .insert(generation)
+      .values({
+        userId,
+        sellingPoints: cleanSellingPoints || null,
+        referenceVideoPath: referenceVideoPath ?? null,
+        productImagePaths,
+        duration,
+        aspectRatio,
+        status: 'pending',
+        step: 0,
+        creditsCharged: creditsRequired,
+        creditsRefunded: false,
+      })
+      .returning()
+
+    return created
+  })
+
+  if (!row) throw new Error('INSUFFICIENT_CREDITS')
   try {
     const run = await start(generateVideoWorkflow, [{
       genId: row.id,
@@ -127,7 +148,10 @@ export async function startGeneration(
       await tx.delete(generation).where(eq(generation.id, row.id))
       await tx
         .update(accountPlan)
-        .set({ credits: sql`${accountPlan.credits} + 1`, updatedAt: new Date() })
+        .set({
+          credits: sql`${accountPlan.credits} + ${row.creditsCharged}`,
+          updatedAt: new Date(),
+        })
         .where(and(eq(accountPlan.userId, userId), eq(accountPlan.unlimited, false)))
     })
     throw error
