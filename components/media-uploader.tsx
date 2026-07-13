@@ -96,12 +96,19 @@ export function MediaUploader({
   const canAdd = !!userId && !disabled && value.length < maxFiles && progress === null
 
   return (
-    <div className="flex flex-col rounded-2xl border border-border bg-card p-5">
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <span className="flex size-9 items-center justify-center rounded-lg bg-secondary text-primary">
-          <Icon className="size-5" aria-hidden="true" />
-        </span>
-        {label}
+    <div className="flex min-w-0 flex-col rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex min-w-0 items-center gap-2 text-sm font-medium">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+            <Icon className="size-5" aria-hidden="true" />
+          </span>
+          <span className="truncate">{label}</span>
+        </div>
+        {maxFiles > 1 && (
+          <span className="shrink-0 rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-muted-foreground">
+            {value.length}/{maxFiles}
+          </span>
+        )}
       </div>
 
       <button
@@ -116,7 +123,8 @@ export function MediaUploader({
           setDragging(false)
           void addFiles(Array.from(event.dataTransfer.files))
         }}
-        className={`mt-4 flex min-h-24 flex-col items-center justify-center rounded-xl border border-dashed p-3 text-center transition-colors ${dragging ? 'border-primary bg-primary/5' : 'border-border bg-background/50'} disabled:cursor-not-allowed disabled:opacity-60`}
+        aria-describedby={`${kind}-upload-hint`}
+        className={`mt-4 flex min-h-32 w-full touch-manipulation flex-col items-center justify-center rounded-xl border border-dashed p-4 text-center transition-colors sm:min-h-28 ${dragging ? 'border-primary bg-primary/5' : 'border-border bg-background/50'} disabled:cursor-not-allowed disabled:opacity-60`}
       >
         {progress !== null ? (
           <>
@@ -128,9 +136,14 @@ export function MediaUploader({
           </>
         ) : (
           <>
-            <UploadCloud className="size-5 text-primary" aria-hidden="true" />
-            <span className="mt-2 text-xs font-medium text-foreground">点击或拖放上传</span>
-            <span className="mt-1 text-xs leading-relaxed text-muted-foreground">{hint}</span>
+            <span className="flex size-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <UploadCloud className="size-5" aria-hidden="true" />
+            </span>
+            <span className="mt-3 text-sm font-semibold text-foreground">
+              {kind === 'video' ? '选择参考视频' : value.length > 0 ? '继续添加产品图' : '选择产品图片'}
+            </span>
+            <span className="mt-1 text-xs leading-relaxed text-muted-foreground sm:hidden">点击从手机相册选择</span>
+            <span id={`${kind}-upload-hint`} className="mt-1 max-w-xs text-xs leading-relaxed text-muted-foreground">{hint}</span>
           </>
         )}
       </button>
@@ -146,22 +159,39 @@ export function MediaUploader({
       />
 
       {value.length > 0 && (
-        <ul className="mt-3 flex flex-col gap-2" aria-label="已上传素材">
+        <ul className={kind === 'image' ? 'mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3' : 'mt-3 flex flex-col gap-2'} aria-label="已上传素材">
           {value.map((asset) => (
-            <li key={asset.pathname} className="flex items-center gap-3 rounded-lg border border-border bg-background p-2">
+            <li
+              key={asset.pathname}
+              className={kind === 'image'
+                ? 'relative min-w-0 overflow-hidden rounded-xl border border-border bg-background'
+                : 'flex min-w-0 items-center gap-3 rounded-xl border border-border bg-background p-2'}
+            >
               {kind === 'image' ? (
-                <img
-                  src={`/api/uploads/file?pathname=${encodeURIComponent(asset.pathname)}`}
-                  alt={asset.name}
-                  className="size-11 rounded-md object-cover"
-                />
+                <>
+                  <img
+                    src={`/api/uploads/file?pathname=${encodeURIComponent(asset.pathname)}`}
+                    alt={asset.name}
+                    className="aspect-square w-full object-cover"
+                  />
+                  <span className="block truncate p-2 pr-10 text-xs font-medium text-foreground">{asset.name}</span>
+                </>
               ) : (
-                <span className="flex size-11 items-center justify-center rounded-md bg-secondary text-primary">
-                  <FileVideo className="size-5" aria-hidden="true" />
-                </span>
+                <>
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+                    <FileVideo className="size-5" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-xs font-medium text-foreground">{asset.name}</span>
+                </>
               )}
-              <span className="min-w-0 flex-1 truncate text-xs font-medium text-foreground">{asset.name}</span>
-              <button type="button" onClick={() => void remove(asset)} disabled={disabled} className="rounded-md p-2 text-muted-foreground hover:bg-secondary hover:text-destructive disabled:opacity-50">
+              <button
+                type="button"
+                onClick={() => void remove(asset)}
+                disabled={disabled}
+                className={kind === 'image'
+                  ? 'absolute right-1.5 top-1.5 flex size-10 touch-manipulation items-center justify-center rounded-full bg-background/90 text-muted-foreground shadow-sm hover:text-destructive disabled:opacity-50'
+                  : 'flex size-11 shrink-0 touch-manipulation items-center justify-center rounded-lg text-muted-foreground hover:bg-secondary hover:text-destructive disabled:opacity-50'}
+              >
                 <Trash2 className="size-4" aria-hidden="true" />
                 <span className="sr-only">删除 {asset.name}</span>
               </button>

@@ -126,7 +126,7 @@ export function Studio({
   }
 
   return (
-    <section id="studio" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
+    <section id="studio" className="mx-auto max-w-6xl px-3 py-12 sm:px-6 sm:py-16 md:py-24">
       <div className="mx-auto max-w-2xl text-center">
         <h2 className="text-balance font-display text-3xl font-bold tracking-tight sm:text-4xl">
           {t.studio.title}
@@ -135,7 +135,7 @@ export function Studio({
       </div>
 
       {/* Upload area */}
-      <div className="mt-12 grid gap-4 md:grid-cols-3">
+      <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:mt-12 md:grid-cols-3">
         <MediaUploader
           userId={userId}
           kind="video"
@@ -155,7 +155,7 @@ export function Studio({
           disabled={status === 'running'}
           maxFiles={6}
         />
-        <div className="flex flex-col rounded-2xl border border-border bg-card p-5">
+        <div className="flex flex-col rounded-2xl border border-border bg-card p-4 sm:p-5">
           <div className="flex items-center gap-2 text-sm font-medium">
             <span className="flex size-9 items-center justify-center rounded-lg bg-secondary text-primary">
               <Type className="size-5" />
