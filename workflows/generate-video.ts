@@ -37,7 +37,9 @@ async function createScript(input: GenerateVideoInput) {
   )
 }
 
-async function createFrames(
+// Versioned step names prevent new runs from resolving to media steps bundled
+// by an older production deployment.
+async function createPrivateFramesV2(
   storyboard: Awaited<ReturnType<typeof generateScript>>['storyboard'],
   input: GenerateVideoInput,
 ) {
@@ -51,7 +53,7 @@ async function createFrames(
   )
 }
 
-async function createSegment(
+async function createPrivateSegmentV2(
   script: string,
   storyboard: Awaited<ReturnType<typeof generateScript>>['storyboard'],
   firstFrameUrl: string | undefined,
@@ -70,12 +72,12 @@ async function createSegment(
   )
 }
 
-async function joinSegments(urls: string[], input: GenerateVideoInput) {
+async function joinPrivateSegmentsV2(urls: string[], input: GenerateVideoInput) {
   'use step'
   return assembleVideo(urls, input.duration, input.userId, input.genId)
 }
 
-async function createVoiceover(script: string, input: GenerateVideoInput) {
+async function createPrivateVoiceoverV2(script: string, input: GenerateVideoInput) {
   'use step'
   return generateVoiceover(script, input.userId, input.genId)
 }
@@ -115,21 +117,21 @@ export async function generateVideoWorkflow(input: GenerateVideoInput) {
     await setProgress(input.genId, 3, { script, storyboard })
 
     await setProgress(input.genId, 4)
-    const imageUrls = await createFrames(storyboard, input)
+    const imageUrls = await createPrivateFramesV2(storyboard, input)
     await setProgress(input.genId, 7, { imageUrls })
 
     await setProgress(input.genId, 8)
     const segmentCount = Math.ceil(input.duration / 8)
     const segmentUrls: string[] = []
     for (let index = 0; index < segmentCount; index++) {
-      segmentUrls.push(await createSegment(script, storyboard, imageUrls[0], input, index))
+      segmentUrls.push(await createPrivateSegmentV2(script, storyboard, imageUrls[0], input, index))
       await setProgress(input.genId, Math.min(9, 8 + Math.ceil(((index + 1) / segmentCount) * 2)))
     }
-    const videoUrl = await joinSegments(segmentUrls, input)
+    const videoUrl = await joinPrivateSegmentsV2(segmentUrls, input)
     await setProgress(input.genId, 10, { videoUrl })
 
     await setProgress(input.genId, 11)
-    const audioUrl = await createVoiceover(script, input)
+    const audioUrl = await createPrivateVoiceoverV2(script, input)
     await setProgress(input.genId, 12, { status: 'done', audioUrl })
     return { videoUrl }
   } catch (error) {
