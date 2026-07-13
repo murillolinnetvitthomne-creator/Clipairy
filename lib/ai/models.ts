@@ -17,7 +17,9 @@ export const FAL_TTS_MODEL = 'fal-ai/kokoro'
 
 // Vertical short-video format shared across image + video steps.
 export const ASPECT_RATIO = '9:16' as const
-export const VIDEO_RESOLUTION = '720x1280' as const
+// AI SDK expresses Veo's 720p preset as its canonical landscape dimensions;
+// the separate aspectRatio option controls whether the result is 16:9 or 9:16.
+export const VIDEO_RESOLUTION = '1280x720' as const
 export const VIDEO_DURATION_SECONDS = 8
 // Number of storyboard scenes / frame images to generate.
 export const SCENE_COUNT = 4
