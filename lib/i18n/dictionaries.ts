@@ -77,6 +77,9 @@ const en = {
     sellingPlaceholder:
       'e.g. gentle plant-based formula, results in 7 days, free worldwide shipping, limited BOGO deal…',
     uploaded: 'Uploaded',
+    creator: {
+      characterTitle: 'On-screen talent', characterDesc: 'Choose a preset or upload an authorized photo. We will aim to keep the same person throughout.', characterDrift: 'AI may introduce slight facial or wardrobe drift', characterSelect: 'Choose on-screen talent', characterAlt: 'character reference', uploadCharacter: 'Upload my talent', authorization: 'Only yourself or authorized photos · JPG/PNG/WebP · 10 MB', qualityTitle: 'Video quality', qualityNames: { economy: 'Economy', standard: 'Standard', premium: 'Premium' }, qualityDescriptions: { economy: 'Fast and low-cost for testing ideas', standard: 'Balanced clarity and cost for daily publishing', premium: 'Stronger motion and visuals for flagship ads' }, per8: 'per 8s', credits: 'credits', modelApprox: 'model approx.', estimate: 'Estimated for {duration}s: {credits} credits, video model approx. ${cost}; excludes storyboard images, voice, storage, and retries.',
+    },
     gateAnonTitle: 'Sign in and buy a plan to try generation',
     gateAnonDesc: 'Trial generation is only available to users with an active plan. Please sign in or register first.',
     gateNoPlanTitle: 'Buy a plan to unlock trial credits',
@@ -290,9 +293,12 @@ const zh: Dict = {
     upload3Label: '3 · 产品卖点',
     sellingPlaceholder: '例如：植物温和配方、7 天见效、跨境包邮、限时买一送一…',
     uploaded: '已上传',
+    creator: {
+      characterTitle: '出镜人物', characterDesc: '选择预设人物或上传已获授权的照片，全片将尽量保持同一人物。', characterDrift: 'AI 可能出现轻微脸部或服装漂移', characterSelect: '选择出镜人物', characterAlt: '人物参考', uploadCharacter: '上传我的人物', authorization: '仅限本人或已授权照片 · JPG/PNG/WebP · 10 MB', qualityTitle: '视频品质', qualityNames: { economy: '经济', standard: '标准', premium: '高级' }, qualityDescriptions: { economy: '快速低成本，适合测试创意', standard: '清晰度与成本平衡，适合日常发布', premium: '更强运动与画面表现，适合重点广告' }, per8: '每 8 秒', credits: '个额度', modelApprox: '模型约', estimate: '当前 {duration} 秒预计消耗 {credits} 个额度，视频模型约 ${cost}；不含分镜图、语音、存储及失败重试。',
+    },
     gateAnonTitle: '登录后购买方案即可试用生成',
     gateAnonDesc: '试用功能仅对拥有有效方案的用户开放。请先登录或注册。',
-    gateNoPlanTitle: '购买方案后即可解锁试用次数',
+    gateNoPlanTitle: '购买方��后即可解锁试用次数',
     gateNoPlanDesc: '你当前没有可用次数。选择任意方案后即可开始生成，用完即止。',
     buyPlan: '去购买方案',
     durationLabel: '视频时长',
@@ -422,7 +428,7 @@ AI 自动拆框架、改文案、生成新片段并配音。
     unlimited: '不限次数',
     times: '次',
     goCreate: '去创作',
-    buyToTrial: '购买方案后即可开始试用。',
+    buyToTrial: '购买方案后即���开始试用。',
     upgradeTitle: '升级 / 续费方案',
     chooseTitle: '选择方案开始试用',
     mostPopular: '最受欢迎',
@@ -499,6 +505,9 @@ const id: Dict = {
     sellingPlaceholder:
       'mis. formula nabati lembut, hasil dalam 7 hari, gratis ongkir global, promo beli 1 gratis 1…',
     uploaded: 'Terunggah',
+    creator: {
+      characterTitle: 'Talent di layar', characterDesc: 'Pilih preset atau unggah foto berizin. Kami akan menjaga orang yang sama sepanjang video.', characterDrift: 'AI mungkin sedikit mengubah wajah atau pakaian', characterSelect: 'Pilih talent', characterAlt: 'referensi karakter', uploadCharacter: 'Unggah talent saya', authorization: 'Hanya diri sendiri atau foto berizin · JPG/PNG/WebP · 10 MB', qualityTitle: 'Kualitas video', qualityNames: { economy: 'Ekonomis', standard: 'Standar', premium: 'Premium' }, qualityDescriptions: { economy: 'Cepat dan hemat untuk menguji ide', standard: 'Kejernihan dan biaya seimbang', premium: 'Gerakan dan visual terbaik untuk iklan utama' }, per8: 'per 8 dtk', credits: 'kredit', modelApprox: 'model sekitar', estimate: 'Perkiraan {duration} dtk: {credits} kredit, model video sekitar ${cost}; belum termasuk storyboard, suara, penyimpanan, dan percobaan ulang.',
+    },
     gateAnonTitle: 'Masuk dan beli paket untuk mencoba generasi',
     gateAnonDesc: 'Uji coba hanya tersedia untuk pengguna dengan paket aktif. Silakan masuk atau daftar dulu.',
     gateNoPlanTitle: 'Beli paket untuk membuka kredit uji coba',
@@ -690,7 +699,7 @@ const th: Dict = {
     titleLine1: 'เปลี่ยนโครงสร้างวิดีโอไวรัล',
     titleHighlight: 'ให้เป็นโฆษณาสินค้าของคุณ',
     subtitle:
-      'อัปโหลดวิดีโอไวรัลอ้างอิงหนึ่งคลิป แล้วตามด้วยสื่อสินค้าของคุณ AI จะถอดโครงสร้างที่ปัง เขียนสคริปต์ใหม่ สร้างฟุตเทจและพากย์เสียง — ได้โฆษณา TikTok / Reels / Shorts ใน 5 นาที',
+      'อัปโหลดวิดีโอไวรัลอ้างอิงหนึ่งคลิป แล้วตามด้วยสื่อสินค้าของคุณ AI จะถอด���ครงสร้างที่ปัง เขียนสคริปต์ใหม่ สร้างฟุตเทจและพากย์เสียง — ได้โฆษณา TikTok / Reels / Shorts ใน 5 นาที',
     ctaStart: 'เริ่มสร้างฟรี',
     ctaPreview: 'ดูตัวอย่างผลลัพธ์',
     exportTo: 'ส่งออกไปยัง',
@@ -799,7 +808,7 @@ AI ถอดโครงสร้าง เขียนสคริปต์ใ�
     subtitle: 'จ่ายตามครั้งไม่มีข้อจำกัด สมัครสมาชิกคุ้มกว่า ทุกแพ็กเกจรวมขั้นต���น 12 ขั้นเต็มรูปแบบ',
     mostPopular: 'ยอดนิยม',
     plans: [
-      { name: 'จ่ายตามครั้ง', price: '$9.90', unit: '/ วิดีโอ', desc: 'ผู��ขายที่โพสต์เป็นครั้งคราวหรืออยากลองก่อน', features: ['โฆษณาเต็มหนึ่งชิ้นต่อการสร้าง', 'ขั้นตอน 12 ขั้นครบ', 'ส่งออกความละเอียดมาตรฐาน', 'รองรับหลายแพลตฟอร์ม'], cta: 'สร้างตามครั้ง' },
+      { name: 'จ่ายตามครั้ง', price: '$9.90', unit: '/ วิดีโอ', desc: 'ผู��ขายที่โพสต์เป็นครั้งคราวหรืออยากลองก่อน', features: ['โฆษณ���เต็มหนึ่งชิ้นต่อการสร้าง', 'ขั้นตอน 12 ขั้นครบ', 'ส่งออกความละเอียดมาตรฐาน', 'รองรับหลายแพลตฟอร์ม'], cta: 'สร้างตามครั้ง' },
       { name: 'Growth', price: '$199', unit: '/ เดือน', desc: 'ร้านค้าที่ยิงโฆษณาต่อเนื่องและต้องการปริมาณ', features: ['120 วิดีโอต่อเดือน', 'ส่งออก HD + ไม่มีลายน้ำ', 'คิวสร้างลำดับต้น', 'คลังเทมเพลตไวรัล', 'ที่นั่งทำงานเป็นทีม'], cta: 'เริ่มสมัครสมาชิก' },
       { name: 'ทีม', price: '$399', unit: '/ เดือน', desc: 'ทีมการตลาดวิดีโอสั้นและเอเจนซี', features: ['500 วิดีโอต่อเดือน', 'เข้าถึง API และสร้างจำนวนมาก', 'ปรับสไตล์แบรนด์เอง', 'ผู้จัดการบัญชีเฉพาะ', 'รับประกัน SLA'], cta: 'เริ่มสมัครสมาชิก' },
     ],
@@ -817,7 +826,7 @@ AI ถอดโครงสร้าง เขียนสคริปต์ใ�
     name: 'ชื่อ',
     namePlaceholder: 'ชื่อของคุณ',
     email: 'อีเมล',
-    password: 'รหัสผ่าน',
+    password: 'ร��ัสผ่าน',
     passwordPlaceholder: 'อย่างน้อย 8 ตัว',
     signUpBtn: 'สมัคร',
     signInBtn: 'เข้าสู่ระบบ',
@@ -954,7 +963,7 @@ const vi: Dict = {
       { title: 'Tải video tham chiếu', desc: 'Nhập video viral TikTok / Reels / Shorts bạn muốn học theo', tools: ['Trình tải lên', 'S3 / R2 / Supabase Storage'] },
       { title: 'Tiền xử lý video', desc: 'Tự động tách âm thanh, khung hình và phụ đề gốc', tools: ['FFmpeg', 'MoviePy'] },
       { title: 'Trích xuất lời thoại', desc: 'Chuyển toàn bộ lời nói, lồng tiếng và phụ đề thành văn bản', tools: ['gpt-4o-transcribe', 'Whisper'] },
-      { title: 'Phân tích cảnh quay', desc: 'Phân tích cảnh, nhịp độ, bối cảnh và cách trình bày sản phẩm', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
+      { title: 'Phân tích c��nh quay', desc: 'Phân tích cảnh, nhịp độ, bối cảnh và cách trình bày sản phẩm', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
       { title: 'Giải mã khung viral', desc: 'Trích xuất Hook, điểm đau, điểm bán, cú lật và CTA', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Tải tư liệu sản phẩm', desc: 'Nhập ảnh, video và điểm bán cốt lõi của sản phẩm', tools: ['Tải tệp', 'Thị giác GPT'] },
       { title: 'Hiểu sản phẩm', desc: 'Nhận diện diện mạo, tình huống dùng, đối tượng và điểm bán', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },

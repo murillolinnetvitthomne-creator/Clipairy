@@ -10,6 +10,8 @@ import {
   type VideoDuration,
 } from '@/lib/ai/media'
 import { generateVoiceover } from '@/lib/ai/voiceover'
+import { getCharacterPreset, type CharacterPresetId, type QualityTier } from '@/lib/video-options'
+import { sleep } from 'workflow'
 
 export type GenerateVideoInput = {
   genId: number
@@ -19,6 +21,9 @@ export type GenerateVideoInput = {
   productImagePaths: string[]
   duration: VideoDuration
   aspectRatio: VideoAspectRatio
+  qualityTier: QualityTier
+  characterPresetId: CharacterPresetId | null
+  characterImagePath: string | null
 }
 
 async function setProgress(genId: number, step: number, fields: Record<string, unknown> = {}) {
@@ -50,6 +55,8 @@ async function createPrivateFramesV2(
     input.genId,
     input.aspectRatio,
     input.productImagePaths,
+    input.characterPresetId,
+    input.characterImagePath,
   )
 }
 
@@ -69,6 +76,9 @@ async function createPrivateSegmentV2(
     input.genId,
     segmentIndex,
     input.aspectRatio,
+    input.qualityTier,
+    getCharacterPreset(input.characterPresetId)?.description ??
+      (input.characterImagePath ? 'the exact person shown in the uploaded reference image' : null),
   )
 }
 
@@ -136,7 +146,9 @@ export async function generateVideoWorkflow(input: GenerateVideoInput) {
     const segmentCount = Math.ceil(input.duration / 8)
     const segmentUrls: string[] = []
     for (let index = 0; index < segmentCount; index++) {
-      segmentUrls.push(await createPrivateSegmentV2(script, storyboard, imageUrls[0], input, index))
+      if (index > 0 && input.qualityTier === 'premium') await sleep('65s')
+      const frame = imageUrls[Math.min(index, imageUrls.length - 1)]
+      segmentUrls.push(await createPrivateSegmentV2(script, storyboard, frame, input, index))
       await setProgress(input.genId, Math.min(9, 8 + Math.ceil(((index + 1) / segmentCount) * 2)))
     }
     const videoUrl = await joinPrivateSegmentsV2(segmentUrls, input)

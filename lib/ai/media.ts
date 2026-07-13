@@ -7,8 +7,14 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
 import ffmpegPath from 'ffmpeg-static'
-import { IMAGE_MODEL, VIDEO_MODEL, VIDEO_RESOLUTION } from './models'
+import { IMAGE_MODEL } from './models'
 import type { StoryboardScene } from '@/lib/db/schema'
+import {
+  getCharacterPreset,
+  QUALITY_TIERS,
+  type CharacterPresetId,
+  type QualityTier,
+} from '@/lib/video-options'
 
 export type VideoAspectRatio = '9:16' | '16:9'
 export type VideoDuration = 8 | 16 | 24 | 30
@@ -30,19 +36,41 @@ async function downloadBytes(pathname: string): Promise<Uint8Array> {
   return new Uint8Array(await new Response(result.stream).arrayBuffer())
 }
 
+async function loadCharacterReference(
+  presetId?: CharacterPresetId | null,
+  uploadedPath?: string | null,
+): Promise<{ bytes: Uint8Array; description: string } | null> {
+  if (uploadedPath) {
+    return { bytes: await downloadBytes(uploadedPath), description: 'the exact person shown in the character reference image' }
+  }
+  const preset = getCharacterPreset(presetId)
+  if (!preset) return null
+  return {
+    bytes: new Uint8Array(await readFile(join(process.cwd(), 'public', preset.image.replace(/^\//, '')))),
+    description: preset.description,
+  }
+}
+
 export async function generateStoryboardImages(
   scenes: StoryboardScene[],
   userId: string,
   genId: number,
   aspectRatio: VideoAspectRatio = '9:16',
   productImagePaths: string[] = [],
+  characterPresetId?: CharacterPresetId | null,
+  characterImagePath?: string | null,
 ): Promise<string[]> {
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
-  const referenceImages = await Promise.all(productImagePaths.map(async (pathname) => {
+  const productReferences = await Promise.all(productImagePaths.map(async (pathname) => {
     const result = await get(pathname, { access: 'private' })
     if (!result || result.statusCode !== 200) throw new Error('Product image unavailable')
     return new Uint8Array(await new Response(result.stream).arrayBuffer())
   }))
+  const character = await loadCharacterReference(characterPresetId, characterImagePath)
+  const referenceImages = [...productReferences, ...(character ? [character.bytes] : [])]
+  const characterDirection = character
+    ? `Feature ${character.description}. Preserve the exact same facial identity, age, hair and wardrobe across every frame. `
+    : ''
   const urls: string[] = []
   for (let i = 0; i < scenes.length; i++) {
     const { image } = await generateImage({
@@ -52,7 +80,8 @@ export async function generateStoryboardImages(
             images: referenceImages,
             text:
               `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
-              'Preserve the exact product identity, shape, colors, logo and package details shown in the reference images. ' +
+              characterDirection +
+              'Preserve the exact product identity, shape, colors, logo and package details shown in the product reference images. ' +
               'Bright, high-energy, professional product photography, cinematic lighting.',
           }
         : `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
@@ -76,20 +105,26 @@ export async function generateAdVideoSegment(
   genId: number,
   segmentIndex: number,
   aspectRatio: VideoAspectRatio,
+  qualityTier: QualityTier = 'premium',
+  characterDescription?: string | null,
 ): Promise<string> {
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
+  const quality = QUALITY_TIERS[qualityTier]
   const prompt =
     `Part ${segmentIndex + 1} of a continuous ${orientation} product ad. ` +
     `Narration: "${script}". Scenes: ${scenes.map((s, i) => `${i + 1}. ${s.scene}`).join(' ')} ` +
+    (characterDescription
+      ? `Keep the exact same person throughout: ${characterDescription}. Preserve face, age, hair and wardrobe. `
+      : '') +
     'Maintain consistent product, talent, lighting and commercial style across parts. Fast-paced and energetic.'
 
   const { video } = await generateVideo({
-    model: VIDEO_MODEL,
+    model: quality.model,
     prompt,
     aspectRatio,
-    resolution: VIDEO_RESOLUTION,
+    resolution: quality.resolution,
     duration: 8,
-    ...(segmentIndex === 0 && firstFrameUrl
+    ...(firstFrameUrl
       ? { frameImages: [{ image: await downloadBytes(firstFrameUrl), frameType: 'first_frame' as const }] }
       : {}),
   })

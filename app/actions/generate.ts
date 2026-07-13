@@ -8,6 +8,13 @@ import { headers } from 'next/headers'
 import { start } from 'workflow/api'
 import { head } from '@vercel/blob'
 import {
+  getCharacterPreset,
+  getCreditsRequired,
+  getQualityTier,
+  type CharacterPresetId,
+  type QualityTier,
+} from '@/lib/video-options'
+import {
   generateVideoWorkflow,
   type GenerateVideoInput,
 } from '@/workflows/generate-video'
@@ -25,6 +32,10 @@ export type GenerationState = {
   sellingPoints: string | null
   duration: GenerateVideoInput['duration']
   aspectRatio: GenerateVideoInput['aspectRatio']
+  qualityTier: QualityTier
+  characterPresetId: CharacterPresetId | null
+  characterSource: 'none' | 'preset' | 'upload'
+  creditsCharged: number
   script: string | null
   storyboard: StoryboardScene[] | null
   imageUrls: string[] | null
@@ -47,6 +58,10 @@ function toState(row: typeof generation.$inferSelect): GenerationState {
     sellingPoints: row.sellingPoints,
     duration: row.duration as GenerateVideoInput['duration'],
     aspectRatio: row.aspectRatio as GenerateVideoInput['aspectRatio'],
+    qualityTier: row.qualityTier as QualityTier,
+    characterPresetId: row.characterPresetId as CharacterPresetId | null,
+    characterSource: row.characterSource as GenerationState['characterSource'],
+    creditsCharged: row.creditsCharged,
     script: row.script,
     storyboard: row.storyboard ?? null,
     imageUrls: row.imageUrls?.map((value) => mediaUrl(value) ?? value) ?? null,
@@ -68,14 +83,27 @@ export async function startGeneration(
   aspectRatio: GenerateVideoInput['aspectRatio'] = '9:16',
   referenceVideoPath?: string,
   productImagePaths: string[] = [],
+  qualityTier: QualityTier = 'standard',
+  characterPresetId?: CharacterPresetId,
+  characterImagePath?: string,
 ): Promise<GenerationState> {
   const userId = await getUserId()
   if (![8, 16, 24, 30].includes(duration)) throw new Error('INVALID_DURATION')
   if (!['9:16', '16:9'].includes(aspectRatio)) throw new Error('INVALID_ASPECT_RATIO')
   if (productImagePaths.length > 6) throw new Error('TOO_MANY_IMAGES')
 
+  const quality = getQualityTier(qualityTier)
+  if (!quality) throw new Error('INVALID_QUALITY')
+  const preset = characterPresetId ? getCharacterPreset(characterPresetId) : undefined
+  if (characterPresetId && !preset) throw new Error('INVALID_CHARACTER')
+  if (characterPresetId && characterImagePath) throw new Error('MULTIPLE_CHARACTERS')
+
   const prefix = `uploads/${userId}/`
-  const paths = [...(referenceVideoPath ? [referenceVideoPath] : []), ...productImagePaths]
+  const paths = [
+    ...(referenceVideoPath ? [referenceVideoPath] : []),
+    ...productImagePaths,
+    ...(characterImagePath ? [characterImagePath] : []),
+  ]
   if (paths.some((pathname) => !pathname.startsWith(prefix))) throw new Error('INVALID_UPLOAD')
 
   const metadata = await Promise.all(paths.map((pathname) => head(pathname)))
@@ -88,7 +116,8 @@ export async function startGeneration(
     throw new Error('INVALID_IMAGE')
   }
 
-  const creditsRequired = Math.ceil(duration / 8)
+  const creditsRequired = getCreditsRequired(duration, qualityTier)
+  const characterSource = characterImagePath ? 'upload' : preset ? 'preset' : 'none'
   const cleanSellingPoints = sellingPoints.trim()
 
   const row = await db.transaction(async (tx) => {
@@ -118,6 +147,11 @@ export async function startGeneration(
         productImagePaths,
         duration,
         aspectRatio,
+        qualityTier,
+        videoModel: quality.model,
+        characterSource,
+        characterPresetId: preset?.id ?? null,
+        characterImagePath: characterImagePath ?? null,
         status: 'pending',
         step: 0,
         creditsCharged: creditsRequired,
@@ -138,6 +172,9 @@ export async function startGeneration(
       productImagePaths,
       duration,
       aspectRatio,
+      qualityTier,
+      characterPresetId: preset?.id ?? null,
+      characterImagePath: characterImagePath ?? null,
     }])
     await db
       .update(generation)

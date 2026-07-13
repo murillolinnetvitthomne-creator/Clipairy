@@ -1,11 +1,13 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import {
   Check,
   Clock3,
   FileVideo,
+  Gauge,
   Infinity as InfinityIcon,
   Loader2,
   Lock,
@@ -22,6 +24,14 @@ import { type AccountState } from '@/app/actions/account'
 import { startGeneration, getGeneration, type GenerationState } from '@/app/actions/generate'
 import { useI18n } from '@/components/i18n-provider'
 import { MediaUploader, type UploadedAsset } from '@/components/media-uploader'
+import {
+  CHARACTER_PRESETS,
+  getCreditsRequired,
+  QUALITY_TIERS,
+  QUALITY_TIER_IDS,
+  type CharacterPresetId,
+  type QualityTier,
+} from '@/lib/video-options'
 
 type StepState = 'pending' | 'processing' | 'done'
 type Status = 'idle' | 'running' | 'done' | 'error'
@@ -45,13 +55,18 @@ export function Studio({
   const [sellingPoints, setSellingPoints] = useState('')
   const [referenceVideo, setReferenceVideo] = useState<UploadedAsset[]>([])
   const [productImages, setProductImages] = useState<UploadedAsset[]>([])
+  const [characterImages, setCharacterImages] = useState<UploadedAsset[]>([])
+  const [characterPresetId, setCharacterPresetId] = useState<CharacterPresetId>('ava')
+  const [qualityTier, setQualityTier] = useState<QualityTier>('standard')
   const [duration, setDuration] = useState<GenerationState['duration']>(8)
   const [aspectRatio, setAspectRatio] = useState<GenerationState['aspectRatio']>('9:16')
   const [credits, setCredits] = useState<number>(account?.credits ?? 0)
   const [unlimited] = useState<boolean>(account?.unlimited ?? false)
   const poller = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const creditsRequired = Math.ceil(duration / 8)
+  const creditsRequired = getCreditsRequired(duration, qualityTier)
+  const segmentCount = Math.ceil(duration / 8)
+  const estimatedModelCost = QUALITY_TIERS[qualityTier].estimatedCostPerSegment * segmentCount
   const hasPlan = !!account?.planId
   const canTrial = isAuthed && hasPlan && (unlimited || credits >= creditsRequired)
 
@@ -89,6 +104,9 @@ export function Studio({
         aspectRatio,
         referenceVideo[0]?.pathname,
         productImages.map((asset) => asset.pathname),
+        qualityTier,
+        characterImages.length === 0 ? characterPresetId : undefined,
+        characterImages[0]?.pathname,
       )
     } catch {
       // Gate errors (NO_PLAN / NO_CREDITS) — the banner already covers these.
@@ -175,6 +193,103 @@ export function Studio({
           />
         </div>
       </div>
+
+      <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">出镜人物</h3>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              选择预设人物或上传已获授权的真人照片，全片将尽量保持同一人物。
+            </p>
+          </div>
+          <span className="text-xs text-muted-foreground">AI 可能出现轻微脸部或服装漂移</span>
+        </div>
+        <fieldset disabled={status === 'running'} className="mt-4">
+          <legend className="sr-only">选择出镜人物</legend>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
+            {CHARACTER_PRESETS.map((character) => {
+              const selected = characterImages.length === 0 && characterPresetId === character.id
+              return (
+                <button
+                  key={character.id}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() => {
+                    setCharacterImages([])
+                    setCharacterPresetId(character.id)
+                  }}
+                  className={`overflow-hidden rounded-xl border text-left transition-colors ${
+                    selected ? 'border-primary bg-primary/10' : 'border-border bg-background hover:border-primary/60'
+                  }`}
+                >
+                  <Image
+                    src={character.image}
+                    alt={`${character.name} 人物参考`}
+                    width={240}
+                    height={300}
+                    className="aspect-[4/5] w-full object-cover"
+                  />
+                  <span className="flex items-center justify-between gap-1 px-2 py-2">
+                    <span className="text-xs font-semibold text-foreground">{character.name}</span>
+                    {selected && <Check className="size-3.5 text-primary" aria-hidden="true" />}
+                  </span>
+                  <span className="block px-2 pb-2 text-[11px] text-muted-foreground">{character.style}</span>
+                </button>
+              )
+            })}
+          </div>
+        </fieldset>
+        <div className="mt-4 max-w-sm">
+          <MediaUploader
+            userId={userId}
+            kind="image"
+            label="上传我的人物"
+            hint="仅限本人或已授权照片 · JPG/PNG/WebP · 10 MB"
+            value={characterImages}
+            onChange={(assets) => setCharacterImages(assets.slice(0, 1))}
+            disabled={status === 'running'}
+            maxFiles={1}
+          />
+        </div>
+      </div>
+
+      <fieldset disabled={status === 'running'} className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+        <legend className="flex items-center gap-2 px-1 text-sm font-semibold text-foreground">
+          <Gauge className="size-4 text-primary" aria-hidden="true" />
+          视频品质
+        </legend>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {QUALITY_TIER_IDS.map((tierId) => {
+            const quality = QUALITY_TIERS[tierId]
+            const selected = qualityTier === tierId
+            return (
+              <button
+                key={tierId}
+                type="button"
+                onClick={() => setQualityTier(tierId)}
+                aria-pressed={selected}
+                className={`rounded-xl border p-4 text-left transition-colors ${
+                  selected ? 'border-primary bg-primary/10' : 'border-border bg-background hover:border-primary/60'
+                }`}
+              >
+                <span className="flex items-center justify-between gap-3">
+                  <span className="font-semibold text-foreground">{quality.name}</span>
+                  <span className="rounded-full bg-secondary px-2 py-1 text-xs font-medium text-primary">
+                    {quality.resolutionLabel}
+                  </span>
+                </span>
+                <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">{quality.description}</span>
+                <span className="mt-3 block text-xs font-medium text-foreground">
+                  每 8 秒 {quality.creditMultiplier} 个额度 · 模型约 ${quality.estimatedCostPerSegment.toFixed(2)}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+        <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+          当前 {duration} 秒预计消耗 {creditsRequired} 个额度，视频模型约 ${estimatedModelCost.toFixed(2)}；不含分镜图、语音、存储及失败重试。
+        </p>
+      </fieldset>
 
       <div className="mt-6 grid gap-4 rounded-2xl border border-border bg-card p-5 md:grid-cols-2">
         <fieldset disabled={status === 'running'}>
