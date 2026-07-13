@@ -2,8 +2,9 @@
 // All models are referenced by Vercel AI Gateway "provider/model" strings,
 // which the AI SDK resolves with zero provider-package setup.
 
-// Text model that writes the ad script and storyboard (user chose OpenAI/GPT).
-export const TEXT_MODEL = 'openai/gpt-5.4'
+// Multimodal model that analyzes the uploaded reference video and product images,
+// then writes the ad script and storyboard.
+export const TEXT_MODEL = 'google/gemini-3.5-flash'
 
 // Image model for storyboard frames.
 export const IMAGE_MODEL = 'openai/gpt-image-1'

@@ -94,6 +94,18 @@ async function failGeneration(input: GenerateVideoInput, message: string) {
   })
 }
 
+function getErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message) return error.message
+  if (typeof error === 'string' && error) return error
+  if (error && typeof error === 'object') {
+    const value = error as Record<string, unknown>
+    if (typeof value.message === 'string' && value.message) return value.message
+    if (typeof value.responseBody === 'string' && value.responseBody) return value.responseBody.slice(0, 1000)
+    if (value.cause) return getErrorMessage(value.cause)
+  }
+  return 'Generation failed'
+}
+
 export async function generateVideoWorkflow(input: GenerateVideoInput) {
   'use workflow'
 
@@ -121,7 +133,7 @@ export async function generateVideoWorkflow(input: GenerateVideoInput) {
     await setProgress(input.genId, 12, { status: 'done', audioUrl })
     return { videoUrl }
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Generation failed'
+    const message = getErrorMessage(error)
     await failGeneration(input, message)
     throw error
   }
