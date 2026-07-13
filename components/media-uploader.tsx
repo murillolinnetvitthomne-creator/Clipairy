@@ -140,7 +140,7 @@ export function MediaUploader({
               <UploadCloud className="size-5" aria-hidden="true" />
             </span>
             <span className="mt-3 text-sm font-semibold text-foreground">
-              {kind === 'video' ? '选择参考视频' : value.length > 0 ? '继续添加产品图' : '选择产品图片'}
+              {kind === 'video' ? '选择视频' : value.length > 0 ? '继续添加产品图' : '选择产品图片'}
             </span>
             <span className="mt-1 text-xs leading-relaxed text-muted-foreground sm:hidden">点击从手机相册选择</span>
             <span id={`${kind}-upload-hint`} className="mt-1 max-w-xs text-xs leading-relaxed text-muted-foreground">{hint}</span>

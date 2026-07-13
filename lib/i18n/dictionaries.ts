@@ -118,18 +118,18 @@ const en = {
     videoAlt: 'Preview of the AI-generated vertical product ad',
     exportButton: 'Export final cut',
     steps: [
-      { title: 'Upload reference video', desc: 'Import the original TikTok / Reels / Shorts video you want to model', tools: ['Uploader', 'S3 / R2 / Supabase Storage'] },
-      { title: 'Video preprocessing', desc: 'Automatically split audio, frames and original caption tracks', tools: ['FFmpeg', 'MoviePy'] },
-      { title: 'Extract copy', desc: 'Transcribe all narration, voiceover and captions into text', tools: ['gpt-4o-transcribe', 'Whisper'] },
-      { title: 'Shot analysis', desc: 'Analyze shots, pacing, scenes and how the product is shown', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
-      { title: 'Deconstruct framework', desc: 'Extract the Hook, pain point, selling points, turn and CTA', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
-      { title: 'Upload product assets', desc: 'Import your product photos, videos and core selling points', tools: ['File upload', 'GPT vision'] },
-      { title: 'Understand product', desc: 'Recognize appearance, use cases, audience and selling points', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },
-      { title: 'Rewrite the script', desc: 'Apply the original structure to your own product script', tools: ['gpt-5.5', 'Claude Sonnet'] },
-      { title: 'Generate storyboard', desc: 'Plan the visuals, captions and actions for every second', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
-      { title: 'Generate footage', desc: 'Create new shots and ad clips from your product assets', tools: ['Runway Gen-4.5', 'Veo', 'Seedance'] },
-      { title: 'AI voice + captions', desc: 'Generate voiceover, captions, BGM and compose the full video', tools: ['ElevenLabs v3', 'OpenAI TTS', 'FFmpeg'] },
-      { title: 'Export multi-platform', desc: 'One-click output tailored for TikTok / Reels / Shorts', tools: ['Remotion', 'Multi-platform'] },
+      { title: 'Review product brief', desc: 'Read the product images, audience and selling points', tools: [] },
+      { title: 'Choose creative angle', desc: 'Develop an original concept that makes the strongest benefit memorable', tools: [] },
+      { title: 'Write original script', desc: 'Create the hook, proof, product story and call to action', tools: [] },
+      { title: 'Plan visual direction', desc: 'Define the look, pacing and product presentation for every scene', tools: [] },
+      { title: 'Check product fidelity', desc: 'Keep the product appearance grounded in uploaded images', tools: [] },
+      { title: 'Prepare product assets', desc: 'Organize product references and optional character imagery', tools: [] },
+      { title: 'Understand product', desc: 'Identify appearance, use cases, audience and real selling points', tools: [] },
+      { title: 'Write the script', desc: 'Turn the selected concept into an original product-specific script', tools: [] },
+      { title: 'Generate storyboard', desc: 'Plan the visuals, captions and actions for every scene', tools: [] },
+      { title: 'Generate footage', desc: 'Create original ad scenes guided by your product images', tools: [] },
+      { title: 'Voice + captions', desc: 'Create native-language voiceover and captions for the final ad', tools: [] },
+      { title: 'Finish the ad', desc: 'Assemble and export the complete product video', tools: [] },
     ] as Step[],
     storyboard: [
       { time: '0:00 - 0:03', shot: 'Fast product close-ups + big caption hook', caption: '"Still struggling with this problem?"' },
@@ -147,8 +147,8 @@ Stock piling up, conversions flat, never enough creatives —
 every cross-border seller knows the pain.
 
 [Selling points · 7-13s]
-Upload one original video and your product,
-and AI deconstructs the framework, rewrites the copy, generates new clips and voiceover.
+Upload your product images and strongest benefits,
+and AI creates an original concept, script, scenes and voiceover around them.
 
 [Turn · 13-17s]
 No editing, no models, no week-long wait —
@@ -332,18 +332,18 @@ const zh: Dict = {
     videoAlt: 'AI 生成的竖版产品广��视频预览',
     exportButton: '导出成片',
     steps: [
-      { title: '上传参考视频', desc: '导入你想对标的 TikTok / Reels / Shorts 原创视频', tools: ['上传组件', 'S3 / R2 / Supabase Storage'] },
-      { title: '视频预处理', desc: '自动拆分音频、画面帧与原始字幕轨道', tools: ['FFmpeg', 'MoviePy'] },
-      { title: '提取文案', desc: '把口播、旁白、字幕全部转写成文本', tools: ['gpt-4o-transcribe', 'Whisper'] },
-      { title: '画面分解', desc: '���析镜头、节奏、场景与产品展示方式', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
-      { title: '拆解原创框架', desc: '提取 Hook、痛点、卖点、转折与 CTA 结构', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
-      { title: '上传产品素材', desc: '导入你的产品图、产品视频与核心卖点', tools: ['文件上传', 'GPT 视觉理解'] },
-      { title: '产品素材理解', desc: '识别产品外观、使用场景、人群与卖点', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },
-      { title: '改写文案再创作', desc: '把原创结构套用到你自己的产品脚本上', tools: ['gpt-5.5', 'Claude Sonnet'] },
-      { title: '生成分镜脚本', desc: '规划每一秒�����画面、字幕与动作', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
-      { title: '结合素材生片', desc: '基于产品素材生成新画面与广告片段', tools: ['Runway Gen-4.5', 'Veo', 'Seedance'] },
-      { title: 'AI 配音 + 字幕合成', desc: '生成口播、字幕、BGM 并合成完整视频', tools: ['ElevenLabs v3', 'OpenAI TTS', 'FFmpeg'] },
-      { title: '导出多平台短视频', desc: '一键输出适配 TikTok / Reels / Shorts 的成片', tools: ['Remotion', '多平台适配'] },
+      { title: '读取产品简报', desc: '理解产品图片、适用对象与核心卖点', tools: [] },
+      { title: '选择创意角度', desc: '围绕最有价值的产品优势策划原创概念', tools: [] },
+      { title: '创作原创脚本', desc: '规划开场、证据、产品故事与行动引导', tools: [] },
+      { title: '规划视觉方向', desc: '确定每个场景的画面、节奏与产品展示方式', tools: [] },
+      { title: '校验产品一致性', desc: '让产品外观始终以用户上传的图片为依据', tools: [] },
+      { title: '准备产品素材', desc: '整理产品参考与可选人物图片', tools: [] },
+      { title: '理解产品', desc: '识别产品外观、使用场景、对象与真实卖点', tools: [] },
+      { title: '创作广告脚本', desc: '把原创概念写成产品专属脚本', tools: [] },
+      { title: '生成分镜脚本', desc: '规划每个场景的画面、字幕与动作', tools: [] },
+      { title: '生成原创画面', desc: '以产品图片为依据生成广告场景', tools: [] },
+      { title: '生成配音与字幕', desc: '使用目标语言制作配音和字幕', tools: [] },
+      { title: '完成广告成片', desc: '合成并导出完整产品广告', tools: [] },
     ],
     storyboard: [
       { time: '0:00 - 0:03', shot: '产品特写快切 + 大字幕 Hook', caption: '"你还在为这个问题头疼吗?"' },
@@ -361,8 +361,8 @@ const zh: Dict = {
 每一个跨境卖家都懂的痛。
 
 【卖点 · 7-13s】
-上传一条原创、上传你的产品,
-AI 自动拆框架、改文案、生成新片段并配音。
+上传产品图片和最有说服力的卖点，
+AI 围绕它们创作原创概念、脚本、画面与配音。
 
 【转折 · 13-17s】
 不用剪辑、不用找模特、不用等一周,
@@ -385,7 +385,7 @@ AI 自动拆框架、改文案、生成新片段并配音。
   pricing: {
     eyebrow: '定价',
     title: '低价起步，随生意规模增长',
-    subtitle: '按次付费零门槛，订阅制更划算。所有方案都包含完整 原创广告生成流程。',
+    subtitle: '按次付费零门槛，订阅制更划算。所有方案都包含完整原创广告生成流程。',
     mostPopular: '最受欢迎',
     plans: [
       { name: '按次付费', price: '$9.90', unit: '/ 条视频', desc: '偶尔出片、想先试试效果的卖家', features: ['单条完整广告成片', '原创广告全流程处理', '标准清晰度导出', '多平台格式适配'], cta: '按次生成' },
@@ -394,8 +394,8 @@ AI 自动拆框架、改文案、生成新片段并配音。
     ],
   },
   plans: {
-    payg: { name: '按次付费', description: '偶尔使用，按需购买生成次数。', cta: '购买 1 次', features: ['一次性 1 次视频生成', '全部 原创广告智能工作流', '1080P 高清导出', '次数永久有效'] },
-    growth: { name: '增长版', description: '中小卖家的高性价比之选。', cta: '订阅增长版', features: ['每月 120 次视频生成', '全部 原创广告智能工作流', '4K 超清导出 + 去水印', '多平台一键适配', '优先生成队列'] },
+    payg: { name: '按次付费', description: '偶尔使用，按需购买生成次数。', cta: '购买 1 次', features: ['一次性 1 次视频生成', '完整原创广告工作流', '1080P 高清导出', '次数永久有效'] },
+    growth: { name: '增长版', description: '中小卖家的高性价比之选。', cta: '订阅增长版', features: ['每月 120 次视频生成', '完整原创广告工作流', '4K 超清导出 + 去水印', '多平台一键适配', '优先生成队列'] },
     team: { name: '团队版', description: '团队协作，海量产出。', cta: '订阅团队版', features: ['每月 500 次视频生成', '5 个团队席位', '品牌素材库与模板', '专属客户成功经理', 'API 接入支持'] },
   },
   auth: {
@@ -717,7 +717,7 @@ const th: Dict = {
     sellingPlaceholder: 'เช่น สูตรพืชอ่อนโยน เห็นผลใน 7 วัน ส่งฟรีทั่วโลก โปรซื้อ 1 แถม 1…',
     uploaded: 'อัปโหลดแล้ว',
     creator: {
-      audienceTitle: 'สินค้านี้สำหรับใคร?', audienceDesc: 'จำเป็น ตัวเลือกนี้กำหนดว่าใครสามารถสวมหรือใช้สินค้าได้', audienceRequired: 'เลือกผู้ใช้สินค้าก่อนสร้างวิดีโอ', audienceCharacterDisabled: 'ระบบจะปิดภาพอ้างอิงบุคคลสำหรับสัตว์เลี้ยงและวิดีโอสินค้าเท่านั้น โดยสัตว์หรือสินค้าที่เลือกจะเป็นตัวแบบหลัก', audienceNames: { human: 'คน', dog: 'สุนัข', cat: 'แมว', other_pet: 'สัตว์เลี้ยงอื่น', product_only: 'สินค้าเท่านั้น' }, characterTitle: 'บุคคลในวิดีโอ', characterDesc: 'เลือกบุคคลที่ตั้งไว้หรืออัปโหลดรูปที่ได้รับอนุญาต เราจะพยายามคงบุคคลเดิมตลอดวิดีโอ', characterDrift: 'AI อาจทำให้ใบหน้าหรือเสื้อผ้าเปล���่ยนเล็กน้อย', characterSelect: 'เลือกบุคคลในวิดีโอ', characterAlt: 'ภาพอ้างอิงบุคคล', uploadCharacter: 'อัปโหลดบุคคลของฉัน', authorization: 'เฉพาะรูปของคุณเองหรือรูปที่ได้รับอนุญาต · JPG/PNG/WebP · 10 MB', qualityTitle: 'คุณภาพวิดีโอ', videoLanguageTitle: 'ภาษาวิดีโอ', videoLanguageDesc: 'จำเป็น ภาษานี้ใช้กับเสียงบรรยาย คำบรรยายบนจอ และเสียงพูด', videoLanguagePlaceholder: 'เลือกภาษาวิดีโอ', videoLanguageRequired: 'โปรดเลือกภาษาก่อนสร้างวิดีโอ', qualityNames: { economy: 'ประหยัด', standard: 'มาตรฐาน', premium: 'พรีเมียม' }, qualityDescriptions: { economy: 'รวดเร็วและประหยัดสำหรับทดสอบไอเดีย', standard: 'สมดุลความคมชัดและต้นทุน', premium: 'การเคลื่อนไหวและภาพที่ดีกว่าสำหรับโฆษณาหลัก' }, per8: 'ต่อ 8 วิ', credits: 'เครดิต', modelApprox: 'ค่าโมเดลประมาณ', estimate: 'ประมาณการ {duration} วิ: {credits} เครดิต ค่าโมเดลวิดีโอประมาณ ${cost}; ไม่รวมภาพสตอรีบอร์ด เสียง พื้นที่จัดเก็บ และการลองใหม่',
+      audienceTitle: 'สินค้านี้สำหรับใคร?', audienceDesc: 'จำเป็น ตัวเลือกนี้กำหนดว่าใครสามารถสวมหรือใช้สินค้าได้', audienceRequired: 'เลือกผู้ใช้สินค้าก่อนสร้างวิดีโอ', audienceCharacterDisabled: 'ระบบจะปิดภาพอ้างอิงบุคคลสำหรับสัตว์เลี้ยงและวิดีโอสินค้าเท่านั้น โดยสัตว์หรือสินค้าที่เลือกจะเป็นตัวแบบหลัก', audienceNames: { human: 'คน', dog: 'สุนัข', cat: 'แมว', other_pet: 'สัตว์เลี้ยงอื่น', product_only: 'สินค้าเท่านั้น' }, characterTitle: 'บุคคลในวิดีโอ', characterDesc: 'เลือกบุคคลที่ตั้งไว้หรืออัปโหลดรูปที่ได้รับอนุญาต เราจะพยายามคงบุคคลเดิมตลอดวิดีโอ', characterDrift: 'AI อาจทำให้ใบหน้าหรือเสื้อผ้าเปล�����ยนเล็กน้อย', characterSelect: 'เลือกบุคคลในวิดีโอ', characterAlt: 'ภาพอ้างอิงบุคคล', uploadCharacter: 'อัปโหลดบุคคลของฉัน', authorization: 'เฉพาะรูปของคุณเองหรือรูปที่ได้รับอนุญาต · JPG/PNG/WebP · 10 MB', qualityTitle: 'คุณภาพวิดีโอ', videoLanguageTitle: 'ภาษาวิดีโอ', videoLanguageDesc: 'จำเป็น ภาษานี้ใช้กับเสียงบรรยาย คำบรรยายบนจอ และเสียงพูด', videoLanguagePlaceholder: 'เลือกภาษาวิดีโอ', videoLanguageRequired: 'โปรดเลือกภาษาก่อนสร้างวิดีโอ', qualityNames: { economy: 'ประหยัด', standard: 'มาตรฐาน', premium: 'พรีเมียม' }, qualityDescriptions: { economy: 'รวดเร็วและประหยัดสำหรับทดสอบไอเดีย', standard: 'สมดุลความคมชัดและต้นทุน', premium: 'การเคลื่อนไหวและภาพที่ดีกว่าสำหรับโฆษณาหลัก' }, per8: 'ต่อ 8 วิ', credits: 'เครดิต', modelApprox: 'ค่าโมเดลประมาณ', estimate: 'ประมาณการ {duration} วิ: {credits} เครดิต ค่าโมเดลวิดีโอประมาณ ${cost}; ไม่รวมภาพสตอรีบอร์ด เสียง พื้นที่จัดเก็บ และการลองใหม่',
     },
     gateAnonTitle: 'เข้าสู่ระบบและซื้อแพ็กเกจเพื่อทดลองสร้าง',
     gateAnonDesc: 'การทดลองใช้เปิดเฉพาะผู้ใช้ที่มีแพ็กเกจใช้งานอยู่ กรุณาเข้าสู่ระบบหรือสมัครก่อน',
@@ -748,7 +748,7 @@ const th: Dict = {
     workflowHeading: 'ขั้นตอนอัตโนมัติ 12 ขั้น',
     resultsPlaceholder: 'ผลลัพธ์ (สคริปต์ / สตอรีบอร์ด / ตัวอย่างวิดีโอ) จะแสดงที่นี่เมื่อขั้นตอนเสร็จ',
     resultBadge: 'สร้างเสร็จแล้ว',
-    resultTitle: 'โฆษณาสินค้าของคุณพร้อมแล้ว',
+    resultTitle: 'โฆษณา��ินค้าของคุณพร้อมแล้ว',
     scriptHeading: 'สคริปต์โฆษณาที่เขียนใหม่',
     storyboardHeading: 'สตอรีบอร์ด',
     captionLabel: 'คำบรรยาย:',
@@ -846,7 +846,7 @@ AI ถอดโครงสร้าง เขียนสคริปต์ใ�
     greeting: 'สวัสดี {name}',
     currentPlan: 'แพ็กเกจปัจจุบัน',
     notSubscribed: 'ยังไม่ได้สมัคร',
-    noPlanDesc: 'คุณยังไม่ได้ซื้อแพ็กเกจใด ๆ จึงยังทดลองสร้างไม่ได้ เลือกแพ็กเกจด้านล่างเพื่อปลดล็อก',
+    noPlanDesc: 'คุณยังไม่ได้ซื้อแพ็กเกจใด ๆ จึ���ยังทดลองสร้างไม่ได้ เลือกแพ็กเกจด้านล่างเพื่อปลดล็อก',
     remainingCredits: 'จำนวนครั้งทดลองที่เหลือ',
     unlimited: 'ไม่จำกัด',
     times: 'ครั้ง',
@@ -889,7 +889,7 @@ const vi: Dict = {
     auth: { title: 'Đang đăng nhập an toàn', description: 'Đang xác minh tài khoản và chuẩn bị không gian làm việc…', trust: 'Tài khoản của bạn được bảo vệ' },
     checkout: { title: 'Đang chuẩn bị thanh toán', description: 'Đang tạo phiên thanh toán Stripe riêng tư của bạn…', trust: 'Được Stripe xử lý an toàn' },
     portal: { title: 'Đang mở trung tâm thanh toán', description: 'Đang kết nối an toàn tới cài đặt đăng ký…', trust: 'Được Stripe quản lý an toàn' },
-    loading: { title: 'Đang chuẩn bị', description: 'Đang tải không gian làm việc Clipairy…', trust: 'Kết nối an toàn' },
+    loading: { title: 'Đang chuẩn bị', description: 'Đang tải không gian làm việc Clipairy…', trust: 'Kết n���i an toàn' },
     errorTitle: 'Chưa thể hoàn tất bước này',
     authError: 'Vui lòng kiểm tra thông tin và thử lại.',
     checkoutError: 'Không thể mở trang thanh toán an toàn. Vui lòng thử lại.',
