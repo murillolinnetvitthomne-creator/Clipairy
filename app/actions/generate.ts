@@ -14,6 +14,7 @@ import {
   type CharacterPresetId,
   type QualityTier,
 } from '@/lib/video-options'
+import { getVideoLanguage, type VideoLanguage } from '@/lib/video-languages'
 import {
   generateVideoWorkflow,
   type GenerateVideoInput,
@@ -33,6 +34,7 @@ export type GenerationState = {
   duration: GenerateVideoInput['duration']
   aspectRatio: GenerateVideoInput['aspectRatio']
   qualityTier: QualityTier
+  videoLanguage: VideoLanguage
   characterPresetId: CharacterPresetId | null
   characterSource: 'none' | 'preset' | 'upload'
   creditsCharged: number
@@ -59,6 +61,7 @@ function toState(row: typeof generation.$inferSelect): GenerationState {
     duration: row.duration as GenerateVideoInput['duration'],
     aspectRatio: row.aspectRatio as GenerateVideoInput['aspectRatio'],
     qualityTier: row.qualityTier as QualityTier,
+    videoLanguage: row.videoLanguage as VideoLanguage,
     characterPresetId: row.characterPresetId as CharacterPresetId | null,
     characterSource: row.characterSource as GenerationState['characterSource'],
     creditsCharged: row.creditsCharged,
@@ -86,6 +89,7 @@ export async function startGeneration(
   qualityTier: QualityTier = 'standard',
   characterPresetId?: CharacterPresetId,
   characterImagePath?: string,
+  videoLanguage?: VideoLanguage,
 ): Promise<GenerationState> {
   const userId = await getUserId()
   if (![8, 16, 24, 30].includes(duration)) throw new Error('INVALID_DURATION')
@@ -94,6 +98,8 @@ export async function startGeneration(
 
   const quality = getQualityTier(qualityTier)
   if (!quality) throw new Error('INVALID_QUALITY')
+  const language = getVideoLanguage(videoLanguage)
+  if (!language) throw new Error('VIDEO_LANGUAGE_REQUIRED')
   const preset = characterPresetId ? getCharacterPreset(characterPresetId) : undefined
   if (characterPresetId && !preset) throw new Error('INVALID_CHARACTER')
   if (characterPresetId && characterImagePath) throw new Error('MULTIPLE_CHARACTERS')
@@ -149,6 +155,7 @@ export async function startGeneration(
         aspectRatio,
         qualityTier,
         videoModel: quality.model,
+        videoLanguage: language.code,
         characterSource,
         characterPresetId: preset?.id ?? null,
         characterImagePath: characterImagePath ?? null,
@@ -175,6 +182,7 @@ export async function startGeneration(
       qualityTier,
       characterPresetId: preset?.id ?? null,
       characterImagePath: characterImagePath ?? null,
+      videoLanguage: language.code,
     }])
     await db
       .update(generation)

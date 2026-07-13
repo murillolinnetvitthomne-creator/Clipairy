@@ -32,6 +32,7 @@ import {
   type CharacterPresetId,
   type QualityTier,
 } from '@/lib/video-options'
+import { VIDEO_LANGUAGES, type VideoLanguage } from '@/lib/video-languages'
 
 type StepState = 'pending' | 'processing' | 'done'
 type Status = 'idle' | 'running' | 'done' | 'error'
@@ -58,6 +59,7 @@ export function Studio({
   const [characterImages, setCharacterImages] = useState<UploadedAsset[]>([])
   const [characterPresetId, setCharacterPresetId] = useState<CharacterPresetId>('ava')
   const [qualityTier, setQualityTier] = useState<QualityTier>('standard')
+  const [videoLanguage, setVideoLanguage] = useState<VideoLanguage | ''>('')
   const [duration, setDuration] = useState<GenerationState['duration']>(8)
   const [aspectRatio, setAspectRatio] = useState<GenerationState['aspectRatio']>('9:16')
   const [credits, setCredits] = useState<number>(account?.credits ?? 0)
@@ -65,8 +67,6 @@ export function Studio({
   const poller = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const creditsRequired = getCreditsRequired(duration, qualityTier)
-  const segmentCount = Math.ceil(duration / 8)
-  const estimatedModelCost = QUALITY_TIERS[qualityTier].estimatedCostPerSegment * segmentCount
   const hasPlan = !!account?.planId
   const canTrial = isAuthed && hasPlan && (unlimited || credits >= creditsRequired)
 
@@ -91,7 +91,7 @@ export function Studio({
   const progress = Math.round((Math.min(currentStep, STEP_COUNT) / STEP_COUNT) * 100)
 
   const run = async () => {
-    if (!canTrial) return
+    if (!canTrial || !videoLanguage) return
     stopPolling()
     setStatus('running')
     setGen(null)
@@ -107,6 +107,7 @@ export function Studio({
         qualityTier,
         characterImages.length === 0 ? characterPresetId : undefined,
         characterImages[0]?.pathname,
+        videoLanguage,
       )
     } catch {
       // Gate errors (NO_PLAN / NO_CREDITS) — the banner already covers these.
@@ -274,29 +275,51 @@ export function Studio({
                   selected ? 'border-primary bg-primary/10' : 'border-border bg-background hover:border-primary/60'
                 }`}
               >
-                <span className="flex items-center justify-between gap-3">
-                  <span className="font-semibold text-foreground">{t.studio.creator.qualityNames[tierId]}</span>
-                  <span className="rounded-full bg-secondary px-2 py-1 text-xs font-medium text-primary">
-                    {quality.resolutionLabel}
-                  </span>
-                </span>
+                <span className="font-semibold text-foreground">{t.studio.creator.qualityNames[tierId]}</span>
                 <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">
                   {t.studio.creator.qualityDescriptions[tierId]}
                 </span>
                 <span className="mt-3 block text-xs font-medium text-foreground">
-                  {t.studio.creator.per8} {quality.creditMultiplier} {t.studio.creator.credits} · {t.studio.creator.modelApprox} ${quality.estimatedCostPerSegment.toFixed(2)}
+                  {t.studio.creator.per8} {quality.creditMultiplier} {t.studio.creator.credits}
                 </span>
               </button>
             )
           })}
         </div>
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-          {t.studio.creator.estimate
-            .replace('{duration}', String(duration))
-            .replace('{credits}', String(creditsRequired))
-            .replace('{cost}', estimatedModelCost.toFixed(2))}
+          {duration}{t.studio.secondsUnit} · {creditsRequired} {t.studio.creator.credits}
         </p>
       </fieldset>
+
+      <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+        <label htmlFor="video-language" className="text-sm font-semibold text-foreground">
+          {t.studio.creator.videoLanguageTitle}
+        </label>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          {t.studio.creator.videoLanguageDesc}
+        </p>
+        <select
+          id="video-language"
+          value={videoLanguage}
+          onChange={(event) => setVideoLanguage(event.target.value as VideoLanguage | '')}
+          disabled={status === 'running'}
+          required
+          aria-describedby={!videoLanguage ? 'video-language-error' : undefined}
+          className="mt-3 min-h-11 w-full rounded-lg border border-input bg-background px-3 text-sm text-foreground outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-50 sm:max-w-md"
+        >
+          <option value="">{t.studio.creator.videoLanguagePlaceholder}</option>
+          {VIDEO_LANGUAGES.map((language) => (
+            <option key={language.code} value={language.code}>
+              {language.nativeName} · {language.name}
+            </option>
+          ))}
+        </select>
+        {!videoLanguage && (
+          <p id="video-language-error" className="mt-2 text-xs font-medium text-primary">
+            {t.studio.creator.videoLanguageRequired}
+          </p>
+        )}
+      </div>
 
       <div className="mt-6 grid gap-4 rounded-2xl border border-border bg-card p-5 md:grid-cols-2">
         <fieldset disabled={status === 'running'}>
@@ -438,7 +461,7 @@ export function Studio({
             ) : (
               <Button
                 onClick={run}
-                disabled={status === 'running'}
+                disabled={status === 'running' || !videoLanguage}
                 className="flex-1 font-medium sm:flex-none"
                 size="lg"
               >

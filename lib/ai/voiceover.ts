@@ -2,6 +2,7 @@ import 'server-only'
 import { fal } from '@fal-ai/client'
 import { put } from '@vercel/blob'
 import { FAL_TTS_MODEL } from './models'
+import { getVideoLanguage, type VideoLanguage } from '@/lib/video-languages'
 
 // Whether fal voiceover is available (only when the user has connected fal /
 // set FAL_KEY). When absent the pipeline skips this optional step.
@@ -16,13 +17,18 @@ export async function generateVoiceover(
   script: string,
   userId: string,
   genId: number,
+  videoLanguage: VideoLanguage,
 ): Promise<string | null> {
   if (!voiceoverEnabled()) return null
+  const language = getVideoLanguage(videoLanguage)
+  if (!language) throw new Error('INVALID_VIDEO_LANGUAGE')
 
   fal.config({ credentials: process.env.FAL_KEY })
 
   const result = (await fal.subscribe(FAL_TTS_MODEL, {
-    input: { prompt: script },
+    input: {
+      prompt: `Read the following ad in ${language.voiceDirection}, with clear pronunciation, energetic commercial pacing, and no spoken instructions:\n\n${script}`,
+    },
   })) as { data?: { audio?: { url?: string } } }
 
   const audioUrl = result?.data?.audio?.url

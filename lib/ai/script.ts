@@ -3,6 +3,7 @@ import { generateObject } from 'ai'
 import { z } from 'zod'
 import { TEXT_MODEL, SCENE_COUNT } from './models'
 import { get } from '@vercel/blob'
+import { getVideoLanguage, type VideoLanguage } from '@/lib/video-languages'
 
 const scriptSchema = z.object({
   script: z
@@ -39,7 +40,10 @@ export async function generateScript(
   aspectRatio: '9:16' | '16:9' = '9:16',
   referenceVideoPath?: string | null,
   productImagePaths: string[] = [],
+  videoLanguage: VideoLanguage = 'en',
 ): Promise<GeneratedScript> {
+  const language = getVideoLanguage(videoLanguage)
+  if (!language) throw new Error('INVALID_VIDEO_LANGUAGE')
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
   const assetParts = await Promise.all([
     ...(referenceVideoPath ? [referenceVideoPath] : []),
@@ -50,6 +54,9 @@ export async function generateScript(
     `${sellingPoints || 'Infer the product and its strongest benefits from the uploaded product images.'}\n\n` +
     `Analyze the uploaded reference video for its hook, pacing, shot progression and CTA without copying protected wording. ` +
     `Use the uploaded product images as the source of truth for product identity, appearance and details. ` +
+    `Write the complete voiceover script and every on-screen caption in ${language.name}. ` +
+    `Do not mix in another language except unchanged brand names, product names or legally required proper nouns. ` +
+    `Use natural native phrasing appropriate for ${language.name}, not a literal translation. ` +
     `Follow a viral hook -> value -> call-to-action structure. Return the voiceover script and ` +
     `a storyboard of exactly ${SCENE_COUNT} scenes.`
 

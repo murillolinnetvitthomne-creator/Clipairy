@@ -38,7 +38,7 @@ export async function runPipeline(genId: number, userId: string, sellingPoints: 
 
     // Step 11: optional AI voiceover (skipped gracefully when fal is absent).
     await setStep(genId, 11)
-    const audioUrl = await generateVoiceover(script, userId, genId)
+    const audioUrl = await generateVoiceover(script, userId, genId, 'en')
 
     // Step 12: done.
     await setStep(genId, 12, { status: 'done', audioUrl })

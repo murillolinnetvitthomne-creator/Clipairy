@@ -4,9 +4,7 @@ export const QUALITY_TIERS = {
     name: '经济',
     model: 'bytedance/seedance-v1.0-pro-fast',
     resolution: '854x480',
-    resolutionLabel: '480p',
     creditMultiplier: 1,
-    estimatedCostPerSegment: 0.08,
     description: '快速低成本，适合批量测试创意',
   },
   standard: {
@@ -14,9 +12,7 @@ export const QUALITY_TIERS = {
     name: '标准',
     model: 'bytedance/seedance-v1.0-pro-fast',
     resolution: '1280x720',
-    resolutionLabel: '720p',
     creditMultiplier: 1,
-    estimatedCostPerSegment: 0.16,
     description: '清晰度与成本平衡，适合日常发布',
   },
   premium: {
@@ -24,9 +20,7 @@ export const QUALITY_TIERS = {
     name: '高级',
     model: 'google/veo-3.1-fast-generate-001',
     resolution: '1280x720',
-    resolutionLabel: '720p',
     creditMultiplier: 2,
-    estimatedCostPerSegment: 0.8,
     description: '更强运动与画面表现，适合重点广告',
   },
 } as const

@@ -11,6 +11,7 @@ import {
 } from '@/lib/ai/media'
 import { generateVoiceover } from '@/lib/ai/voiceover'
 import { getCharacterPreset, type CharacterPresetId, type QualityTier } from '@/lib/video-options'
+import { type VideoLanguage } from '@/lib/video-languages'
 import { sleep } from 'workflow'
 
 export type GenerateVideoInput = {
@@ -24,6 +25,7 @@ export type GenerateVideoInput = {
   qualityTier: QualityTier
   characterPresetId: CharacterPresetId | null
   characterImagePath: string | null
+  videoLanguage: VideoLanguage
 }
 
 async function setProgress(genId: number, step: number, fields: Record<string, unknown> = {}) {
@@ -39,6 +41,7 @@ async function createScript(input: GenerateVideoInput) {
     input.aspectRatio,
     input.referenceVideoPath,
     input.productImagePaths,
+    input.videoLanguage,
   )
 }
 
@@ -89,7 +92,7 @@ async function joinPrivateSegmentsV2(urls: string[], input: GenerateVideoInput) 
 
 async function createPrivateVoiceoverV2(script: string, input: GenerateVideoInput) {
   'use step'
-  return generateVoiceover(script, input.userId, input.genId)
+  return generateVoiceover(script, input.userId, input.genId, input.videoLanguage)
 }
 
 async function failGeneration(input: GenerateVideoInput, message: string) {

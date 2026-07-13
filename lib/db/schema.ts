@@ -94,6 +94,7 @@ export const generation = pgTable('generation', {
   aspectRatio: text('aspectRatio').notNull().default('9:16'),
   qualityTier: text('qualityTier').notNull().default('premium'),
   videoModel: text('videoModel').notNull().default('google/veo-3.1-fast-generate-001'),
+  videoLanguage: text('videoLanguage').notNull().default('en'),
   characterSource: text('characterSource').notNull().default('none'),
   characterPresetId: text('characterPresetId'),
   characterImagePath: text('characterImagePath'),
