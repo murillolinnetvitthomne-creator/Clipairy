@@ -64,7 +64,7 @@ export function CtaFooter() {
             <a href="#workflow" className="transition-colors hover:text-foreground">
               {t.nav.workflow}
             </a>
-            <a href="#models" className="transition-colors hover:text-foreground">
+            <a href="#benefits" className="transition-colors hover:text-foreground">
               {t.nav.models}
             </a>
             <a href="#pricing" className="transition-colors hover:text-foreground">

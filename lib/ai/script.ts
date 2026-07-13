@@ -33,13 +33,12 @@ async function loadPart(pathname: string) {
   }
 }
 
-// Turns a viral reference framework + the seller's product selling points into
-// a ready-to-shoot ad script and an N-scene storyboard.
+// Turns the seller's product brief and images into an original ad concept,
+// voiceover script, and N-scene storyboard.
 export async function generateScript(
   sellingPoints: string,
   duration = 8,
   aspectRatio: '9:16' | '16:9' = '9:16',
-  referenceVideoPath?: string | null,
   productImagePaths: string[] = [],
   videoLanguage: VideoLanguage = 'en',
   productAudience: ProductAudience = 'human',
@@ -47,20 +46,17 @@ export async function generateScript(
   const language = getVideoLanguage(videoLanguage)
   if (!language) throw new Error('INVALID_VIDEO_LANGUAGE')
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
-  const assetParts = await Promise.all([
-    ...(referenceVideoPath ? [referenceVideoPath] : []),
-    ...productImagePaths,
-  ].map(loadPart))
+  const assetParts = await Promise.all(productImagePaths.map(loadPart))
   const prompt =
     `Create a ${orientation} (${aspectRatio}) ${duration}-second product ad based on these product selling points:\n\n` +
     `${sellingPoints || 'Infer the product and its strongest benefits from the uploaded product images.'}\n\n` +
-    `Analyze the uploaded reference video for its hook, pacing, shot progression and CTA without copying protected wording. ` +
+    `Develop an original, product-specific creative concept. Do not imitate or claim to reproduce any existing advertisement. ` +
     `Use the uploaded product images as the source of truth for product identity, appearance and details. ` +
     `Write the complete voiceover script and every on-screen caption in ${language.name}. ` +
     `Do not mix in another language except unchanged brand names, product names or legally required proper nouns. ` +
     `Use natural native phrasing appropriate for ${language.name}, not a literal translation. ` +
     `MANDATORY END-USER RULE: ${PRODUCT_AUDIENCES[productAudience].instruction} Repeat this rule in every storyboard scene where the product is worn or used. ` +
-    `Choose the strongest ad concept, opening, pacing, and shot order yourself based on the product, audience, evidence, duration, and reference media. ` +
+    `Choose the strongest ad concept, opening, pacing, and shot order yourself based on the product, audience, evidence, and duration. ` +
     `Make the opening immediately engaging, communicate specific visual benefits grounded in the input, and end with a natural call to action. ` +
     `Avoid vague luxury or style claims as the only benefit, and never invent measurements, statistics, reviews, certifications, or product capabilities. ` +
     `Return the voiceover script and a storyboard of exactly ${SCENE_COUNT} scenes.`

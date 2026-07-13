@@ -4,18 +4,11 @@ import { AudioLines, Brain, Eye, Film } from 'lucide-react'
 import { useI18n } from '@/components/i18n-provider'
 
 const icons = [Brain, Eye, Film, AudioLines]
-const modelLists = [
-  ['GPT-5.5', 'Claude Sonnet', 'Gemini 2.5 Pro'],
-  ['GPT-5.5 Vision', 'Gemini Video'],
-  ['Runway Gen-4.5', 'Google Veo', 'Seedance'],
-  ['ElevenLabs v3', 'OpenAI TTS', 'Whisper'],
-]
-
 export function ModelsSection() {
   const { t } = useI18n()
 
   return (
-    <section id="models" className="scroll-mt-20 border-t border-border/60 bg-card/30">
+    <section id="benefits" className="scroll-mt-20 border-t border-border/60 bg-card/30">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 md:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-wider text-primary">
@@ -42,16 +35,6 @@ export function ModelsSection() {
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">
                   {cap.desc}
                 </p>
-                <div className="mt-4 flex flex-wrap gap-1.5">
-                  {modelLists[i].map((m) => (
-                    <span
-                      key={m}
-                      className="rounded-md border border-border bg-secondary/50 px-2 py-0.5 text-xs text-muted-foreground"
-                    >
-                      {m}
-                    </span>
-                  ))}
-                </div>
               </div>
             )
           })}

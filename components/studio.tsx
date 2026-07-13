@@ -43,7 +43,7 @@ type StepState = 'pending' | 'processing' | 'done'
 type Status = 'idle' | 'running' | 'done' | 'error'
 type Step = { title: string; desc: string; tools: string[] }
 
-const STEP_COUNT = 12
+const CREATIVE_STAGE_THRESHOLDS = [1, 4, 10, 12] as const
 const POLL_INTERVAL = 2500
 
 export function Studio({
@@ -60,7 +60,6 @@ export function Studio({
   const [gen, setGen] = useState<GenerationState | null>(null)
   const [sellingPoints, setSellingPoints] = useState('')
   const [productAudience, setProductAudience] = useState<ProductAudience | ''>('')
-  const [referenceVideo, setReferenceVideo] = useState<UploadedAsset[]>([])
   const [productImages, setProductImages] = useState<UploadedAsset[]>([])
   const [characterImages, setCharacterImages] = useState<UploadedAsset[]>([])
   const [characterPresetId, setCharacterPresetId] = useState<CharacterPresetId>('ava')
@@ -86,15 +85,15 @@ export function Studio({
   // Clean up the poller when the component unmounts.
   useEffect(() => stopPolling, [])
 
-  // Derive the completed-step count from the server-reported step. The pipeline
-  // reports 1,3,4,7,10,11,12 — we treat `step` as "steps completed".
   const currentStep = gen?.step ?? 0
-  const stepStates: StepState[] = Array.from({ length: STEP_COUNT }, (_, i) => {
-    if (i < currentStep) return 'done'
-    if (i === currentStep && status === 'running') return 'processing'
+  const creativeSteps = [t.studio.steps[6], t.studio.steps[8], t.studio.steps[9], t.studio.steps[10]]
+  const stepStates: StepState[] = CREATIVE_STAGE_THRESHOLDS.map((threshold, index) => {
+    if (currentStep >= threshold) return 'done'
+    const previousThreshold = index === 0 ? 0 : CREATIVE_STAGE_THRESHOLDS[index - 1]
+    if (status === 'running' && currentStep >= previousThreshold) return 'processing'
     return 'pending'
   })
-  const progress = Math.round((Math.min(currentStep, STEP_COUNT) / STEP_COUNT) * 100)
+  const progress = Math.round((Math.min(currentStep, 12) / 12) * 100)
 
   const run = async () => {
     if (!canTrial || !videoLanguage || !productAudience) return
@@ -108,7 +107,6 @@ export function Studio({
         sellingPoints,
         duration,
         aspectRatio,
-        referenceVideo[0]?.pathname,
         productImages.map((asset) => asset.pathname),
         qualityTier,
         allowsCharacterReference(productAudience) && characterImages.length === 0 ? characterPresetId : undefined,
@@ -161,17 +159,8 @@ export function Studio({
         <p className="mt-4 text-pretty text-muted-foreground">{t.studio.subtitle}</p>
       </div>
 
-      {/* Upload area */}
-      <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:mt-12 md:grid-cols-3">
-        <MediaUploader
-          userId={userId}
-          kind="video"
-          label={t.studio.upload1Label}
-          hint={`${t.studio.upload1Hint} · MP4/MOV/WebM · 100 MB`}
-          value={referenceVideo}
-          onChange={setReferenceVideo}
-          disabled={status === 'running'}
-        />
+      {/* Product brief */}
+      <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:mt-12 md:grid-cols-2">
         <MediaUploader
           userId={userId}
           kind="image"
@@ -543,8 +532,8 @@ export function Studio({
         <h3 className="mb-6 text-center font-display text-sm font-semibold uppercase tracking-wider text-muted-foreground">
           {t.studio.workflowHeading}
         </h3>
-        <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {t.studio.steps.map((step, i) => (
+        <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {creativeSteps.map((step, i) => (
             <StepItem
               key={i}
               index={i}
@@ -646,16 +635,6 @@ function StepItem({
           </span>
         </div>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{step.desc}</p>
-        <div className="mt-2 flex flex-wrap gap-1">
-          {step.tools.map((tool) => (
-            <span
-              key={tool}
-              className="rounded border border-border/70 bg-secondary/60 px-1.5 py-0.5 text-[10px] text-muted-foreground"
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
       </div>
     </li>
   )

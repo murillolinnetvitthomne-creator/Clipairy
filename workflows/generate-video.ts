@@ -19,7 +19,6 @@ export type GenerateVideoInput = {
   genId: number
   userId: string
   sellingPoints: string
-  referenceVideoPath: string | null
   productImagePaths: string[]
   duration: VideoDuration
   aspectRatio: VideoAspectRatio
@@ -41,7 +40,6 @@ async function createScript(input: GenerateVideoInput) {
     input.sellingPoints,
     input.duration,
     input.aspectRatio,
-    input.referenceVideoPath,
     input.productImagePaths,
     input.videoLanguage,
     input.productAudience,

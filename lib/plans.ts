@@ -34,7 +34,7 @@ export const PLANS: Array<Plan & { id: PlanId }> = [
     mode: 'payment',
     duration: 8,
     cta: '购买 8 秒',
-    features: ['1 个 8 秒额度', '全部 12 步智能工作流', '额度永久有效'],
+    features: ['1 个 8 秒额度', '完整原创广告工作流', '额度永久有效'],
   },
   {
     id: 'single-16',
@@ -49,7 +49,7 @@ export const PLANS: Array<Plan & { id: PlanId }> = [
     mode: 'payment',
     duration: 16,
     cta: '购买 16 秒',
-    features: ['2 个 8 秒额度', '全部 12 步智能工作流', '额度永久有效'],
+    features: ['2 个 8 秒额度', '完整原创广告工作流', '额度永久有效'],
   },
   {
     id: 'single-24',
@@ -64,7 +64,7 @@ export const PLANS: Array<Plan & { id: PlanId }> = [
     mode: 'payment',
     duration: 24,
     cta: '购买 24 秒',
-    features: ['3 个 8 秒额度', '全部 12 步智能工作流', '额度永久有效'],
+    features: ['3 个 8 秒额度', '完整原创广告工作流', '额度永久有效'],
   },
   {
     id: 'single-30',
@@ -79,7 +79,7 @@ export const PLANS: Array<Plan & { id: PlanId }> = [
     mode: 'payment',
     duration: 30,
     cta: '购买 30 秒',
-    features: ['4 个 8 秒额度', '全部 12 步智能工作流', '额度永久有效'],
+    features: ['4 个 8 秒额度', '完整原创广告工作流', '额度永久有效'],
   },
   {
     id: 'professional',

@@ -17,7 +17,7 @@ export function SiteHeader() {
   const navLinks = [
     { label: t.nav.workflow, href: '#workflow' },
     { label: t.nav.preview, href: '#preview' },
-    { label: t.nav.models, href: '#models' },
+    { label: t.nav.models, href: '#benefits' },
     { label: t.nav.pricing, href: '#pricing' },
   ]
 

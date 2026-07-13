@@ -33,9 +33,9 @@ const notoSC = Noto_Sans_SC({
 })
 
 export const metadata: Metadata = {
-  title: 'Clipairy — Turn viral videos into your product ads',
+  title: 'Clipairy — AI ads made for your product',
   description:
-    'Clipairy is an AI short-video generator for TikTok, Instagram Reels and YouTube Shorts sellers. Upload one viral reference video and your product assets, and AI deconstructs the framework, rewrites the script, generates new footage and voiceover, then exports multi-platform video ads in one click.',
+    'Create original product-specific video ads with AI. Upload product images and selling points, choose your audience and format, then generate the concept, script, storyboard, footage, voiceover and final cut for TikTok, Reels and Shorts.',
   generator: 'v0.app',
   icons: {
     icon: [

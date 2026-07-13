@@ -91,7 +91,6 @@ export async function startGeneration(
   sellingPoints: string,
   duration: GenerateVideoInput['duration'] = 8,
   aspectRatio: GenerateVideoInput['aspectRatio'] = '9:16',
-  referenceVideoPath?: string,
   productImagePaths: string[] = [],
   qualityTier: QualityTier = 'standard',
   characterPresetId?: CharacterPresetId,
@@ -119,18 +118,12 @@ export async function startGeneration(
 
   const prefix = `uploads/${userId}/`
   const paths = [
-    ...(referenceVideoPath ? [referenceVideoPath] : []),
     ...productImagePaths,
     ...(effectiveCharacterImagePath ? [effectiveCharacterImagePath] : []),
   ]
   if (paths.some((pathname) => !pathname.startsWith(prefix))) throw new Error('INVALID_UPLOAD')
 
-  const metadata = await Promise.all(paths.map((pathname) => head(pathname)))
-  const videoMeta = referenceVideoPath ? metadata[0] : null
-  const imageMeta = referenceVideoPath ? metadata.slice(1) : metadata
-  if (videoMeta && (!videoMeta.contentType.startsWith('video/') || videoMeta.size > 100 * 1024 * 1024)) {
-    throw new Error('INVALID_VIDEO')
-  }
+  const imageMeta = await Promise.all(paths.map((pathname) => head(pathname)))
   if (imageMeta.some((item) => !['image/jpeg', 'image/png', 'image/webp'].includes(item.contentType) || item.size > 12 * 1024 * 1024)) {
     throw new Error('INVALID_IMAGE')
   }
@@ -162,7 +155,6 @@ export async function startGeneration(
       .values({
         userId,
         sellingPoints: cleanSellingPoints || null,
-        referenceVideoPath: referenceVideoPath ?? null,
         productImagePaths,
         duration,
         aspectRatio,
@@ -189,7 +181,6 @@ export async function startGeneration(
       genId: row.id,
       userId,
       sellingPoints: cleanSellingPoints,
-      referenceVideoPath: referenceVideoPath ?? null,
       productImagePaths,
       duration,
       aspectRatio,

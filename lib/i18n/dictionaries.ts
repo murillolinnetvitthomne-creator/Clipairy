@@ -32,7 +32,7 @@ type AccountPlan = {
 // ---------------------------------------------------------------------------
 const en = {
   lang: { label: 'Language' },
-  nav: { workflow: 'Workflow', preview: 'Preview', models: 'AI Models', pricing: 'Pricing' },
+  nav: { workflow: 'Workflow', preview: 'Preview', models: 'Why Clipairy', pricing: 'Pricing' },
   transition: {
     auth: { title: 'Signing you in', description: 'Verifying your details and preparing your workspace…', trust: 'Your account is protected' },
     checkout: { title: 'Preparing secure checkout', description: 'Creating your private Stripe checkout session…', trust: 'Securely processed by Stripe' },
@@ -54,11 +54,11 @@ const en = {
     mobileNav: 'Mobile navigation',
   },
   hero: {
-    badge: 'Built for cross-border e-commerce & TikTok Shop sellers',
-    titleLine1: 'Turn viral video structures',
-    titleHighlight: 'into ads for your product',
+    badge: 'AI product ads for modern commerce teams',
+    titleLine1: 'Your product deserves',
+    titleHighlight: 'an ad made for it',
     subtitle:
-      'Upload one viral reference video, then your product assets. AI breaks down the winning framework, rewrites the script, generates new footage and voiceover — a TikTok / Reels / Shorts ad in 5 minutes.',
+      'Upload your product images and key selling points. AI develops an original concept, script, storyboard, footage and voiceover — ready for TikTok, Reels and Shorts.',
     ctaStart: 'Start creating free',
     ctaPreview: 'See a sample result',
     exportTo: 'Export to',
@@ -66,14 +66,14 @@ const en = {
     phoneBadge: 'AI generated · Vertical 9:16',
   },
   studio: {
-    title: 'Upload in 3 steps, AI handles the rest',
+    title: 'Brief your product. Get a complete ad.',
     subtitle:
-      'Add a viral reference, your product assets, and key selling points — hit generate and watch the 12-step workflow run in real time.',
-    upload1Label: '1 · Reference viral video',
-    upload1Hint: 'Drop in a TikTok / Reels / Shorts video',
-    upload2Label: '2 · Your product assets',
-    upload2Hint: 'Upload product photos or videos',
-    upload3Label: '3 · Selling points',
+      'Add product images and the benefits customers should remember. AI plans and produces an original product-specific campaign.',
+    upload1Label: 'Product brief',
+    upload1Hint: 'Describe what makes the product worth choosing',
+    upload2Label: '1 · Product images',
+    upload2Hint: 'Upload clear product photos',
+    upload3Label: '2 · Selling points',
     sellingPlaceholder:
       'e.g. gentle plant-based formula, results in 7 days, free worldwide shipping, limited BOGO deal…',
     uploaded: 'Uploaded',
@@ -92,7 +92,7 @@ const en = {
     aspectRatioLabel: 'Video format',
     portrait: 'Portrait',
     landscape: 'Landscape',
-    statusIdle: 'Ready — click generate to start the 12-step automation',
+    statusIdle: 'Ready — click generate to create your original ad',
     statusRunning: 'Processing…',
     statusDone: 'Done! Scroll down for the script, storyboard and video preview',
     stepStatus: { done: 'Done', processing: 'Processing', waiting: 'Waiting' },
@@ -107,25 +107,25 @@ const en = {
     regenerate: 'Generate again',
     generate: 'Generate video',
     generating: 'Generating…',
-    workflowHeading: '12-step automated workflow',
+    workflowHeading: 'From product brief to finished ad',
     resultsPlaceholder:
-      'Your results (script / storyboard / video preview) will appear here once the workflow completes',
-    resultBadge: 'Generation complete',
-    resultTitle: 'Your product ad is ready',
-    scriptHeading: 'Rewritten ad script',
+      'Your original script, storyboard and finished ad will appear here when creation is complete',
+    resultBadge: 'Ad complete',
+    resultTitle: 'Your original product ad is ready',
+    scriptHeading: 'Original ad script',
     storyboardHeading: 'Storyboard',
     captionLabel: 'Caption:',
     videoAlt: 'Preview of the AI-generated vertical product ad',
     exportButton: 'Export final cut',
     steps: [
-      { title: 'Upload reference video', desc: 'Import the viral TikTok / Reels / Shorts video you want to model', tools: ['Uploader', 'S3 / R2 / Supabase Storage'] },
+      { title: 'Upload reference video', desc: 'Import the original TikTok / Reels / Shorts video you want to model', tools: ['Uploader', 'S3 / R2 / Supabase Storage'] },
       { title: 'Video preprocessing', desc: 'Automatically split audio, frames and original caption tracks', tools: ['FFmpeg', 'MoviePy'] },
       { title: 'Extract copy', desc: 'Transcribe all narration, voiceover and captions into text', tools: ['gpt-4o-transcribe', 'Whisper'] },
       { title: 'Shot analysis', desc: 'Analyze shots, pacing, scenes and how the product is shown', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
       { title: 'Deconstruct framework', desc: 'Extract the Hook, pain point, selling points, turn and CTA', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Upload product assets', desc: 'Import your product photos, videos and core selling points', tools: ['File upload', 'GPT vision'] },
       { title: 'Understand product', desc: 'Recognize appearance, use cases, audience and selling points', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },
-      { title: 'Rewrite the script', desc: 'Apply the viral structure to your own product script', tools: ['gpt-5.5', 'Claude Sonnet'] },
+      { title: 'Rewrite the script', desc: 'Apply the original structure to your own product script', tools: ['gpt-5.5', 'Claude Sonnet'] },
       { title: 'Generate storyboard', desc: 'Plan the visuals, captions and actions for every second', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Generate footage', desc: 'Create new shots and ad clips from your product assets', tools: ['Runway Gen-4.5', 'Veo', 'Seedance'] },
       { title: 'AI voice + captions', desc: 'Generate voiceover, captions, BGM and compose the full video', tools: ['ElevenLabs v3', 'OpenAI TTS', 'FFmpeg'] },
@@ -147,7 +147,7 @@ Stock piling up, conversions flat, never enough creatives —
 every cross-border seller knows the pain.
 
 [Selling points · 7-13s]
-Upload one viral video and your product,
+Upload one original video and your product,
 and AI deconstructs the framework, rewrites the copy, generates new clips and voiceover.
 
 [Turn · 13-17s]
@@ -158,37 +158,37 @@ a finished ad in 5 minutes for TikTok / Reels / Shorts.
 Tap below to generate your first product ad free.`,
   },
   models: {
-    eyebrow: 'The AI behind it',
-    title: 'Best-in-class models, the right tool for every step',
+    eyebrow: 'Made around your product',
+    title: 'Everything an original product ad needs',
     subtitle:
-      'We automatically route the strongest model at each stage — you never touch the tech, you just get ads that sell.',
+      'From strategy to final cut, each creative decision starts with your product, audience and strongest proof points.',
     caps: [
-      { title: 'Large language models', desc: 'Deconstruct viral frameworks, rewrite copy, generate storyboards' },
-      { title: 'Vision understanding', desc: 'Analyze shot pacing and scenes, understand your product and its selling points' },
-      { title: 'Video / image generation', desc: 'Generate brand-new ad visuals and clips from your product assets' },
-      { title: 'Voice & captions', desc: 'AI voiceover, auto transcription and caption compositing in one click' },
+      { title: 'Product-first concept', desc: 'A distinct angle and opening designed around the benefits you actually provide' },
+      { title: 'Visual product fidelity', desc: 'Your uploaded images guide the product appearance throughout every scene' },
+      { title: 'Complete ad production', desc: 'Original storyboard, scenes and pacing produced for your selected format' },
+      { title: 'Ready-to-publish audio', desc: 'Native-language voiceover and captions assembled into the final video' },
     ],
   },
   pricing: {
     eyebrow: 'Pricing',
     title: 'Start cheap, scale with your business',
-    subtitle: 'Pay-as-you-go with zero barrier, subscriptions for better value. Every plan includes the full 12-step workflow.',
+    subtitle: 'Pay-as-you-go with zero barrier, subscriptions for better value. Every plan includes the full original ad workflow.',
     mostPopular: 'Most popular',
     plans: [
-      { name: 'Pay as you go', price: '$9.90', unit: '/ video', desc: 'Sellers who post occasionally or want to test the waters', features: ['One full ad per generation', 'Full 12-step workflow', 'Standard resolution export', 'Multi-platform format'], cta: 'Generate per video' },
-      { name: 'Growth', price: '$199', unit: '/ month', desc: 'Merchants running ongoing campaigns needing volume', features: ['120 videos per month', 'HD export + no watermark', 'Priority generation queue', 'Viral framework template library', 'Team collaboration seats'], cta: 'Start subscription' },
+      { name: 'Pay as you go', price: '$9.90', unit: '/ video', desc: 'Sellers who post occasionally or want to test the waters', features: ['One full ad per generation', 'Full original ad workflow', 'Standard resolution export', 'Multi-platform format'], cta: 'Generate per video' },
+      { name: 'Growth', price: '$199', unit: '/ month', desc: 'Merchants running ongoing campaigns needing volume', features: ['120 videos per month', 'HD export + no watermark', 'Priority generation queue', 'Original creative concept library', 'Team collaboration seats'], cta: 'Start subscription' },
       { name: 'Team', price: '$399', unit: '/ month', desc: 'Short-video marketing teams and agencies', features: ['500 videos per month', 'API access & batch generation', 'Custom brand styles', 'Dedicated account manager', 'SLA guarantee'], cta: 'Start subscription' },
     ] as MarketingPlan[],
   },
   plans: {
-    payg: { name: 'Pay as you go', description: 'Occasional use, buy generations on demand.', cta: 'Buy 1 credit', features: ['1 one-time video generation', 'Full 12-step workflow', '1080P HD export', 'Credits never expire'] },
-    growth: { name: 'Growth', description: 'Great value for small and mid-size sellers.', cta: 'Subscribe to Growth', features: ['120 video generations / month', 'Full 12-step workflow', '4K export + no watermark', 'One-click multi-platform', 'Priority generation queue'] },
+    payg: { name: 'Pay as you go', description: 'Occasional use, buy generations on demand.', cta: 'Buy 1 credit', features: ['1 one-time video generation', 'Full original ad workflow', '1080P HD export', 'Credits never expire'] },
+    growth: { name: 'Growth', description: 'Great value for small and mid-size sellers.', cta: 'Subscribe to Growth', features: ['120 video generations / month', 'Full original ad workflow', '4K export + no watermark', 'One-click multi-platform', 'Priority generation queue'] },
     team: { name: 'Team', description: 'Team collaboration, massive output.', cta: 'Subscribe to Team', features: ['500 video generations / month', '5 team seats', 'Brand asset library & templates', 'Dedicated success manager', 'API access'] },
   } as Record<'payg' | 'growth' | 'team', AccountPlan>,
   auth: {
     signUpTitle: 'Create your account',
     signInTitle: 'Welcome back',
-    signUpSubtitle: 'Sign up, pick a plan, and start turning viral videos into your product ads.',
+    signUpSubtitle: 'Sign up, pick a plan, and start turning original videos into your product ads.',
     signInSubtitle: 'Sign in to view your plan and remaining trial credits.',
     name: 'Name',
     namePlaceholder: 'Your name',
@@ -230,7 +230,7 @@ Tap below to generate your first product ad free.`,
     openingPortal: 'Opening billing portal…',
   },
   cta: {
-    title: 'Shoot your next viral hit with your own product',
+    title: 'Create your next original ad around your product',
     subtitle:
       'No editing, no influencers, no week-long wait. Upload your assets and get multi-platform product ads in 5 minutes.',
     start: 'Start creating',
@@ -250,7 +250,7 @@ export type Dict = typeof en
 // ---------------------------------------------------------------------------
 const zh: Dict = {
   lang: { label: '语言' },
-  nav: { workflow: '工作流', preview: '生成预览', models: 'AI 能力', pricing: '定价' },
+  nav: { workflow: '工作流', preview: '生成预览', models: '产品优势', pricing: '定价' },
   transition: {
     auth: { title: '正在安全登录', description: '正在验证账户并为你准备工作空间…', trust: '你的账户信息已加密保护' },
     checkout: { title: '正在准备安全支付', description: '正在创建你的 Stripe 专属结账页面…', trust: '支付由 Stripe 安全处理' },
@@ -273,10 +273,10 @@ const zh: Dict = {
   },
   hero: {
     badge: '为跨境电商与 TikTok Shop 商家打造',
-    titleLine1: '一键把爆款视频结构',
-    titleHighlight: '变成你的产品广告',
+    titleLine1: '为你的产品，生成',
+    titleHighlight: '真正专属的原创广告',
     subtitle:
-      '上传一条对标爆款视频，再上传你的产品素材。AI 自动拆解爆款框架、改写文案、生成新片段、配音合成，5 分钟输出适配 TikTok / Reels / Shorts 的短视频广告。',
+      '上传产品图片和核心卖点，AI 会从零策划原创创意、脚本、分镜、画面与配音，输出适配 TikTok、Reels 和 Shorts 的完整广告。',
     ctaStart: '免费开始创作',
     ctaPreview: '查看生成效果',
     exportTo: '支持导出至',
@@ -284,17 +284,17 @@ const zh: Dict = {
     phoneBadge: 'AI 生成 · 竖版 9:16',
   },
   studio: {
-    title: '三步上传，AI 接管剩下的一切',
-    subtitle: '上传参考爆款、上传产品素材、填写卖点，点击生成即可看到 12 步工作流实时运行。',
-    upload1Label: '1 · 参考爆款视频',
-    upload1Hint: '拖入 TikTok / Reels / Shorts 视频',
-    upload2Label: '2 · 你的产品素材',
-    upload2Hint: '上传产品图或产品视频',
-    upload3Label: '3 · 产品卖点',
+    title: '说清产品，AI 完成整条广告',
+    subtitle: '上传产品图片并填写顾客最该记住的卖点，AI 将自主策划并制作一条产品专属原创广告。',
+    upload1Label: '产品简报',
+    upload1Hint: '告诉 AI 你的产品为什么值得选择',
+    upload2Label: '1 · 产品图片',
+    upload2Hint: '上传清晰的产品照片',
+    upload3Label: '2 · 核心卖点',
     sellingPlaceholder: '例如：植物温和配方、7 天见效、跨境包邮、限时买一送一…',
     uploaded: '已上传',
     creator: {
-      audienceTitle: '商品适用对象', audienceDesc: '必选。此项决定谁可以佩戴或使用商品。', audienceRequired: '生成前必须选择商品适用对象。', audienceCharacterDisabled: '宠物及纯商品视频会自动禁用人物参考，所选宠物或商品将保持为画面主体。', audienceNames: { human: '人类', dog: '狗', cat: '猫', other_pet: '其他宠物', product_only: '纯商品' }, characterTitle: '出镜人物', characterDesc: '选择预设人物或上传已获授权的照片，全片将尽量保持同一人物。', characterDrift: 'AI 可能出现轻微脸部或服装漂移', characterSelect: '选择出镜人物', characterAlt: '人物参考', uploadCharacter: '上传我的人物', authorization: '仅限本人或已授权照片 · JPG/PNG/WebP · 10 MB', qualityTitle: '视频品质', videoLanguageTitle: '视频语言', videoLanguageDesc: '必选。所选语言将同时用于旁白脚本、画面字幕和语音。', videoLanguagePlaceholder: '请选择视频语言', videoLanguageRequired: '生成前必须选择视频语言。', qualityNames: { economy: '经济', standard: '标准', premium: '高级' }, qualityDescriptions: { economy: '快速低成本，适合测试创意', standard: '清晰度与成本平衡，适合日常发布', premium: '更强运动与画面表现，适合重点广告' }, per8: '每 8 秒', credits: '个额度', modelApprox: '模型约', estimate: '当前 {duration} 秒预计消耗 {credits} 个额度，视频模型约 ${cost}；不含分镜图、语音、存储及失败重试。',
+      audienceTitle: '商品适用对象', audienceDesc: '必选。此项决定谁可以佩戴或使用商品。', audienceRequired: '生成前必须选择商品适用对象。', audienceCharacterDisabled: '宠物及纯商品视频会自动禁用人物参考，所选宠物或商品将保持为画面主体。', audienceNames: { human: '人类', dog: '狗', cat: '猫', other_pet: '其他宠物', product_only: '纯商品' }, characterTitle: '出镜人物', characterDesc: '选择预设人物或上传已获授权的照片，全片将尽量保持同一人物。', characterDrift: 'AI 可能出现轻微脸部��服装漂移', characterSelect: '选择出镜人物', characterAlt: '人物参考', uploadCharacter: '上传我的人物', authorization: '仅限本人或已授权照片 · JPG/PNG/WebP · 10 MB', qualityTitle: '视频品质', videoLanguageTitle: '视频语言', videoLanguageDesc: '必选。所选语言将同时用于旁白脚本、画面字幕和语音。', videoLanguagePlaceholder: '请选择视频语言', videoLanguageRequired: '生成前必须选择视频语言。', qualityNames: { economy: '经济', standard: '标准', premium: '高级' }, qualityDescriptions: { economy: '快速低成本，适合测试创意', standard: '清晰度与成本平衡，适合日常发布', premium: '更强运动与画面表现，适合重点广告' }, per8: '每 8 秒', credits: '个额度', modelApprox: '模型约', estimate: '当前 {duration} 秒预计消耗 {credits} 个额度，视频模型约 ${cost}；不含分镜图、语音、存储及失败重试。',
     },
     gateAnonTitle: '登录后购买方案即可试用生成',
     gateAnonDesc: '试用功能仅对拥有有效方案的用户开放。请先登录或注册。',
@@ -307,7 +307,7 @@ const zh: Dict = {
     aspectRatioLabel: '画面比例',
     portrait: '竖屏',
     landscape: '横屏',
-    statusIdle: '准备就绪，点击生成开始 12 步自动化流程',
+    statusIdle: '准备就绪，点击生成你的原创产品广告',
     statusRunning: '正在处理…',
     statusDone: '生成完成！向下查看脚本、分镜与视频预览',
     stepStatus: { done: '完成', processing: '处理中', waiting: '等待中' },
@@ -322,24 +322,24 @@ const zh: Dict = {
     regenerate: '再生成一次',
     generate: '生成视频',
     generating: '生成中…',
-    workflowHeading: '12 步自动化工作流',
-    resultsPlaceholder: '生成结果（脚本 / 分镜 / 视频预览）将在流程完成后显示在这里',
-    resultBadge: '生成完成',
-    resultTitle: '你的产品广告已就绪',
-    scriptHeading: '改写后的广告脚本',
+    workflowHeading: '从产品简报到完整成片',
+    resultsPlaceholder: '原创脚本、分镜与广告成片将在创作完成后显示在这里',
+    resultBadge: '广告创作完成',
+    resultTitle: '你的原创产品广告已就绪',
+    scriptHeading: '原创广告脚本',
     storyboardHeading: '分镜列表',
     captionLabel: '字幕：',
     videoAlt: 'AI 生成的竖版产品广��视频预览',
     exportButton: '导出成片',
     steps: [
-      { title: '上传参考视频', desc: '导入你想对标的 TikTok / Reels / Shorts 爆款视频', tools: ['上传组件', 'S3 / R2 / Supabase Storage'] },
+      { title: '上传参考视频', desc: '导入你想对标的 TikTok / Reels / Shorts 原创视频', tools: ['上传组件', 'S3 / R2 / Supabase Storage'] },
       { title: '视频预处理', desc: '自动拆分音频、画面帧与原始字幕轨道', tools: ['FFmpeg', 'MoviePy'] },
       { title: '提取文案', desc: '把口播、旁白、字幕全部转写成文本', tools: ['gpt-4o-transcribe', 'Whisper'] },
       { title: '画面分解', desc: '���析镜头、节奏、场景与产品展示方式', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
-      { title: '拆解爆款框架', desc: '提取 Hook、痛点、卖点、转折与 CTA 结构', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
+      { title: '拆解原创框架', desc: '提取 Hook、痛点、卖点、转折与 CTA 结构', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: '上传产品素材', desc: '导入你的产品图、产品视频与核心卖点', tools: ['文件上传', 'GPT 视觉理解'] },
       { title: '产品素材理解', desc: '识别产品外观、使用场景、人群与卖点', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },
-      { title: '改写文案再创作', desc: '把爆款结构套用到你自己的产品脚本上', tools: ['gpt-5.5', 'Claude Sonnet'] },
+      { title: '改写文案再创作', desc: '把原创结构套用到你自己的产品脚本上', tools: ['gpt-5.5', 'Claude Sonnet'] },
       { title: '生成分镜脚本', desc: '规划每一秒�����画面、字幕与动作', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: '结合素材生片', desc: '基于产品素材生成新画面与广告片段', tools: ['Runway Gen-4.5', 'Veo', 'Seedance'] },
       { title: 'AI 配音 + 字幕合成', desc: '生成口播、字幕、BGM 并合成完整视频', tools: ['ElevenLabs v3', 'OpenAI TTS', 'FFmpeg'] },
@@ -361,7 +361,7 @@ const zh: Dict = {
 每一个跨境卖家都懂的痛。
 
 【卖点 · 7-13s】
-上传一条爆款、上传你的产品,
+上传一条原创、上传你的产品,
 AI 自动拆框架、改文案、生成新片段并配音。
 
 【转折 · 13-17s】
@@ -372,36 +372,36 @@ AI 自动拆框架、改文案、生成新片段并配音。
 点击下方,免费生成你的第一条产品广告。`,
   },
   models: {
-    eyebrow: '背后的 AI 能力',
-    title: '聚合业界顶尖模型，为每一步选最合适的工具',
-    subtitle: '我们在不同环节自动调度最强模型，你无需关心技术细节，只管拿到能出单的广告。',
+    eyebrow: '围绕你的产品创作',
+    title: '一条原创产品广告该有的一切',
+    subtitle: '从策略到成片，每个创意决定都基于你的产品、适用对象和真实卖点。',
     caps: [
-      { title: '大语言模型', desc: '拆解爆款框架、改写文案、生成分镜脚本' },
-      { title: '视觉理解', desc: '分析镜头节奏、场景，理解你的产品外观与卖点' },
-      { title: '视频 / 图像生成', desc: '基于产品素材生成全新广告画面与片段' },
-      { title: '语音与字幕', desc: 'AI 配音、自动转写与字幕合成，一键成片' },
+      { title: '产品专属创意', desc: '围绕产品真实优势，策划独立的广告角度与开场' },
+      { title: '忠于产品外观', desc: '以你上传的图片为依据，在每个场景中呈现产品' },
+      { title: '完整广告制作', desc: '原创规划分镜、画面和节奏，并适配所选版式' },
+      { title: '可发布的声音与字幕', desc: '使用目标语言生成配音和字幕，并合成为完整成片' },
     ],
   },
   pricing: {
     eyebrow: '定价',
     title: '低价起步，随生意规模增长',
-    subtitle: '按次付费零门槛，订阅制更划算。所有方案都包含完整 12 步生成流程。',
+    subtitle: '按次付费零门槛，订阅制更划算。所有方案都包含完整 原创广告生成流程。',
     mostPopular: '最受欢迎',
     plans: [
-      { name: '按次付费', price: '$9.90', unit: '/ 条视频', desc: '偶尔出片、想先试试效果的卖家', features: ['单条完整广告成片', '12 步全流程处理', '标准清晰度导出', '多平台格式适配'], cta: '按次生成' },
-      { name: '增长订阅', price: '$199', unit: '/ 月', desc: '持续投放、需要大量素材的商家', features: ['每月 120 条视频额度', '高清导出 + 去水印', '优先生成队列', '爆款框架模板库', '团队协作席位'], cta: '开始订阅' },
+      { name: '按次付费', price: '$9.90', unit: '/ 条视频', desc: '偶尔出片、想先试试效果的卖家', features: ['单条完整广告成片', '原创广告全流程处理', '标准清晰度导出', '多平台格式适配'], cta: '按次生成' },
+      { name: '增长订阅', price: '$199', unit: '/ 月', desc: '持续投放、需要大量素材的商家', features: ['每月 120 条视频额度', '高清导出 + 去水印', '优先生成队列', '原创框架模板库', '团队协作席位'], cta: '开始订阅' },
       { name: '团队版', price: '$399', unit: '/ 月', desc: '短视频营销团队与代运营机构', features: ['每月 500 条视频额度', 'API 接入与批量生成', '品牌风格自定义', '专属客户经理', 'SLA 保障'], cta: '开始订阅' },
     ],
   },
   plans: {
-    payg: { name: '按次付费', description: '偶尔使用，按需购买生成次数。', cta: '购买 1 次', features: ['一次性 1 次视频生成', '全部 12 步智能工作流', '1080P 高清导出', '次数永久有效'] },
-    growth: { name: '增长版', description: '中小卖家的高性价比之选。', cta: '订阅增长版', features: ['每月 120 次视频生成', '全部 12 步智能工作流', '4K 超清导出 + 去水印', '多平台一键适配', '优先生成队列'] },
+    payg: { name: '按次付费', description: '偶尔使用，按需购买生成次数。', cta: '购买 1 次', features: ['一次性 1 次视频生成', '全部 原创广告智能工作流', '1080P 高清导出', '次数永久有效'] },
+    growth: { name: '增长版', description: '中小卖家的高性价比之选。', cta: '订阅增长版', features: ['每月 120 次视频生成', '全部 原创广告智能工作流', '4K 超清导出 + 去水印', '多平台一键适配', '优先生成队列'] },
     team: { name: '团队版', description: '团队协作，海量产出。', cta: '订阅团队版', features: ['每月 500 次视频生成', '5 个团队席位', '品牌素材库与模板', '专属客户成功经理', 'API 接入支持'] },
   },
   auth: {
     signUpTitle: '创建你的账户',
     signInTitle: '欢迎回来',
-    signUpSubtitle: '注册后选择方案，即可开始把爆款视频变成你的产品广告。',
+    signUpSubtitle: '注册后选择方案，即可开始把原创视频变成你的产品广告。',
     signInSubtitle: '登录以查看你的方案与剩余试用次数。',
     name: '昵称',
     namePlaceholder: '你的名字',
@@ -443,7 +443,7 @@ AI 自动拆框架、改文案、生成新片段并配音。
     openingPortal: '正在打开账单管理…',
   },
   cta: {
-    title: '下一条爆款，用你的产品拍',
+    title: '下一条原创广告，为你的产品而生',
     subtitle: '不用剪辑、不用找达人、不用等一周。上传素材，5 分钟拿到多平台产品广告。',
     start: '开始创作',
     viewPricing: '查看定价',
@@ -460,7 +460,7 @@ AI 自动拆框架、改文案、生成新片段并配音。
 // ---------------------------------------------------------------------------
 const id: Dict = {
   lang: { label: 'Bahasa' },
-  nav: { workflow: 'Alur Kerja', preview: 'Pratinjau', models: 'Model AI', pricing: 'Harga' },
+  nav: { workflow: 'Alur Kerja', preview: 'Pratinjau', models: 'Keunggulan', pricing: 'Harga' },
   transition: {
     auth: { title: 'Sedang masuk dengan aman', description: 'Memverifikasi akun dan menyiapkan ruang kerja Anda…', trust: 'Akun Anda terlindungi' },
     checkout: { title: 'Menyiapkan pembayaran aman', description: 'Membuat sesi pembayaran Stripe pribadi Anda…', trust: 'Diproses dengan aman oleh Stripe' },
@@ -483,10 +483,10 @@ const id: Dict = {
   },
   hero: {
     badge: 'Dibuat untuk penjual e-commerce lintas negara & TikTok Shop',
-    titleLine1: 'Ubah struktur video viral',
+    titleLine1: 'Ubah struktur video original',
     titleHighlight: 'menjadi iklan produkmu',
     subtitle:
-      'Unggah satu video referensi viral, lalu aset produkmu. AI membedah kerangka yang menang, menulis ulang naskah, membuat footage baru dan sulih suara — iklan TikTok / Reels / Shorts dalam 5 menit.',
+      'Unggah satu video referensi original, lalu aset produkmu. AI membedah kerangka yang menang, menulis ulang naskah, membuat footage baru dan sulih suara — iklan TikTok / Reels / Shorts dalam 5 menit.',
     ctaStart: 'Mulai buat gratis',
     ctaPreview: 'Lihat contoh hasil',
     exportTo: 'Ekspor ke',
@@ -496,8 +496,8 @@ const id: Dict = {
   studio: {
     title: 'Unggah 3 langkah, sisanya AI yang urus',
     subtitle:
-      'Tambahkan referensi viral, aset produk, dan poin jual — tekan buat dan lihat alur 12 langkah berjalan secara real time.',
-    upload1Label: '1 · Video viral referensi',
+      'Tambahkan referensi original, aset produk, dan poin jual — tekan buat dan lihat alur 12 langkah berjalan secara real time.',
+    upload1Label: '1 · Video original referensi',
     upload1Hint: 'Seret video TikTok / Reels / Shorts',
     upload2Label: '2 · Aset produkmu',
     upload2Hint: 'Unggah foto atau video produk',
@@ -544,14 +544,14 @@ const id: Dict = {
     videoAlt: 'Pratinjau iklan produk vertikal buatan AI',
     exportButton: 'Ekspor hasil akhir',
     steps: [
-      { title: 'Unggah video referensi', desc: 'Impor video viral TikTok / Reels / Shorts yang ingin ditiru', tools: ['Pengunggah', 'S3 / R2 / Supabase Storage'] },
+      { title: 'Unggah video referensi', desc: 'Impor video original TikTok / Reels / Shorts yang ingin ditiru', tools: ['Pengunggah', 'S3 / R2 / Supabase Storage'] },
       { title: 'Praproses video', desc: 'Pisahkan otomatis audio, frame, dan trek teks asli', tools: ['FFmpeg', 'MoviePy'] },
       { title: 'Ekstrak naskah', desc: 'Transkripsi semua narasi, sulih suara, dan teks menjadi tulisan', tools: ['gpt-4o-transcribe', 'Whisper'] },
       { title: 'Analisis shot', desc: 'Analisis shot, tempo, adegan, dan cara produk ditampilkan', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
       { title: 'Bedah kerangka', desc: 'Ekstrak Hook, pain point, poin jual, twist, dan CTA', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Unggah aset produk', desc: 'Impor foto, video, dan poin jual utama produkmu', tools: ['Unggah file', 'Visi GPT'] },
       { title: 'Pahami produk', desc: 'Kenali tampilan, use case, audiens, dan poin jual', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },
-      { title: 'Tulis ulang naskah', desc: 'Terapkan struktur viral ke naskah produkmu sendiri', tools: ['gpt-5.5', 'Claude Sonnet'] },
+      { title: 'Tulis ulang naskah', desc: 'Terapkan struktur original ke naskah produkmu sendiri', tools: ['gpt-5.5', 'Claude Sonnet'] },
       { title: 'Buat storyboard', desc: 'Rencanakan visual, teks, dan aksi tiap detik', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Buat footage', desc: 'Hasilkan shot dan klip iklan baru dari aset produk', tools: ['Runway Gen-4.5', 'Veo', 'Seedance'] },
       { title: 'Sulih suara + teks AI', desc: 'Buat sulih suara, teks, BGM, dan susun video lengkap', tools: ['ElevenLabs v3', 'OpenAI TTS', 'FFmpeg'] },
@@ -573,7 +573,7 @@ Stok menumpuk, konversi datar, materi tak pernah cukup —
 setiap penjual lintas negara paham betul rasanya.
 
 [Poin jual · 7-13s]
-Unggah satu video viral dan produkmu,
+Unggah satu video original dan produkmu,
 AI membedah kerangka, menulis ulang naskah, membuat klip baru dan sulih suara.
 
 [Twist · 13-17s]
@@ -588,7 +588,7 @@ Ketuk di bawah untuk membuat iklan produk pertamamu gratis.`,
     title: 'Model terbaik di kelasnya, alat tepat untuk tiap langkah',
     subtitle: 'Kami otomatis memilih model terkuat di tiap tahap — kamu tak perlu urus teknis, cukup dapat iklan yang menjual.',
     caps: [
-      { title: 'Model bahasa besar', desc: 'Bedah kerangka viral, tulis ulang naskah, buat storyboard' },
+      { title: 'Model bahasa besar', desc: 'Bedah kerangka original, tulis ulang naskah, buat storyboard' },
       { title: 'Pemahaman visual', desc: 'Analisis tempo shot dan adegan, pahami produk dan poin jualnya' },
       { title: 'Generasi video / gambar', desc: 'Buat visual dan klip iklan baru dari aset produkmu' },
       { title: 'Suara & teks', desc: 'Sulih suara AI, transkripsi otomatis, dan penyusunan teks sekali klik' },
@@ -601,7 +601,7 @@ Ketuk di bawah untuk membuat iklan produk pertamamu gratis.`,
     mostPopular: 'Paling populer',
     plans: [
       { name: 'Bayar per pakai', price: '$9.90', unit: '/ video', desc: 'Penjual yang sesekali posting atau ingin coba dulu', features: ['Satu iklan penuh per generasi', 'Alur 12 langkah lengkap', 'Ekspor resolusi standar', 'Format multi-platform'], cta: 'Buat per video' },
-      { name: 'Growth', price: '$199', unit: '/ bulan', desc: 'Pedagang kampanye rutin yang butuh volume', features: ['120 video per bulan', 'Ekspor HD + tanpa watermark', 'Antrean generasi prioritas', 'Perpustakaan templat viral', 'Kursi kolaborasi tim'], cta: 'Mulai langganan' },
+      { name: 'Growth', price: '$199', unit: '/ bulan', desc: 'Pedagang kampanye rutin yang butuh volume', features: ['120 video per bulan', 'Ekspor HD + tanpa watermark', 'Antrean generasi prioritas', 'Perpustakaan templat original', 'Kursi kolaborasi tim'], cta: 'Mulai langganan' },
       { name: 'Tim', price: '$399', unit: '/ bulan', desc: 'Tim marketing video pendek dan agensi', features: ['500 video per bulan', 'Akses API & generasi massal', 'Gaya brand kustom', 'Manajer akun khusus', 'Jaminan SLA'], cta: 'Mulai langganan' },
     ],
   },
@@ -613,7 +613,7 @@ Ketuk di bawah untuk membuat iklan produk pertamamu gratis.`,
   auth: {
     signUpTitle: 'Buat akunmu',
     signInTitle: 'Selamat datang kembali',
-    signUpSubtitle: 'Daftar, pilih paket, dan mulai ubah video viral jadi iklan produkmu.',
+    signUpSubtitle: 'Daftar, pilih paket, dan mulai ubah video original jadi iklan produkmu.',
     signInSubtitle: 'Masuk untuk melihat paket dan sisa kredit uji cobamu.',
     name: 'Nama',
     namePlaceholder: 'Namamu',
@@ -655,7 +655,7 @@ Ketuk di bawah untuk membuat iklan produk pertamamu gratis.`,
     openingPortal: 'Membuka portal penagihan…',
   },
   cta: {
-    title: 'Bikin hit viral berikutnya dengan produkmu sendiri',
+    title: 'Bikin hit original berikutnya dengan produkmu sendiri',
     subtitle:
       'Tanpa edit, tanpa influencer, tanpa nunggu seminggu. Unggah asetmu dan dapatkan iklan produk multi-platform dalam 5 menit.',
     start: 'Mulai buat',
@@ -673,7 +673,7 @@ Ketuk di bawah untuk membuat iklan produk pertamamu gratis.`,
 // ---------------------------------------------------------------------------
 const th: Dict = {
   lang: { label: 'ภาษา' },
-  nav: { workflow: 'ขั้นตอน', preview: 'ตัวอย่าง', models: 'โมเดล AI', pricing: 'ราคา' },
+  nav: { workflow: 'ขั้นตอน', preview: 'ตัวอย่าง', models: 'จุดเด่น', pricing: 'ราคา' },
   transition: {
     auth: { title: 'กำลังเข้าสู่ระบบอย่างปลอดภัย', description: 'กำลังตรวจสอบบัญชีและเตรียมพื้นที่ทำงานของคุณ…', trust: 'บัญชีของคุณได้รับการปกป้อง' },
     checkout: { title: 'กำลังเตรียมการชำระเงิน', description: 'กำลังสร้างหน้าชำระเงิน Stripe ส่วนตัวของคุณ…', trust: 'ประมวลผลอย่างปลอดภัยโดย Stripe' },
@@ -717,7 +717,7 @@ const th: Dict = {
     sellingPlaceholder: 'เช่น สูตรพืชอ่อนโยน เห็นผลใน 7 วัน ส่งฟรีทั่วโลก โปรซื้อ 1 แถม 1…',
     uploaded: 'อัปโหลดแล้ว',
     creator: {
-      audienceTitle: 'สินค้านี้สำหรับใคร?', audienceDesc: 'จำเป็น ตัวเลือกนี้กำหนดว่าใครสามารถสวมหรือใช้สินค้าได้', audienceRequired: 'เลือกผู้ใช้สินค้าก่อนสร้างวิดีโอ', audienceCharacterDisabled: 'ระบบจะปิดภาพอ้างอิงบุคคลสำหรับสัตว์เลี้ยงและวิดีโอสินค้าเท่านั้น โดยสัตว์หรือสินค้าที่เลือกจะเป็นตัวแบบหลัก', audienceNames: { human: 'คน', dog: 'สุนัข', cat: 'แมว', other_pet: 'สัตว์เลี้ยงอื่น', product_only: 'สินค้าเท่านั้น' }, characterTitle: 'บุคคลในวิดีโอ', characterDesc: 'เลือกบุคคลที่ตั้งไว้หรืออัปโหลดรูปที่ได้รับอนุญาต เราจะพยายามคงบุคคลเดิมตลอดวิดีโอ', characterDrift: 'AI อาจทำให้ใบหน้าหรือเสื้อผ้าเปลี่ยนเล็กน้อย', characterSelect: 'เลือกบุคคลในวิดีโอ', characterAlt: 'ภาพอ้างอิงบุคคล', uploadCharacter: 'อัปโหลดบุคคลของฉัน', authorization: 'เฉพาะรูปของคุณเองหรือรูปที่ได้รับอนุญาต · JPG/PNG/WebP · 10 MB', qualityTitle: 'คุณภาพวิดีโอ', videoLanguageTitle: 'ภาษาวิดีโอ', videoLanguageDesc: 'จำเป็น ภาษานี้ใช้กับเสียงบรรยาย คำบรรยายบนจอ และเสียงพูด', videoLanguagePlaceholder: 'เลือกภาษาวิดีโอ', videoLanguageRequired: 'โปรดเลือกภาษาก่อนสร้างวิดีโอ', qualityNames: { economy: 'ประหยัด', standard: 'มาตรฐาน', premium: 'พรีเมียม' }, qualityDescriptions: { economy: 'รวดเร็วและประหยัดสำหรับทดสอบไอเดีย', standard: 'สมดุลความคมชัดและต้นทุน', premium: 'การเคลื่อนไหวและภาพที่ดีกว่าสำหรับโฆษณาหลัก' }, per8: 'ต่อ 8 วิ', credits: 'เครดิต', modelApprox: 'ค่าโมเดลประมาณ', estimate: 'ประมาณการ {duration} วิ: {credits} เครดิต ค่าโมเดลวิดีโอประมาณ ${cost}; ไม่รวมภาพสตอรีบอร์ด เสียง พื้นที่จัดเก็บ และการลองใหม่',
+      audienceTitle: 'สินค้านี้สำหรับใคร?', audienceDesc: 'จำเป็น ตัวเลือกนี้กำหนดว่าใครสามารถสวมหรือใช้สินค้าได้', audienceRequired: 'เลือกผู้ใช้สินค้าก่อนสร้างวิดีโอ', audienceCharacterDisabled: 'ระบบจะปิดภาพอ้างอิงบุคคลสำหรับสัตว์เลี้ยงและวิดีโอสินค้าเท่านั้น โดยสัตว์หรือสินค้าที่เลือกจะเป็นตัวแบบหลัก', audienceNames: { human: 'คน', dog: 'สุนัข', cat: 'แมว', other_pet: 'สัตว์เลี้ยงอื่น', product_only: 'สินค้าเท่านั้น' }, characterTitle: 'บุคคลในวิดีโอ', characterDesc: 'เลือกบุคคลที่ตั้งไว้หรืออัปโหลดรูปที่ได้รับอนุญาต เราจะพยายามคงบุคคลเดิมตลอดวิดีโอ', characterDrift: 'AI อาจทำให้ใบหน้าหรือเสื้อผ้าเปล���่ยนเล็กน้อย', characterSelect: 'เลือกบุคคลในวิดีโอ', characterAlt: 'ภาพอ้างอิงบุคคล', uploadCharacter: 'อัปโหลดบุคคลของฉัน', authorization: 'เฉพาะรูปของคุณเองหรือรูปที่ได้รับอนุญาต · JPG/PNG/WebP · 10 MB', qualityTitle: 'คุณภาพวิดีโอ', videoLanguageTitle: 'ภาษาวิดีโอ', videoLanguageDesc: 'จำเป็น ภาษานี้ใช้กับเสียงบรรยาย คำบรรยายบนจอ และเสียงพูด', videoLanguagePlaceholder: 'เลือกภาษาวิดีโอ', videoLanguageRequired: 'โปรดเลือกภาษาก่อนสร้างวิดีโอ', qualityNames: { economy: 'ประหยัด', standard: 'มาตรฐาน', premium: 'พรีเมียม' }, qualityDescriptions: { economy: 'รวดเร็วและประหยัดสำหรับทดสอบไอเดีย', standard: 'สมดุลความคมชัดและต้นทุน', premium: 'การเคลื่อนไหวและภาพที่ดีกว่าสำหรับโฆษณาหลัก' }, per8: 'ต่อ 8 วิ', credits: 'เครดิต', modelApprox: 'ค่าโมเดลประมาณ', estimate: 'ประมาณการ {duration} วิ: {credits} เครดิต ค่าโมเดลวิดีโอประมาณ ${cost}; ไม่รวมภาพสตอรีบอร์ด เสียง พื้นที่จัดเก็บ และการลองใหม่',
     },
     gateAnonTitle: 'เข้าสู่ระบบและซื้อแพ็กเกจเพื่อทดลองสร้าง',
     gateAnonDesc: 'การทดลองใช้เปิดเฉพาะผู้ใช้ที่มีแพ็กเกจใช้งานอยู่ กรุณาเข้าสู่ระบบหรือสมัครก่อน',
@@ -884,7 +884,7 @@ AI ถอดโครงสร้าง เขียนสคริปต์ใ�
 // ---------------------------------------------------------------------------
 const vi: Dict = {
   lang: { label: 'Ngôn ngữ' },
-  nav: { workflow: 'Quy trình', preview: 'Xem trước', models: 'Mô hình AI', pricing: 'Bảng giá' },
+  nav: { workflow: 'Quy trình', preview: 'Xem trước', models: 'Lợi ích', pricing: 'Bảng giá' },
   transition: {
     auth: { title: 'Đang đăng nhập an toàn', description: 'Đang xác minh tài khoản và chuẩn bị không gian làm việc…', trust: 'Tài khoản của bạn được bảo vệ' },
     checkout: { title: 'Đang chuẩn bị thanh toán', description: 'Đang tạo phiên thanh toán Stripe riêng tư của bạn…', trust: 'Được Stripe xử lý an toàn' },
@@ -907,10 +907,10 @@ const vi: Dict = {
   },
   hero: {
     badge: 'Dành cho nhà bán hàng TMĐT xuyên biên giới & TikTok Shop',
-    titleLine1: 'Biến cấu trúc video viral',
+    titleLine1: 'Biến cấu trúc video original',
     titleHighlight: 'thành quảng cáo sản phẩm của bạn',
     subtitle:
-      'Tải lên một video viral tham chiếu, rồi đến tư liệu sản phẩm. AI phân tích khung viral, viết lại kịch bản, tạo cảnh quay và lồng tiếng mới — quảng cáo TikTok / Reels / Shorts trong 5 phút.',
+      'Tải lên một video original tham chiếu, rồi đến tư liệu sản phẩm. AI phân tích khung original, viết lại kịch bản, tạo cảnh quay và lồng tiếng mới — quảng cáo TikTok / Reels / Shorts trong 5 phút.',
     ctaStart: 'B��t đầu miễn phí',
     ctaPreview: 'Xem kết quả mẫu',
     exportTo: 'Xuất sang',
@@ -919,8 +919,8 @@ const vi: Dict = {
   },
   studio: {
     title: 'Tải lên 3 bước, AI lo phần còn lại',
-    subtitle: 'Thêm video viral tham chiếu, tư liệu sản phẩm và điểm bán — nhấn tạo và xem quy trình 12 bước chạy theo thời gian thực.',
-    upload1Label: '1 · Video viral tham chiếu',
+    subtitle: 'Thêm video original tham chiếu, tư liệu sản phẩm và điểm bán — nhấn tạo và xem quy trình 12 bước chạy theo thời gian thực.',
+    upload1Label: '1 · Video original tham chiếu',
     upload1Hint: 'Kéo video TikTok / Reels / Shorts vào',
     upload2Label: '2 · Tư liệu sản phẩm',
     upload2Hint: 'Tải ảnh hoặc video sản phẩm',
@@ -966,14 +966,14 @@ const vi: Dict = {
     videoAlt: 'Xem trước quảng cáo sản phẩm dọc do AI tạo',
     exportButton: 'Xuất bản hoàn chỉnh',
     steps: [
-      { title: 'Tải video tham chiếu', desc: 'Nhập video viral TikTok / Reels / Shorts bạn muốn học theo', tools: ['Trình tải lên', 'S3 / R2 / Supabase Storage'] },
+      { title: 'Tải video tham chiếu', desc: 'Nhập video original TikTok / Reels / Shorts bạn muốn học theo', tools: ['Trình tải lên', 'S3 / R2 / Supabase Storage'] },
       { title: 'Tiền xử lý video', desc: 'Tự động tách âm thanh, khung hình và phụ đề gốc', tools: ['FFmpeg', 'MoviePy'] },
       { title: 'Trích xuất lời thoại', desc: 'Chuyển toàn bộ lời nói, lồng tiếng và phụ đề thành văn bản', tools: ['gpt-4o-transcribe', 'Whisper'] },
       { title: 'Phân tích c��nh quay', desc: 'Phân tích cảnh, nhịp độ, bối cảnh và cách trình bày sản phẩm', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
-      { title: 'Giải mã khung viral', desc: 'Trích xuất Hook, điểm đau, điểm bán, cú lật và CTA', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
+      { title: 'Giải mã khung original', desc: 'Trích xuất Hook, điểm đau, điểm bán, cú lật và CTA', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Tải tư liệu sản phẩm', desc: 'Nhập ảnh, video và điểm bán cốt lõi của sản phẩm', tools: ['Tải tệp', 'Thị giác GPT'] },
       { title: 'Hiểu sản phẩm', desc: 'Nhận diện diện mạo, tình huống dùng, đối tượng và điểm bán', tools: ['gpt-5.5', 'Gemini 2.5 Pro'] },
-      { title: 'Viết lại kịch bản', desc: 'Áp dụng cấu trúc viral vào kịch bản sản phẩm của bạn', tools: ['gpt-5.5', 'Claude Sonnet'] },
+      { title: 'Viết lại kịch bản', desc: 'Áp dụng cấu trúc original vào kịch bản sản phẩm của bạn', tools: ['gpt-5.5', 'Claude Sonnet'] },
       { title: 'Tạo storyboard', desc: 'Lên kế hoạch hình ảnh, phụ đề và hành động từng giây', tools: ['gpt-5.5', 'Claude', 'Gemini'] },
       { title: 'Tạo cảnh quay', desc: 'Tạo cảnh và clip quảng cáo mới từ tư liệu sản phẩm', tools: ['Runway Gen-4.5', 'Veo', 'Seedance'] },
       { title: 'Lồng tiếng + phụ đề AI', desc: 'Tạo lồng tiếng, phụ đề, nh��c nền và ghép video hoàn chỉnh', tools: ['ElevenLabs v3', 'OpenAI TTS', 'FFmpeg'] },
@@ -995,7 +995,7 @@ Tồn kho chất đống, chuyển đổi giậm chân, thiếu tư liệu tri�
 nhà bán xuyên biên giới nào cũng thấm.
 
 [Điểm bán · 7-13s]
-Tải lên một video viral và sản phẩm của bạn,
+Tải lên một video original và sản phẩm của bạn,
 AI giải mã khung, viết lại lời, tạo clip mới và lồng tiếng.
 
 [Cú lật · 13-17s]
@@ -1010,7 +1010,7 @@ Chạm bên dưới để tạo quảng cáo sản phẩm đầu tiên miễn ph
     title: 'Mô hình hàng đầu, đúng công cụ cho mỗi bước',
     subtitle: 'Chúng tôi tự động chọn mô hình mạnh nhất ở mỗi giai đoạn — bạn không cần lo kỹ thuật, chỉ cần quảng cáo bán được hàng.',
     caps: [
-      { title: 'Mô hình ngôn ngữ lớn', desc: 'Giải mã khung viral, viết lại lời, tạo storyboard' },
+      { title: 'Mô hình ngôn ngữ lớn', desc: 'Giải mã khung original, viết lại lời, tạo storyboard' },
       { title: 'Hiểu hình ảnh', desc: 'Phân tích nhịp cảnh và bối cảnh, hiểu sản phẩm và điểm bán' },
       { title: 'Tạo video / hình ảnh', desc: 'Tạo hình ảnh và clip quảng cáo mới từ tư liệu sản phẩm' },
       { title: 'Giọng nói & phụ đề', desc: 'Lồng tiếng AI, tự động chép lời và ghép phụ đề chỉ một chạm' },
@@ -1023,7 +1023,7 @@ Chạm bên dưới để tạo quảng cáo sản phẩm đầu tiên miễn ph
     mostPopular: 'Phổ biến nhất',
     plans: [
   { name: 'Trả theo lượt', price: '$9.90', unit: '/ video', desc: 'Người bán đăng thỉnh thoảng hoặc muốn thử trước', features: ['Một quảng cáo hoàn chỉnh mỗi l��n tạo', 'Đủ quy trình 12 bước', 'Xuất độ phân giải tiêu chuẩn', 'Định dạng đa nền tảng'], cta: 'Tạo theo lượt' },
-  { name: 'Growth', price: '$199', unit: '/ tháng', desc: 'Nhà bán chạy chiến dịch liên tục, cần số lượng', features: ['120 video mỗi tháng', 'Xuất HD + không watermark', 'Hàng đợi ưu tiên', 'Thư viện mẫu viral', 'Ghế cộng tác nhóm'], cta: 'Bắt đầu đăng ký' },
+  { name: 'Growth', price: '$199', unit: '/ tháng', desc: 'Nhà bán chạy chiến dịch liên tục, cần số lượng', features: ['120 video mỗi tháng', 'Xuất HD + không watermark', 'Hàng đợi ưu tiên', 'Thư viện mẫu original', 'Ghế cộng tác nhóm'], cta: 'Bắt đầu đăng ký' },
   { name: 'Nhóm', price: '$399', unit: '/ tháng', desc: 'Đội marketing video ngắn và agency', features: ['500 video mỗi tháng', 'Truy cập API & tạo hàng loạt', 'Tùy chỉnh phong cách thương hiệu', 'Quản lý tài khoản riêng', 'Cam kết SLA'], cta: 'Bắt đầu đăng ký' },
     ],
   },
@@ -1033,9 +1033,9 @@ Chạm bên dưới để tạo quảng cáo sản phẩm đầu tiên miễn ph
     team: { name: 'Nhóm', description: 'Cộng tác nhóm, sản lượng lớn.', cta: 'Đăng ký gói Nhóm', features: ['500 lượt tạo video / tháng', '5 ghế nhóm', 'Thư viện tư liệu & mẫu thương hiệu', 'Quản lý thành công riêng', 'Hỗ trợ tích hợp API'] },
   },
   auth: {
-    signUpTitle: 'Tạo tài khoản của bạn',
+    signUpTitle: 'Tạo tài khoản của b��n',
     signInTitle: 'Chào mừng trở lại',
-    signUpSubtitle: 'Đăng ký, chọn gói và bắt đầu biến video viral thành quảng cáo sản phẩm.',
+    signUpSubtitle: 'Đăng ký, chọn gói và bắt đầu biến video original thành quảng cáo sản phẩm.',
     signInSubtitle: 'Đăng nhập để xem gói và số lượt dùng thử còn lại.',
     name: 'Tên',
     namePlaceholder: 'Tên của bạn',
@@ -1077,7 +1077,7 @@ Chạm bên dưới để tạo quảng cáo sản phẩm đầu tiên miễn ph
     openingPortal: 'Đang mở cổng thanh toán…',
   },
   cta: {
-    title: 'Quay hit viral tiếp theo bằng chính sản phẩm của bạn',
+    title: 'Quay hit original tiếp theo bằng chính sản phẩm của bạn',
     subtitle:
       'Không dựng, không KOL, không chờ cả tuần. Tải tư liệu lên và nhận quảng cáo sản phẩm đa nền tảng trong 5 phút.',
     start: 'Bắt đầu tạo',

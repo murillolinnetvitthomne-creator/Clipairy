@@ -11,13 +11,7 @@ export function Hero() {
   const { t } = useI18n()
 
   return (
-    <section id="top" className="relative overflow-hidden">
-      {/* ambient glow */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-32 left-1/2 h-[420px] w-[820px] -translate-x-1/2 rounded-full bg-primary/15 blur-[120px]"
-      />
-
+    <section id="top" className="overflow-hidden border-b border-border/60">
       <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 md:py-24 lg:grid-cols-2 lg:items-center">
         <div className="relative">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground">
