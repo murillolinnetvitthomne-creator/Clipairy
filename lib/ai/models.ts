@@ -4,7 +4,7 @@
 
 // Multimodal model that analyzes the uploaded reference video and product images,
 // then writes the ad script and storyboard.
-export const TEXT_MODEL = 'google/gemini-3.5-flash'
+export const TEXT_MODEL = 'google/gemini-2.5-flash'
 
 // Image model for storyboard frames.
 export const IMAGE_MODEL = 'openai/gpt-image-1'
