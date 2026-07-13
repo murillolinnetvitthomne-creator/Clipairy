@@ -16,6 +16,11 @@ import {
 } from '@/lib/video-options'
 import { getVideoLanguage, type VideoLanguage } from '@/lib/video-languages'
 import {
+  allowsCharacterReference,
+  getProductAudience,
+  type ProductAudience,
+} from '@/lib/product-audiences'
+import {
   generateVideoWorkflow,
   type GenerateVideoInput,
 } from '@/workflows/generate-video'
@@ -35,6 +40,7 @@ export type GenerationState = {
   aspectRatio: GenerateVideoInput['aspectRatio']
   qualityTier: QualityTier
   videoLanguage: VideoLanguage
+  productAudience: ProductAudience
   characterPresetId: CharacterPresetId | null
   characterSource: 'none' | 'preset' | 'upload'
   creditsCharged: number
@@ -62,6 +68,7 @@ function toState(row: typeof generation.$inferSelect): GenerationState {
     aspectRatio: row.aspectRatio as GenerateVideoInput['aspectRatio'],
     qualityTier: row.qualityTier as QualityTier,
     videoLanguage: row.videoLanguage as VideoLanguage,
+    productAudience: row.productAudience as ProductAudience,
     characterPresetId: row.characterPresetId as CharacterPresetId | null,
     characterSource: row.characterSource as GenerationState['characterSource'],
     creditsCharged: row.creditsCharged,
@@ -90,6 +97,7 @@ export async function startGeneration(
   characterPresetId?: CharacterPresetId,
   characterImagePath?: string,
   videoLanguage?: VideoLanguage,
+  productAudience?: ProductAudience,
 ): Promise<GenerationState> {
   const userId = await getUserId()
   if (![8, 16, 24, 30].includes(duration)) throw new Error('INVALID_DURATION')
@@ -100,15 +108,20 @@ export async function startGeneration(
   if (!quality) throw new Error('INVALID_QUALITY')
   const language = getVideoLanguage(videoLanguage)
   if (!language) throw new Error('VIDEO_LANGUAGE_REQUIRED')
-  const preset = characterPresetId ? getCharacterPreset(characterPresetId) : undefined
-  if (characterPresetId && !preset) throw new Error('INVALID_CHARACTER')
-  if (characterPresetId && characterImagePath) throw new Error('MULTIPLE_CHARACTERS')
+  const audience = getProductAudience(productAudience)
+  if (!audience || !productAudience) throw new Error('PRODUCT_AUDIENCE_REQUIRED')
+  const characterAllowed = allowsCharacterReference(productAudience)
+  const effectivePresetId = characterAllowed ? characterPresetId : undefined
+  const effectiveCharacterImagePath = characterAllowed ? characterImagePath : undefined
+  const preset = effectivePresetId ? getCharacterPreset(effectivePresetId) : undefined
+  if (effectivePresetId && !preset) throw new Error('INVALID_CHARACTER')
+  if (effectivePresetId && effectiveCharacterImagePath) throw new Error('MULTIPLE_CHARACTERS')
 
   const prefix = `uploads/${userId}/`
   const paths = [
     ...(referenceVideoPath ? [referenceVideoPath] : []),
     ...productImagePaths,
-    ...(characterImagePath ? [characterImagePath] : []),
+    ...(effectiveCharacterImagePath ? [effectiveCharacterImagePath] : []),
   ]
   if (paths.some((pathname) => !pathname.startsWith(prefix))) throw new Error('INVALID_UPLOAD')
 
@@ -123,7 +136,7 @@ export async function startGeneration(
   }
 
   const creditsRequired = getCreditsRequired(duration, qualityTier)
-  const characterSource = characterImagePath ? 'upload' : preset ? 'preset' : 'none'
+  const characterSource = effectiveCharacterImagePath ? 'upload' : preset ? 'preset' : 'none'
   const cleanSellingPoints = sellingPoints.trim()
 
   const row = await db.transaction(async (tx) => {
@@ -156,9 +169,10 @@ export async function startGeneration(
         qualityTier,
         videoModel: quality.model,
         videoLanguage: language.code,
+        productAudience,
         characterSource,
         characterPresetId: preset?.id ?? null,
-        characterImagePath: characterImagePath ?? null,
+        characterImagePath: effectiveCharacterImagePath ?? null,
         status: 'pending',
         step: 0,
         creditsCharged: creditsRequired,
@@ -181,8 +195,9 @@ export async function startGeneration(
       aspectRatio,
       qualityTier,
       characterPresetId: preset?.id ?? null,
-      characterImagePath: characterImagePath ?? null,
+      characterImagePath: effectiveCharacterImagePath ?? null,
       videoLanguage: language.code,
+      productAudience,
     }])
     await db
       .update(generation)

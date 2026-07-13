@@ -12,6 +12,7 @@ import {
 import { generateVoiceover } from '@/lib/ai/voiceover'
 import { getCharacterPreset, type CharacterPresetId, type QualityTier } from '@/lib/video-options'
 import { type VideoLanguage } from '@/lib/video-languages'
+import { type ProductAudience } from '@/lib/product-audiences'
 import { sleep } from 'workflow'
 
 export type GenerateVideoInput = {
@@ -26,6 +27,7 @@ export type GenerateVideoInput = {
   characterPresetId: CharacterPresetId | null
   characterImagePath: string | null
   videoLanguage: VideoLanguage
+  productAudience: ProductAudience
 }
 
 async function setProgress(genId: number, step: number, fields: Record<string, unknown> = {}) {
@@ -42,6 +44,7 @@ async function createScript(input: GenerateVideoInput) {
     input.referenceVideoPath,
     input.productImagePaths,
     input.videoLanguage,
+    input.productAudience,
   )
 }
 
@@ -60,6 +63,7 @@ async function createPrivateFramesV2(
     input.productImagePaths,
     input.characterPresetId,
     input.characterImagePath,
+    input.productAudience,
   )
 }
 
@@ -82,6 +86,7 @@ async function createPrivateSegmentV2(
     input.qualityTier,
     getCharacterPreset(input.characterPresetId)?.description ??
       (input.characterImagePath ? 'the exact person shown in the uploaded reference image' : null),
+    input.productAudience,
   )
 }
 

@@ -15,6 +15,7 @@ import {
   type CharacterPresetId,
   type QualityTier,
 } from '@/lib/video-options'
+import { PRODUCT_AUDIENCES, type ProductAudience } from '@/lib/product-audiences'
 
 export type VideoAspectRatio = '9:16' | '16:9'
 export type VideoDuration = 8 | 16 | 24 | 30
@@ -59,6 +60,7 @@ export async function generateStoryboardImages(
   productImagePaths: string[] = [],
   characterPresetId?: CharacterPresetId | null,
   characterImagePath?: string | null,
+  productAudience: ProductAudience = 'human',
 ): Promise<string[]> {
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
   const productReferences = await Promise.all(productImagePaths.map(async (pathname) => {
@@ -81,10 +83,12 @@ export async function generateStoryboardImages(
             text:
               `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
               characterDirection +
+              `MANDATORY PRODUCT USER: ${PRODUCT_AUDIENCES[productAudience].instruction} ` +
               'Preserve the exact product identity, shape, colors, logo and package details shown in the product reference images. ' +
               'Bright, high-energy, professional product photography, cinematic lighting.',
           }
         : `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
+          `MANDATORY PRODUCT USER: ${PRODUCT_AUDIENCES[productAudience].instruction} ` +
           'Bright, high-energy, professional product photography, cinematic lighting.',
       aspectRatio,
     })
@@ -107,6 +111,7 @@ export async function generateAdVideoSegment(
   aspectRatio: VideoAspectRatio,
   qualityTier: QualityTier = 'premium',
   characterDescription?: string | null,
+  productAudience: ProductAudience = 'human',
 ): Promise<string> {
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
   const quality = QUALITY_TIERS[qualityTier]
@@ -116,7 +121,8 @@ export async function generateAdVideoSegment(
     (characterDescription
       ? `Keep the exact same person throughout: ${characterDescription}. Preserve face, age, hair and wardrobe. `
       : '') +
-    'Maintain consistent product, talent, lighting and commercial style across parts. Fast-paced and energetic.'
+    `MANDATORY PRODUCT USER THROUGHOUT THE ENTIRE CLIP: ${PRODUCT_AUDIENCES[productAudience].instruction} ` +
+    'Maintain consistent product, subject, lighting and commercial style across parts. Fast-paced and energetic.'
 
   const { video } = await generateVideo({
     model: quality.model,

@@ -33,6 +33,11 @@ import {
   type QualityTier,
 } from '@/lib/video-options'
 import { VIDEO_LANGUAGES, type VideoLanguage } from '@/lib/video-languages'
+import {
+  allowsCharacterReference,
+  PRODUCT_AUDIENCE_IDS,
+  type ProductAudience,
+} from '@/lib/product-audiences'
 
 type StepState = 'pending' | 'processing' | 'done'
 type Status = 'idle' | 'running' | 'done' | 'error'
@@ -54,6 +59,7 @@ export function Studio({
   const [status, setStatus] = useState<Status>('idle')
   const [gen, setGen] = useState<GenerationState | null>(null)
   const [sellingPoints, setSellingPoints] = useState('')
+  const [productAudience, setProductAudience] = useState<ProductAudience | ''>('')
   const [referenceVideo, setReferenceVideo] = useState<UploadedAsset[]>([])
   const [productImages, setProductImages] = useState<UploadedAsset[]>([])
   const [characterImages, setCharacterImages] = useState<UploadedAsset[]>([])
@@ -91,7 +97,7 @@ export function Studio({
   const progress = Math.round((Math.min(currentStep, STEP_COUNT) / STEP_COUNT) * 100)
 
   const run = async () => {
-    if (!canTrial || !videoLanguage) return
+    if (!canTrial || !videoLanguage || !productAudience) return
     stopPolling()
     setStatus('running')
     setGen(null)
@@ -105,9 +111,10 @@ export function Studio({
         referenceVideo[0]?.pathname,
         productImages.map((asset) => asset.pathname),
         qualityTier,
-        characterImages.length === 0 ? characterPresetId : undefined,
-        characterImages[0]?.pathname,
+        allowsCharacterReference(productAudience) && characterImages.length === 0 ? characterPresetId : undefined,
+        allowsCharacterReference(productAudience) ? characterImages[0]?.pathname : undefined,
         videoLanguage,
+        productAudience,
       )
     } catch {
       // Gate errors (NO_PLAN / NO_CREDITS) — the banner already covers these.
@@ -195,7 +202,46 @@ export function Studio({
         </div>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+      <fieldset disabled={status === 'running'} className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
+        <legend className="px-1 text-sm font-semibold text-foreground">
+          {t.studio.creator.audienceTitle}
+        </legend>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          {t.studio.creator.audienceDesc}
+        </p>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-5">
+          {PRODUCT_AUDIENCE_IDS.map((audienceId) => (
+            <button
+              key={audienceId}
+              type="button"
+              aria-pressed={productAudience === audienceId}
+              onClick={() => {
+                setProductAudience(audienceId)
+                if (!allowsCharacterReference(audienceId)) setCharacterImages([])
+              }}
+              className={`rounded-xl border px-3 py-3 text-left text-sm font-medium transition-colors ${
+                productAudience === audienceId
+                  ? 'border-primary bg-primary/10 text-foreground'
+                  : 'border-border bg-background text-foreground hover:border-primary/60'
+              }`}
+            >
+              {t.studio.creator.audienceNames[audienceId]}
+            </button>
+          ))}
+        </div>
+        {!productAudience && (
+          <p className="mt-2 text-xs font-medium text-primary">{t.studio.creator.audienceRequired}</p>
+        )}
+        {productAudience && !allowsCharacterReference(productAudience) && (
+          <p className="mt-3 rounded-lg bg-secondary px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+            {t.studio.creator.audienceCharacterDisabled}
+          </p>
+        )}
+      </fieldset>
+
+      <div className={`mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5 ${
+        productAudience && !allowsCharacterReference(productAudience) ? 'opacity-55' : ''
+      }`}>
         <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h3 className="text-sm font-semibold text-foreground">{t.studio.creator.characterTitle}</h3>
@@ -205,7 +251,7 @@ export function Studio({
           </div>
           <span className="text-xs text-muted-foreground">{t.studio.creator.characterDrift}</span>
         </div>
-        <fieldset disabled={status === 'running'} className="mt-4">
+        <fieldset disabled={status === 'running' || (!!productAudience && !allowsCharacterReference(productAudience))} className="mt-4">
           <legend className="sr-only">{t.studio.creator.characterSelect}</legend>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
             {CHARACTER_PRESETS.map((character) => {
@@ -250,7 +296,7 @@ export function Studio({
             hint={t.studio.creator.authorization}
             value={characterImages}
             onChange={(assets) => setCharacterImages(assets.slice(0, 1))}
-            disabled={status === 'running'}
+            disabled={status === 'running' || (!!productAudience && !allowsCharacterReference(productAudience))}
             maxFiles={1}
           />
         </div>
@@ -461,7 +507,7 @@ export function Studio({
             ) : (
               <Button
                 onClick={run}
-                disabled={status === 'running' || !videoLanguage}
+                disabled={status === 'running' || !videoLanguage || !productAudience}
                 className="flex-1 font-medium sm:flex-none"
                 size="lg"
               >
