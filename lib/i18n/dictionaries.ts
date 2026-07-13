@@ -716,6 +716,9 @@ const th: Dict = {
     upload3Label: '3 · จุดขาย',
     sellingPlaceholder: 'เช่น สูตรพืชอ่อนโยน เห็นผลใน 7 วัน ส่งฟรีทั่วโลก โปรซื้อ 1 แถม 1…',
     uploaded: 'อัปโหลดแล้ว',
+    creator: {
+      characterTitle: 'บุคคลในวิดีโอ', characterDesc: 'เลือกบุคคลที่ตั้งไว้หรืออัปโหลดรูปที่ได้รับอนุญาต เราจะพยายามคงบุคคลเดิมตลอดวิดีโอ', characterDrift: 'AI อาจทำให้ใบหน้าหรือเสื้อผ้าเปลี่ยนเล็กน้อย', characterSelect: 'เลือกบุคคลในวิดีโอ', characterAlt: 'ภาพอ้างอิงบุคคล', uploadCharacter: 'อัปโหลดบุคคลของฉัน', authorization: 'เฉพาะรูปของคุณเองหรือรูปที่ได้รับอนุญาต · JPG/PNG/WebP · 10 MB', qualityTitle: 'คุณภาพวิดีโอ', qualityNames: { economy: 'ประหยัด', standard: 'มาตรฐาน', premium: 'พรีเมียม' }, qualityDescriptions: { economy: 'รวดเร็วและประหยัดสำหรับทดสอบไอเดีย', standard: 'สมดุลความคมชัดและต้นทุน', premium: 'การเคลื่อนไหวและภาพที่ดีกว่าสำหรับโฆษณาหลัก' }, per8: 'ต่อ 8 วิ', credits: 'เครดิต', modelApprox: 'ค่าโมเดลประมาณ', estimate: 'ประมาณการ {duration} วิ: {credits} เครดิต ค่าโมเดลวิดีโอประมาณ ${cost}; ไม่รวมภาพสตอรีบอร์ด เสียง พื้นที่จัดเก็บ และการลองใหม่',
+    },
     gateAnonTitle: 'เข้าสู่ระบบและซื้อแพ็กเกจเพื่อทดลองสร้าง',
     gateAnonDesc: 'การทดลองใช้เปิดเฉพาะผู้ใช้ที่มีแพ็กเกจใช้งานอยู่ กรุณาเข้าสู่ระบบหรือสมัครก่อน',
     gateNoPlanTitle: 'ซื้อแพ็กเกจเพื่อปลดล็อกจำนวนครั้งทดลอง',
@@ -752,7 +755,7 @@ const th: Dict = {
     videoAlt: 'ตัวอย่างโฆษณาสินค้าแนวตั้งที่สร้างโดย AI',
     exportButton: 'ส่งออกวิดีโอ',
     steps: [
-      { title: 'อัปโหลดวิดีโออ้างอิง', desc: 'นำเข้าวิดีโอไวรัล TikTok / Reels / Shorts ที่อยากอ้างอิง', tools: ['ตัวอัปโหลด', 'S3 / R2 / Supabase Storage'] },
+      { title: 'อ��ปโหลดวิดีโออ้างอิง', desc: 'นำเข้าวิดีโอไวรัล TikTok / Reels / Shorts ที่อยากอ้างอิง', tools: ['ตัวอัปโหลด', 'S3 / R2 / Supabase Storage'] },
       { title: 'ประมวลผลวิดีโอเบื้องต้น', desc: 'แยกเสียง เฟรมภาพ และแทร็กคำบรรยายต้นฉบับอัตโนมัติ', tools: ['FFmpeg', 'MoviePy'] },
       { title: 'ดึงข้อความ', desc: 'ถอดเสียงพูด เสียงบรรยาย และคำบรรยายทั้งหมดเป็นข้อความ', tools: ['gpt-4o-transcribe', 'Whisper'] },
       { title: 'วิเคราะห์ช็อต', desc: 'วิเคราะห์ช็อต จังหวะ ฉาก และวิธีนำเสนอสินค้า', tools: ['gpt-5.5 Vision', 'Gemini Video'] },
@@ -900,7 +903,7 @@ const vi: Dict = {
     openMenu: 'Mở menu',
     closeMenu: 'Đóng menu',
     mainNav: 'Điều hướng chính',
-    mobileNav: 'Điều hướng di động',
+    mobileNav: 'Điều hướng di đ��ng',
   },
   hero: {
     badge: 'Dành cho nhà bán hàng TMĐT xuyên biên giới & TikTok Shop',
@@ -924,6 +927,9 @@ const vi: Dict = {
     upload3Label: '3 · Điểm bán',
     sellingPlaceholder: 'vd: công thức thực vật dịu nhẹ, hiệu quả sau 7 ngày, miễn phí ship toàn cầu, mua 1 tặng 1…',
     uploaded: 'Đã tải lên',
+    creator: {
+      characterTitle: 'Nhân vật xuất hiện', characterDesc: 'Chọn nhân vật có sẵn hoặc tải ảnh đã được cho phép. Chúng tôi sẽ cố giữ cùng một người xuyên suốt video.', characterDrift: 'AI có thể làm khuôn mặt hoặc trang phục thay đổi nhẹ', characterSelect: 'Chọn nhân vật xuất hiện', characterAlt: 'ảnh tham chiếu nhân vật', uploadCharacter: 'Tải nhân vật của tôi', authorization: 'Chỉ ảnh của bạn hoặc ảnh được cho phép · JPG/PNG/WebP · 10 MB', qualityTitle: 'Chất lượng video', qualityNames: { economy: 'Tiết kiệm', standard: 'Tiêu chuẩn', premium: 'Cao cấp' }, qualityDescriptions: { economy: 'Nhanh và tiết kiệm để thử ý tưởng', standard: 'Cân bằng độ nét và chi phí', premium: 'Chuyển động và hình ảnh tốt hơn cho quảng cáo chủ lực' }, per8: 'mỗi 8 giây', credits: 'lượt', modelApprox: 'mô hình khoảng', estimate: 'Ước tính {duration} giây: {credits} lượt, mô hình video khoảng ${cost}; chưa gồm storyboard, giọng đọc, lưu trữ và thử lại.',
+    },
     gateAnonTitle: 'Đăng nhập và mua gói để dùng thử tạo video',
     gateAnonDesc: 'Dùng thử chỉ dành cho người dùng có gói đang hoạt động. Vui lòng đăng nhập hoặc đăng ký trước.',
     gateNoPlanTitle: 'Mua gói để mở khóa lượt dùng thử',

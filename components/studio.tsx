@@ -197,15 +197,15 @@ export function Studio({
       <div className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 className="text-sm font-semibold text-foreground">出镜人物</h3>
+            <h3 className="text-sm font-semibold text-foreground">{t.studio.creator.characterTitle}</h3>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-              选择预设人物或上传已获授权的真人照片，全片将尽量保持同一人物。
+              {t.studio.creator.characterDesc}
             </p>
           </div>
-          <span className="text-xs text-muted-foreground">AI 可能出现轻微脸部或服装漂移</span>
+          <span className="text-xs text-muted-foreground">{t.studio.creator.characterDrift}</span>
         </div>
         <fieldset disabled={status === 'running'} className="mt-4">
-          <legend className="sr-only">选择出镜人物</legend>
+          <legend className="sr-only">{t.studio.creator.characterSelect}</legend>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-8">
             {CHARACTER_PRESETS.map((character) => {
               const selected = characterImages.length === 0 && characterPresetId === character.id
@@ -224,7 +224,7 @@ export function Studio({
                 >
                   <Image
                     src={character.image}
-                    alt={`${character.name} 人物参考`}
+                    alt={`${character.name} ${t.studio.creator.characterAlt}`}
                     width={240}
                     height={300}
                     className="aspect-[4/5] w-full object-cover"
@@ -233,7 +233,9 @@ export function Studio({
                     <span className="text-xs font-semibold text-foreground">{character.name}</span>
                     {selected && <Check className="size-3.5 text-primary" aria-hidden="true" />}
                   </span>
-                  <span className="block px-2 pb-2 text-[11px] text-muted-foreground">{character.style}</span>
+                  <span className="block px-2 pb-2 text-[11px] text-muted-foreground">
+                    {t.studio.creator.characterTitle}
+                  </span>
                 </button>
               )
             })}
@@ -243,8 +245,8 @@ export function Studio({
           <MediaUploader
             userId={userId}
             kind="image"
-            label="上传我的人物"
-            hint="仅限本人或已授权照片 · JPG/PNG/WebP · 10 MB"
+            label={t.studio.creator.uploadCharacter}
+            hint={t.studio.creator.authorization}
             value={characterImages}
             onChange={(assets) => setCharacterImages(assets.slice(0, 1))}
             disabled={status === 'running'}
@@ -256,7 +258,7 @@ export function Studio({
       <fieldset disabled={status === 'running'} className="mt-6 rounded-2xl border border-border bg-card p-4 sm:p-5">
         <legend className="flex items-center gap-2 px-1 text-sm font-semibold text-foreground">
           <Gauge className="size-4 text-primary" aria-hidden="true" />
-          视频品质
+          {t.studio.creator.qualityTitle}
         </legend>
         <div className="mt-3 grid gap-3 md:grid-cols-3">
           {QUALITY_TIER_IDS.map((tierId) => {
@@ -273,21 +275,26 @@ export function Studio({
                 }`}
               >
                 <span className="flex items-center justify-between gap-3">
-                  <span className="font-semibold text-foreground">{quality.name}</span>
+                  <span className="font-semibold text-foreground">{t.studio.creator.qualityNames[tierId]}</span>
                   <span className="rounded-full bg-secondary px-2 py-1 text-xs font-medium text-primary">
                     {quality.resolutionLabel}
                   </span>
                 </span>
-                <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">{quality.description}</span>
+                <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">
+                  {t.studio.creator.qualityDescriptions[tierId]}
+                </span>
                 <span className="mt-3 block text-xs font-medium text-foreground">
-                  每 8 秒 {quality.creditMultiplier} 个额度 · 模型约 ${quality.estimatedCostPerSegment.toFixed(2)}
+                  {t.studio.creator.per8} {quality.creditMultiplier} {t.studio.creator.credits} · {t.studio.creator.modelApprox} ${quality.estimatedCostPerSegment.toFixed(2)}
                 </span>
               </button>
             )
           })}
         </div>
         <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-          当前 {duration} 秒预计消耗 {creditsRequired} 个额度，视频模型约 ${estimatedModelCost.toFixed(2)}；不含分镜图、语音、存储及失败重试。
+          {t.studio.creator.estimate
+            .replace('{duration}', String(duration))
+            .replace('{credits}', String(creditsRequired))
+            .replace('{cost}', estimatedModelCost.toFixed(2))}
         </p>
       </fieldset>
 
@@ -315,7 +322,7 @@ export function Studio({
             ))}
           </div>
           <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-            {duration} 秒视频消耗 {creditsRequired} 个 8 秒额度。
+            {duration}{t.studio.secondsUnit} · {creditsRequired} {t.studio.creator.credits}
           </p>
         </fieldset>
 
