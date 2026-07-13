@@ -8,7 +8,11 @@ export async function GET(request: Request) {
   if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const pathname = new URL(request.url).searchParams.get('pathname')
-  if (!pathname || !pathname.startsWith(`uploads/${session.user.id}/`)) {
+  const allowedPrefixes = [
+    `uploads/${session.user.id}/`,
+    `generations/${session.user.id}/`,
+  ]
+  if (!pathname || !allowedPrefixes.some((prefix) => pathname.startsWith(prefix))) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 

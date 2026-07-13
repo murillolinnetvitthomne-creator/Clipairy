@@ -17,11 +17,17 @@ const execFileAsync = promisify(execFile)
 
 async function uploadBytes(bytes: Uint8Array, mediaType: string, path: string): Promise<string> {
   const blob = await put(path, Buffer.from(bytes), {
-    access: 'public',
+    access: 'private',
     contentType: mediaType,
     addRandomSuffix: true,
   })
-  return blob.url
+  return blob.pathname
+}
+
+async function downloadBytes(pathname: string): Promise<Uint8Array> {
+  const result = await get(pathname, { access: 'private' })
+  if (!result || result.statusCode !== 200) throw new Error(`Generated media unavailable: ${pathname}`)
+  return new Uint8Array(await new Response(result.stream).arrayBuffer())
 }
 
 export async function generateStoryboardImages(
@@ -84,7 +90,7 @@ export async function generateAdVideoSegment(
     resolution: VIDEO_RESOLUTION,
     duration: 8,
     ...(segmentIndex === 0 && firstFrameUrl
-      ? { frameImages: [{ image: firstFrameUrl, frameType: 'first_frame' as const }] }
+      ? { frameImages: [{ image: await downloadBytes(firstFrameUrl), frameType: 'first_frame' as const }] }
       : {}),
   })
 
@@ -108,10 +114,8 @@ export async function assembleVideo(
   try {
     const segmentPaths: string[] = []
     for (let i = 0; i < segmentUrls.length; i++) {
-      const response = await fetch(segmentUrls[i])
-      if (!response.ok) throw new Error(`Unable to download video segment ${i + 1}`)
       const segmentPath = join(workDir, `segment-${i}.mp4`)
-      await writeFile(segmentPath, Buffer.from(await response.arrayBuffer()))
+      await writeFile(segmentPath, Buffer.from(await downloadBytes(segmentUrls[i])))
       segmentPaths.push(segmentPath)
     }
 

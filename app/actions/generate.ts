@@ -35,6 +35,11 @@ export type GenerationState = {
   createdAt: string
 }
 
+function mediaUrl(value: string | null): string | null {
+  if (!value || value.startsWith('http://') || value.startsWith('https://')) return value
+  return `/api/uploads/file?pathname=${encodeURIComponent(value)}`
+}
+
 function toState(row: typeof generation.$inferSelect): GenerationState {
   return {
     id: row.id,
@@ -45,9 +50,9 @@ function toState(row: typeof generation.$inferSelect): GenerationState {
     aspectRatio: row.aspectRatio as GenerateVideoInput['aspectRatio'],
     script: row.script,
     storyboard: row.storyboard ?? null,
-    imageUrls: row.imageUrls ?? null,
-    videoUrl: row.videoUrl,
-    audioUrl: row.audioUrl,
+    imageUrls: row.imageUrls?.map((value) => mediaUrl(value) ?? value) ?? null,
+    videoUrl: mediaUrl(row.videoUrl),
+    audioUrl: mediaUrl(row.audioUrl),
     error: row.error,
     createdAt: row.createdAt.toISOString(),
   }

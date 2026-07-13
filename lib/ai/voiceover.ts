@@ -32,9 +32,9 @@ export async function generateVoiceover(
   const res = await fetch(audioUrl)
   const bytes = new Uint8Array(await res.arrayBuffer())
   const blob = await put(`generations/${userId}/${genId}/voiceover.mp3`, Buffer.from(bytes), {
-    access: 'public',
+    access: 'private',
     contentType: res.headers.get('content-type') ?? 'audio/mpeg',
     addRandomSuffix: true,
   })
-  return blob.url
+  return blob.pathname
 }
