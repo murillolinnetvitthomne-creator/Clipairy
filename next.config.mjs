@@ -9,7 +9,8 @@ const nextConfig = {
     unoptimized: true,
   },
   outputFileTracingIncludes: {
-    '/*': ['./node_modules/ffmpeg-static/ffmpeg'],
+    '/*': ['./.vercel-tools/ffmpeg'],
+    '/.well-known/workflow/v1/**': ['./.vercel-tools/ffmpeg'],
   },
 }
 

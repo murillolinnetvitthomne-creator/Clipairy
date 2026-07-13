@@ -2,7 +2,7 @@ import 'server-only'
 import { generateImage, experimental_generateVideo as generateVideo } from 'ai'
 import { get, put } from '@vercel/blob'
 import { execFile } from 'node:child_process'
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
+import { access, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { promisify } from 'node:util'
@@ -21,6 +21,25 @@ export type VideoAspectRatio = '9:16' | '16:9'
 export type VideoDuration = 8 | 16 | 24 | 30
 
 const execFileAsync = promisify(execFile)
+const preparedFfmpegPath = join(process.cwd(), '.vercel-tools', 'ffmpeg')
+
+async function resolveFfmpegPath(): Promise<string> {
+  const candidates = [preparedFfmpegPath]
+  if (process.env.NODE_ENV !== 'production' && ffmpegPath) candidates.push(ffmpegPath)
+
+  for (const candidate of candidates) {
+    try {
+      await access(candidate)
+      return candidate
+    } catch {
+      // Continue to the next explicit candidate.
+    }
+  }
+
+  throw new Error(
+    `FFmpeg binary is unavailable. Checked: ${candidates.join(', ')}. Run the postinstall preparation step before building.`,
+  )
+}
 
 async function uploadBytes(bytes: Uint8Array, mediaType: string, path: string): Promise<string> {
   const blob = await put(path, Buffer.from(bytes), {
@@ -149,7 +168,7 @@ export async function assembleVideo(
   genId: number,
 ): Promise<string> {
   if (segmentUrls.length === 1 && duration === 8) return segmentUrls[0]
-  if (!ffmpegPath) throw new Error('FFmpeg binary is unavailable')
+  const executablePath = await resolveFfmpegPath()
 
   const workDir = await mkdtemp(join(tmpdir(), `clipairy-${genId}-`))
   try {
@@ -166,7 +185,7 @@ export async function assembleVideo(
     const args = ['-y', '-f', 'concat', '-safe', '0', '-i', listPath]
     if (duration === 30) args.push('-t', '30')
     args.push('-c', 'copy', '-movflags', '+faststart', outputPath)
-    await execFileAsync(ffmpegPath, args, { timeout: 120_000 })
+    await execFileAsync(executablePath, args, { timeout: 120_000 })
 
     return uploadBytes(
       new Uint8Array(await readFile(outputPath)),
