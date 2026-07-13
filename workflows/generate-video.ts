@@ -15,6 +15,8 @@ export type GenerateVideoInput = {
   genId: number
   userId: string
   sellingPoints: string
+  referenceVideoPath: string | null
+  productImagePaths: string[]
   duration: VideoDuration
   aspectRatio: VideoAspectRatio
 }
@@ -26,7 +28,13 @@ async function setProgress(genId: number, step: number, fields: Record<string, u
 
 async function createScript(input: GenerateVideoInput) {
   'use step'
-  return generateScript(input.sellingPoints, input.duration, input.aspectRatio)
+  return generateScript(
+    input.sellingPoints,
+    input.duration,
+    input.aspectRatio,
+    input.referenceVideoPath,
+    input.productImagePaths,
+  )
 }
 
 async function createFrames(
@@ -34,7 +42,13 @@ async function createFrames(
   input: GenerateVideoInput,
 ) {
   'use step'
-  return generateStoryboardImages(storyboard, input.userId, input.genId, input.aspectRatio)
+  return generateStoryboardImages(
+    storyboard,
+    input.userId,
+    input.genId,
+    input.aspectRatio,
+    input.productImagePaths,
+  )
 }
 
 async function createSegment(

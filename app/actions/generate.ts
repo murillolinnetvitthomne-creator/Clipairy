@@ -7,6 +7,7 @@ import { and, desc, eq, sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { consumeCredit } from './account'
 import { start } from 'workflow/api'
+import { head } from '@vercel/blob'
 import {
   generateVideoWorkflow,
   type GenerateVideoInput,
@@ -61,10 +62,27 @@ export async function startGeneration(
   sellingPoints: string,
   duration: GenerateVideoInput['duration'] = 8,
   aspectRatio: GenerateVideoInput['aspectRatio'] = '9:16',
+  referenceVideoPath?: string,
+  productImagePaths: string[] = [],
 ): Promise<GenerationState> {
   const userId = await getUserId()
   if (![8, 16, 24, 30].includes(duration)) throw new Error('INVALID_DURATION')
   if (!['9:16', '16:9'].includes(aspectRatio)) throw new Error('INVALID_ASPECT_RATIO')
+  if (productImagePaths.length > 6) throw new Error('TOO_MANY_IMAGES')
+
+  const prefix = `uploads/${userId}/`
+  const paths = [...(referenceVideoPath ? [referenceVideoPath] : []), ...productImagePaths]
+  if (paths.some((pathname) => !pathname.startsWith(prefix))) throw new Error('INVALID_UPLOAD')
+
+  const metadata = await Promise.all(paths.map((pathname) => head(pathname)))
+  const videoMeta = referenceVideoPath ? metadata[0] : null
+  const imageMeta = referenceVideoPath ? metadata.slice(1) : metadata
+  if (videoMeta && (!videoMeta.contentType.startsWith('video/') || videoMeta.size > 100 * 1024 * 1024)) {
+    throw new Error('INVALID_VIDEO')
+  }
+  if (imageMeta.some((item) => !['image/jpeg', 'image/png', 'image/webp'].includes(item.contentType) || item.size > 12 * 1024 * 1024)) {
+    throw new Error('INVALID_IMAGE')
+  }
 
   // Every finished video consumes exactly one credit, regardless of duration.
   await consumeCredit()
@@ -75,6 +93,8 @@ export async function startGeneration(
     .values({
       userId,
       sellingPoints: cleanSellingPoints || null,
+      referenceVideoPath: referenceVideoPath ?? null,
+      productImagePaths,
       duration,
       aspectRatio,
       status: 'pending',
@@ -88,6 +108,8 @@ export async function startGeneration(
       genId: row.id,
       userId,
       sellingPoints: cleanSellingPoints,
+      referenceVideoPath: referenceVideoPath ?? null,
+      productImagePaths,
       duration,
       aspectRatio,
     }])

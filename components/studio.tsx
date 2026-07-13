@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import {
@@ -11,7 +10,6 @@ import {
   Loader2,
   Lock,
   Monitor,
-  Package,
   Play,
   RotateCcw,
   Smartphone,
@@ -23,6 +21,7 @@ import { Button } from '@/components/ui/button'
 import { type AccountState } from '@/app/actions/account'
 import { startGeneration, getGeneration, type GenerationState } from '@/app/actions/generate'
 import { useI18n } from '@/components/i18n-provider'
+import { MediaUploader, type UploadedAsset } from '@/components/media-uploader'
 
 type StepState = 'pending' | 'processing' | 'done'
 type Status = 'idle' | 'running' | 'done' | 'error'
@@ -33,15 +32,19 @@ const POLL_INTERVAL = 2500
 
 export function Studio({
   isAuthed,
+  userId,
   account,
 }: {
   isAuthed: boolean
+  userId: string | null
   account: AccountState | null
 }) {
   const { t } = useI18n()
   const [status, setStatus] = useState<Status>('idle')
   const [gen, setGen] = useState<GenerationState | null>(null)
   const [sellingPoints, setSellingPoints] = useState('')
+  const [referenceVideo, setReferenceVideo] = useState<UploadedAsset[]>([])
+  const [productImages, setProductImages] = useState<UploadedAsset[]>([])
   const [duration, setDuration] = useState<GenerationState['duration']>(8)
   const [aspectRatio, setAspectRatio] = useState<GenerationState['aspectRatio']>('9:16')
   const [credits, setCredits] = useState<number>(account?.credits ?? 0)
@@ -80,7 +83,13 @@ export function Studio({
 
     let job: GenerationState
     try {
-      job = await startGeneration(sellingPoints, duration, aspectRatio)
+      job = await startGeneration(
+        sellingPoints,
+        duration,
+        aspectRatio,
+        referenceVideo[0]?.pathname,
+        productImages.map((asset) => asset.pathname),
+      )
     } catch {
       // Gate errors (NO_PLAN / NO_CREDITS) — the banner already covers these.
       setStatus('idle')
@@ -127,21 +136,24 @@ export function Studio({
 
       {/* Upload area */}
       <div className="mt-12 grid gap-4 md:grid-cols-3">
-        <UploadCard
-          icon={<FileVideo className="size-5" />}
+        <MediaUploader
+          userId={userId}
+          kind="video"
           label={t.studio.upload1Label}
-          hint={t.studio.upload1Hint}
-          uploadedLabel={t.studio.uploaded}
-          image="/ref-video.png"
-          tag="viral_reference.mp4"
+          hint={`${t.studio.upload1Hint} · MP4/MOV/WebM · 100 MB`}
+          value={referenceVideo}
+          onChange={setReferenceVideo}
+          disabled={status === 'running'}
         />
-        <UploadCard
-          icon={<Package className="size-5" />}
+        <MediaUploader
+          userId={userId}
+          kind="image"
           label={t.studio.upload2Label}
-          hint={t.studio.upload2Hint}
-          uploadedLabel={t.studio.uploaded}
-          image="/product-shot.png"
-          tag="my_product.jpg"
+          hint={`${t.studio.upload2Hint} · JPG/PNG/WebP · 最多 6 张`}
+          value={productImages}
+          onChange={setProductImages}
+          disabled={status === 'running'}
+          maxFiles={6}
         />
         <div className="flex flex-col rounded-2xl border border-border bg-card p-5">
           <div className="flex items-center gap-2 text-sm font-medium">
@@ -369,46 +381,6 @@ export function Studio({
         )}
       </div>
     </section>
-  )
-}
-
-function UploadCard({
-  icon,
-  label,
-  hint,
-  uploadedLabel,
-  image,
-  tag,
-}: {
-  icon: React.ReactNode
-  label: string
-  hint: string
-  uploadedLabel: string
-  image: string
-  tag: string
-}) {
-  return (
-    <div className="flex flex-col rounded-2xl border border-border bg-card p-5">
-      <div className="flex items-center gap-2 text-sm font-medium">
-        <span className="flex size-9 items-center justify-center rounded-lg bg-secondary text-primary">
-          {icon}
-        </span>
-        {label}
-      </div>
-      <div className="group relative mt-4 flex h-[104px] items-center gap-3 overflow-hidden rounded-xl border border-dashed border-border bg-background/50 p-3">
-        <div className="relative h-full w-16 shrink-0 overflow-hidden rounded-lg">
-          <Image src={image} alt="" fill className="object-cover" sizes="64px" />
-        </div>
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-foreground">{tag}</p>
-          <p className="mt-1 text-xs text-muted-foreground">{hint}</p>
-          <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
-            <Check className="size-3" aria-hidden="true" />
-            {uploadedLabel}
-          </span>
-        </div>
-      </div>
-    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import 'server-only'
 import { generateImage, experimental_generateVideo as generateVideo } from 'ai'
-import { put } from '@vercel/blob'
+import { get, put } from '@vercel/blob'
 import { execFile } from 'node:child_process'
 import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -29,15 +29,28 @@ export async function generateStoryboardImages(
   userId: string,
   genId: number,
   aspectRatio: VideoAspectRatio = '9:16',
+  productImagePaths: string[] = [],
 ): Promise<string[]> {
   const orientation = aspectRatio === '16:9' ? 'landscape' : 'vertical'
+  const referenceImages = await Promise.all(productImagePaths.map(async (pathname) => {
+    const result = await get(pathname, { access: 'private' })
+    if (!result || result.statusCode !== 200) throw new Error('Product image unavailable')
+    return new Uint8Array(await new Response(result.stream).arrayBuffer())
+  }))
   const urls: string[] = []
   for (let i = 0; i < scenes.length; i++) {
     const { image } = await generateImage({
       model: IMAGE_MODEL,
-      prompt:
-        `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
-        'Bright, high-energy, professional product photography, cinematic lighting.',
+      prompt: referenceImages.length > 0
+        ? {
+            images: referenceImages,
+            text:
+              `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
+              'Preserve the exact product identity, shape, colors, logo and package details shown in the reference images. ' +
+              'Bright, high-energy, professional product photography, cinematic lighting.',
+          }
+        : `${orientation} (${aspectRatio}) short-video ad frame. ${scenes[i].scene}. ` +
+          'Bright, high-energy, professional product photography, cinematic lighting.',
       aspectRatio,
     })
     urls.push(await uploadBytes(

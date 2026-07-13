@@ -22,7 +22,7 @@ export default async function Page() {
       <SiteHeader />
       <main>
         <Hero />
-        <Studio isAuthed={isAuthed} account={account} />
+        <Studio isAuthed={isAuthed} userId={session?.user?.id ?? null} account={account} />
         <ModelsSection />
         <Pricing />
         <CtaFooter />

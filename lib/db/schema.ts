@@ -88,6 +88,8 @@ export const generation = pgTable('generation', {
   // 'pending' | 'running' | 'done' | 'error'
   status: text('status').notNull().default('pending'),
   sellingPoints: text('sellingPoints'),
+  referenceVideoPath: text('referenceVideoPath'),
+  productImagePaths: jsonb('productImagePaths').$type<string[]>(),
   duration: integer('duration').notNull().default(8),
   aspectRatio: text('aspectRatio').notNull().default('9:16'),
   workflowRunId: text('workflowRunId'),
