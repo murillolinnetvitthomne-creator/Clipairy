@@ -1,0 +1,149 @@
+/* Willow & Paw — editorial Horizon art direction */
+:root {
+  --willow-ink: #171713;
+  --willow-paper: #f4f1ea;
+  --willow-white: #fffdf8;
+  --willow-taupe: #a59683;
+  --willow-line: #d8d2c7;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--willow-paper);
+  color: var(--willow-ink);
+  letter-spacing: .01em;
+}
+
+h1, h2, h3, .h1, .h2, .h3 {
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+.header-section,
+.shopify-section-group-header-group {
+  background: var(--willow-paper);
+}
+
+header-component {
+  border-bottom: 1px solid var(--willow-line);
+}
+
+.header__heading-logo,
+.header__heading-link {
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.header__menu-item,
+.menu-drawer__menu-item,
+.footer__content-top a {
+  font-size: .75rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.button,
+.shopify-payment-button__button,
+button[type='submit'] {
+  min-height: 3.25rem;
+  border-radius: 0;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.button:not(.button--secondary),
+.shopify-payment-button__button {
+  background: var(--willow-ink);
+  color: var(--willow-white);
+}
+
+.button--secondary {
+  background: transparent;
+  color: var(--willow-ink);
+  border: 1px solid var(--willow-ink);
+}
+
+.card-wrapper .card,
+.product-card,
+.collection-card {
+  border-radius: 0;
+  background: transparent;
+}
+
+.card__media,
+.product-card__image,
+.product-media-container,
+.media {
+  border-radius: 0 !important;
+  overflow: hidden;
+}
+
+.card__media img,
+.product-card__image img,
+.media img {
+  transition: transform .6s cubic-bezier(.2,.75,.25,1);
+}
+
+.card-wrapper:hover img,
+.product-card:hover img {
+  transform: scale(1.025);
+}
+
+.card__heading,
+.product-card__title {
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.price { font-size: .82rem; }
+
+.collection-hero,
+.main-collection-banner {
+  border-bottom: 1px solid var(--willow-line);
+}
+
+.facets-container,
+.facets-wrapper {
+  border-block: 1px solid var(--willow-line);
+}
+
+.product__info-wrapper,
+.product-information__grid {
+  background: var(--willow-white);
+}
+
+.accordion,
+.product__accordion {
+  border-color: var(--willow-line);
+}
+
+.drawer,
+.cart-drawer,
+.menu-drawer {
+  background: var(--willow-white);
+}
+
+.footer,
+.shopify-section-group-footer-group {
+  background: var(--willow-ink);
+  color: var(--willow-white);
+}
+
+.footer a { color: inherit; }
+.footer__content-top { border-bottom: 1px solid rgba(255,253,248,.25); }
+
+@media screen and (min-width: 750px) {
+  .page-width { padding-inline: 3rem; }
+  .collection .grid,
+  .product-grid { column-gap: 1.25rem; row-gap: 3.5rem; }
+  .banner__heading { max-width: 13ch; }
+}
+
+@media screen and (max-width: 749px) {
+  .page-width { padding-inline: 1rem; }
+  .collection .grid,
+  .product-grid { column-gap: .5rem; row-gap: 2rem; }
+  .header { padding-block: .75rem; }
+}
