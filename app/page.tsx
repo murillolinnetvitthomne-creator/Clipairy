@@ -1,32 +1,13 @@
-import { headers } from 'next/headers'
-import { auth } from '@/lib/auth'
-import { getAccount, type AccountState } from '@/app/actions/account'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ArrowRight, Heart, Leaf, PackageCheck } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
-import { Hero } from '@/components/hero'
-import { Studio } from '@/components/studio'
-import { ModelsSection } from '@/components/models-section'
-import { Pricing } from '@/components/pricing'
-import { CtaFooter } from '@/components/cta-footer'
+import { SiteFooter } from '@/components/site-footer'
+import { ProductCard } from '@/components/product-card'
+import { getProducts } from '@/lib/shopify'
 
-export default async function Page() {
-  const session = await auth.api.getSession({ headers: await headers() })
-  const isAuthed = !!session?.user
-
-  let account: AccountState | null = null
-  if (isAuthed) {
-    account = await getAccount()
-  }
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
-      <main>
-        <Hero />
-        <Studio isAuthed={isAuthed} account={account} />
-        <ModelsSection />
-        <Pricing />
-        <CtaFooter />
-      </main>
-    </div>
-  )
+export default async function HomePage() {
+  const products = await getProducts(8)
+  const hero = products[0]
+  return <div className="min-h-screen"><SiteHeader /><main><section className="mx-auto grid max-w-7xl gap-6 px-5 py-6 md:grid-cols-[.85fr_1.15fr] lg:px-8"><div className="flex min-h-[560px] flex-col justify-between rounded-3xl bg-primary p-8 text-primary-foreground md:p-12"><p className="text-xs font-semibold uppercase tracking-[.2em]">The everyday collection</p><div><h1 className="max-w-lg font-serif text-5xl leading-[.95] text-balance sm:text-6xl lg:text-7xl">Made for the life you share.</h1><p className="mt-6 max-w-md text-base leading-relaxed opacity-80">Natural materials, considered details, and enduring design for walks around the block and weekends beyond it.</p><Link href="/shop" className="mt-8 inline-flex items-center gap-2 rounded-full bg-background px-6 py-3 text-sm font-semibold text-foreground">Shop the collection <ArrowRight className="size-4" /></Link></div><p className="text-xs opacity-60">Designed with comfort in mind. Tested by very good dogs.</p></div><Link href={hero ? `/products/${hero.handle}` : '/shop'} className="group relative min-h-[560px] overflow-hidden rounded-3xl bg-secondary">{hero?.featuredImage ? <Image src={hero.featuredImage.url} alt={hero.featuredImage.altText || hero.title} fill priority className="object-cover transition-transform duration-700 group-hover:scale-[1.02]" /> : <Image src="/products/oat-rope-leash.png" alt="Natural cotton rope leash" fill priority className="object-cover" />}<div className="absolute inset-x-5 bottom-5 flex items-center justify-between rounded-2xl bg-background/95 p-5 backdrop-blur"><div><p className="text-xs uppercase tracking-[.18em] text-muted-foreground">New season</p><p className="mt-1 font-serif text-2xl">{hero?.title || 'The Wander Collection'}</p></div><ArrowRight className="size-5" /></div></Link></section><section className="mx-auto max-w-7xl px-5 py-20 lg:px-8"><div className="mb-10 flex items-end justify-between"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-accent">Freshly fetched from Shopify</p><h2 className="mt-3 font-serif text-4xl sm:text-5xl">Companion favorites</h2></div><Link href="/shop" className="hidden items-center gap-2 text-sm font-semibold sm:flex">View all <ArrowRight className="size-4" /></Link></div><div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">{products.slice(0,4).map((product, index) => <ProductCard key={product.id} product={product} priority={index < 2} />)}</div></section><section id="story" className="bg-secondary"><div className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-2 md:items-center lg:px-8"><div><p className="text-xs font-semibold uppercase tracking-[.2em] text-accent">Our approach</p><h2 className="mt-4 max-w-xl font-serif text-5xl leading-tight">Less fuss. Better materials. More good years together.</h2></div><div className="grid gap-6 sm:grid-cols-3 md:grid-cols-1 lg:grid-cols-3">{[[Leaf,'Natural by nature','Linen, cotton, leather and metal chosen to wear in beautifully.'],[Heart,'Comfort first','Soft edges and considered proportions for all-day ease.'],[PackageCheck,'Small-batch care','Thoughtful finishing and quality checks before every dispatch.']].map(([Icon,title,text]) => { const FeatureIcon = Icon as typeof Leaf; return <div key={title as string}><FeatureIcon className="size-5 text-accent" /><h3 className="mt-4 font-serif text-xl">{title as string}</h3><p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text as string}</p></div>})}</div></div></section><section className="mx-auto max-w-7xl px-5 py-24 text-center lg:px-8"><p className="text-xs font-semibold uppercase tracking-[.2em] text-accent">Notes from the pack</p><blockquote className="mx-auto mt-5 max-w-4xl font-serif text-4xl leading-tight text-balance sm:text-5xl">“The collar feels beautifully made, looks even better after months of wear, and Maple actually gets excited when we put it on.”</blockquote><p className="mt-6 text-sm text-muted-foreground">Jordan & Maple · Portland, Oregon</p></section></main><SiteFooter /></div>
 }

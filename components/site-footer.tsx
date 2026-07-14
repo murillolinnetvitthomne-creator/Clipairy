@@ -1,0 +1,5 @@
+import Link from 'next/link'
+
+export function SiteFooter() {
+  return <footer className="border-t bg-primary text-primary-foreground"><div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-2 lg:px-8"><div><p className="font-serif text-4xl">Willow & Paw</p><p className="mt-4 max-w-sm text-sm leading-relaxed opacity-75">Thoughtfully made accessories for the everyday rituals you share with your closest companion.</p></div><div className="grid grid-cols-2 gap-8 text-sm"><div className="flex flex-col gap-3"><p className="font-semibold">Explore</p><Link href="/shop">Shop all</Link><Link href="/shop?type=Collars">Collars</Link><Link href="/shop?type=Leashes">Walk</Link></div><div className="flex flex-col gap-3"><p className="font-semibold">Care</p><a href="mailto:hello@willowandpaw.co">Contact</a><span>Shipping & returns</span><span>Size guide</span></div></div></div><div className="border-t border-primary-foreground/20 px-5 py-5 text-center text-xs opacity-70">© 2026 Willow & Paw. Made for muddy paws and soft landings.</div></footer>
+}
