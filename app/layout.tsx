@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   generator: 'v0.app',
 }
 
-export const viewport: Viewport = { themeColor: '#f7f4ed', colorScheme: 'light', userScalable: true }
+export const viewport: Viewport = { themeColor: '#f4f1ea', colorScheme: 'light', userScalable: true }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return <html lang="en" className={`${manrope.variable} ${newsreader.variable} bg-background`}><body className="font-sans antialiased"><CartProvider>{children}<CartDrawer /></CartProvider>{process.env.NODE_ENV === 'production' && <Analytics />}</body></html>

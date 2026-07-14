@@ -18,33 +18,44 @@
   --color-muted: var(--secondary);
   --color-muted-foreground: var(--muted-foreground);
   --color-accent: var(--accent);
-  --color-accent-foreground: var(--foreground);
+  --color-accent-foreground: var(--primary-foreground);
   --color-border: var(--border);
   --color-input: var(--border);
-  --color-ring: var(--primary);
+  --color-ring: var(--accent);
   --color-destructive: var(--destructive);
-  --radius-sm: .5rem; --radius-md: .75rem; --radius-lg: 1rem; --radius-xl: 1.5rem; --radius-2xl: 2rem; --radius-3xl: 2.5rem;
+  --radius-sm: 0; --radius-md: 0; --radius-lg: .125rem; --radius-xl: .25rem; --radius-2xl: .25rem; --radius-3xl: .25rem;
 }
 
 :root {
   color-scheme: light;
-  --background: #f7f4ed;
-  --foreground: #20322a;
-  --card: #fffdf8;
-  --primary: #355b49;
-  --primary-foreground: #fffdf8;
-  --secondary: #e9e4d9;
-  --muted-foreground: #6f756f;
-  --accent: #c8734f;
-  --border: #d9d3c7;
-  --destructive: #a33e32;
+  --background: #f4f1ea;
+  --foreground: #171714;
+  --card: #fbfaf7;
+  --primary: #171714;
+  --primary-foreground: #fbfaf7;
+  --secondary: #e8e3d9;
+  --muted-foreground: #6d6a63;
+  --accent: #9a6c46;
+  --border: #cdc7bb;
+  --destructive: #8f2f25;
 }
 
 @layer base {
   * { @apply border-border outline-ring/50; }
   html { scroll-behavior: smooth; }
   body { @apply bg-background text-foreground font-sans; }
-  button, a { @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring; }
+  button, a, summary { @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring; }
+  button, summary { cursor: pointer; }
+}
+
+@layer components {
+  .eyebrow { @apply text-[10px] font-semibold uppercase tracking-[0.24em]; }
+  .editorial-rule { @apply border-t border-border; }
+  .text-link { @apply inline-flex items-center gap-2 border-b border-foreground pb-1 text-xs font-semibold uppercase tracking-[0.16em] transition-opacity hover:opacity-55; }
 }
 
 ::selection { background: var(--accent); color: var(--primary-foreground); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
